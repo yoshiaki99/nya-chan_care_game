@@ -136,6 +136,9 @@ G.Screens = G.Screens || {};
           <label>BGM<input type="range" min="0" max="100" data-k="bgm" value="${Math.round(st.bgm * 100)}"></label>
           <label>効果音<input type="range" min="0" max="100" data-k="sfx" value="${Math.round(st.sfx * 100)}"></label>
           <div class="row"><span>読み上げ</span><div class="seg" data-k="voice"><button data-v="1">あり</button><button data-v="0">なし</button></div></div></section>
+        <section><h3>ニューちゃん（妹）が遊びに来る</h3>
+          <div class="seg" data-k="nyu"><button data-v="1">あり</button><button data-v="0">なし</button></div>
+          <p class="note">「あり」にすると、1日に1回まで、ときどきおへやに遊びに来ます（来ない日もあります）。</p></section>
         <section><h3>げんきメーターの減り方</h3>
           <div class="seg" data-k="decay"><button data-v="real">実際の時間（1〜2時間で1目盛り）</button><button data-v="play">遊んでいる間だけ（10〜20分で1目盛り）</button></div></section>
         <section><h3>オフラインで遊ぶ</h3>
@@ -161,7 +164,7 @@ G.Screens = G.Screens || {};
       wrap.querySelectorAll('.seg').forEach(seg => {
         const k = seg.dataset.k;
         let v = S.settings()[k];
-        if (k === 'voice') v = v ? '1' : '0';
+        if (k === 'voice' || k === 'nyu') v = v ? '1' : '0';
         seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(v) === b.dataset.v));
       });
     };
@@ -170,7 +173,7 @@ G.Screens = G.Screens || {};
       const k = b.parentElement.dataset.k;
       let v = b.dataset.v;
       if (k === 'limit') v = parseInt(v, 10);
-      if (k === 'voice') v = v === '1';
+      if (k === 'voice' || k === 'nyu') v = v === '1';
       S.setSetting(k, v);
       G.Sound.play('tap');
       sync();

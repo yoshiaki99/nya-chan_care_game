@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* ニャーちゃんの 表情・動作の絵を、基準画（assets/characters/nya_base.png）から 作る（要件定義書 7.3・7.4）
+/* ニャーちゃん・ニューちゃんの 表情・動作の絵を、基準画（assets/characters/nya_base.png・nyu_base.png）から 作る（要件定義書 7.3・7.4）
  *   node tools/make_poses.js
  * ・基準画の上に、目・口を かきかえたり、うでを あげたり、あわ・けいとだま・もうふ を 描きたしたりして、
  *   背景透過の PNG（1254×1254）を assets/characters/ に 書きだす。
@@ -15,6 +15,7 @@ const SIZE = 1254;
 const INK = '#141213';
 const FUR = '#fdfcfc'; // 基準画の 体の 白（まっ白で ぬると 目立つので 同じ 色で ぬる）
 const base64 = fs.readFileSync(path.join(DIR, 'nya_base.png')).toString('base64');
+const nyu64 = fs.readFileSync(path.join(DIR, 'nyu_base.png')).toString('base64');
 
 let playwright;
 for (const p of ['playwright', '/opt/node-tools/node_modules/playwright']) {
@@ -116,6 +117,28 @@ const POSES = {
   // 横に なって ねる（右に 90° まわして、頭が 右）。からだに もうふを かける
   nya_act_sleep: () => `<g transform="matrix(0 1 -1 0 1227 165)">${BASE()}${face('dreamy', 'closed')}</g>${blanket()}`
 };
+
+/* ---------- ニューちゃん（妹）：にっこり・うっとり・手を ふる ---------- */
+const NYU_FUR = '#fdfdfd';
+const NYU_EYES = [[507, 275], [674, 268]];
+const nyuEyes = (kind) => NYU_EYES.map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="30" ry="44" fill="${NYU_FUR}"/>`).join('') +
+  NYU_EYES.map(([x, y]) => kind === 'happy'
+    ? `<path d="M${x - 27} ${y + 12} Q${x} ${y - 30} ${x + 27} ${y + 12}" ${S(14)}/>`
+    : `<path d="M${x - 27} ${y - 8} Q${x} ${y + 30} ${x + 27} ${y - 8}" ${S(14)}/>`).join('');
+const NYU_ARM_MASK = `<path d="M440 790 L250 790 L250 960 L452 960 L448 900 L445 840 Z" fill="#000"/>`;
+const NYU_ARM_PATH = 'M445 808 C418 808 397 793 397 763 L397 693 A41 41 0 0 0 315 693 L315 823 C321 873 383 905 451 892';
+const NYU_ARM_UP = `<path d="M455 866 L478 866 L478 914 L455 914 Z" fill="${NYU_FUR}"/>
+  <path d="M444 786 C444 850 447 900 447 985" ${S(13)}/>
+  <path d="${NYU_ARM_PATH} L500 892 L500 808 Z" fill="${NYU_FUR}"/>
+  <path d="${NYU_ARM_PATH}" ${S(13)}/>
+  <path d="M279 643 Q261 673 279 703 M251 619 Q223 673 251 727" ${S(8)}/>`;
+const BASEN = (mask = '') => `${mask ? `<mask id="m"><rect width="${SIZE}" height="${SIZE}" fill="#fff"/>${mask}</mask>` : ''}
+  <image href="data:image/png;base64,${nyu64}" width="${SIZE}" height="${SIZE}"${mask ? ' mask="url(#m)"' : ''}/>`;
+Object.assign(POSES, {
+  nyu_face_happy: () => BASEN() + nyuEyes('happy'),
+  nyu_face_dreamy: () => BASEN() + nyuEyes('dreamy'),
+  nyu_act_wave: () => BASEN(NYU_ARM_MASK) + NYU_ARM_UP + nyuEyes('happy')
+});
 
 (async () => {
   const b = await playwright.chromium.launch();

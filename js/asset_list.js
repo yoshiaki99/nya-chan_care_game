@@ -14,5 +14,9 @@ G.ASSET_FILES = [
   "assets/characters/nya_face_lonely.png",
   "assets/characters/nya_face_normal.png",
   "assets/characters/nya_face_prim.png",
-  "assets/characters/nya_face_sleepy.png"
+  "assets/characters/nya_face_sleepy.png",
+  "assets/characters/nyu_act_wave.png",
+  "assets/characters/nyu_base.png",
+  "assets/characters/nyu_face_dreamy.png",
+  "assets/characters/nyu_face_happy.png"
 ];

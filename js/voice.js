@@ -87,7 +87,8 @@ G.Voice = (function () {
         const u = new SpeechSynthesisUtterance(clean(text));
         u.lang = 'ja-JP';
         if (voice) u.voice = voice;
-        u.pitch = who === 'chara' ? G.CHARACTER.voicePitch : 1.15;
+        const ch = who === 'chara' ? G.CHARACTER : (G.CHARACTERS && G.CHARACTERS[who]);
+        u.pitch = ch ? ch.voicePitch : 1.15;
         u.rate = who === 'chara' ? 1.0 : 1.05;
         u.volume = volume;
         let done = false;
@@ -103,7 +104,7 @@ G.Voice = (function () {
 
   /**
    * 読み上げる。終わったら（または読み上げなしのときは目安の時間で）resolve する
-   * who: 'chara'（ニャーちゃんの声）| 'guide'（ボタンの名前など）
+   * who: 'chara'（ニャーちゃんの声）| 'nyu'（ニューちゃんの声）| 'guide'（ボタンの名前など）
    */
   function speak(text, who = 'chara') {
     const my = ++token;

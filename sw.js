@@ -4,9 +4,9 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = '96d64b05c4';
+const VERSION = 'f7b23f7c6d';
 const FILES = [
-  ["index.html", "0d784fafa9"],
+  ["index.html", "77a1a9a885"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
   ["assets/characters/nya_act_bath_foam.png", "fdbed4afb1"],
   ["assets/characters/nya_act_eat.png", "f029eafb01"],
@@ -20,7 +20,11 @@ const FILES = [
   ["assets/characters/nya_face_normal.png", "4f1e1e4813"],
   ["assets/characters/nya_face_prim.png", "84a42f9573"],
   ["assets/characters/nya_face_sleepy.png", "bcce724536"],
-  ["css/style.css", "6b5cbf7285"],
+  ["assets/characters/nyu_act_wave.png", "2e2839f778"],
+  ["assets/characters/nyu_base.png", "123b0e4a49"],
+  ["assets/characters/nyu_face_dreamy.png", "ef8f9b193a"],
+  ["assets/characters/nyu_face_happy.png", "0d77fd75bc"],
+  ["css/style.css", "c039152ee6"],
   ["icons/apple-touch-icon.png", "d8d1bbd691"],
   ["icons/icon-192.png", "b0cfaf3cb0"],
   ["icons/icon-512.png", "6dae5d97a6"],
@@ -28,20 +32,22 @@ const FILES = [
   ["js/accessory.js", "7e53f44681"],
   ["js/art.js", "1237df4eb4"],
   ["js/art_play.js", "cead13697d"],
-  ["js/asset_list.js", "890f483da7"],
+  ["js/asset_list.js", "d42ae4a261"],
   ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "056aadc0fd"],
   ["js/chara.js", "47379dcf34"],
-  ["js/character.js", "aa4606fb76"],
+  ["js/character.js", "0becfa1d0f"],
+  ["js/character_nyu.js", "8e2f641aa3"],
   ["js/clothes.js", "c1067d70e9"],
   ["js/data.js", "059fb53812"],
-  ["js/main.js", "c63aa47b48"],
+  ["js/main.js", "9ed33ed5cb"],
   ["js/makeup.js", "ca083a7c1f"],
+  ["js/nyu.js", "444853bec1"],
   ["js/screens/accessory.js", "89c1a400d6"],
   ["js/screens/care.js", "bac62d4c53"],
   ["js/screens/clothes.js", "592ecc5921"],
   ["js/screens/dress.js", "dc0307e8b6"],
-  ["js/screens/main.js", "e5bb497c90"],
+  ["js/screens/main.js", "2c9f9b5823"],
   ["js/screens/makeup.js", "c070d18f7f"],
   ["js/screens/play.js", "6fba60aae5"],
   ["js/screens/play_cake.js", "f46947a39e"],
@@ -50,9 +56,9 @@ const FILES = [
   ["js/screens/play_photo.js", "de17135257"],
   ["js/screens/play_tea.js", "eecabfcd90"],
   ["js/screens/play_teaser.js", "2e7e57902c"],
-  ["js/state.js", "89d36f3293"],
+  ["js/state.js", "8f16b74f39"],
   ["js/ui.js", "7b01161cdc"],
-  ["js/voice.js", "0183298bd8"],
+  ["js/voice.js", "9ad75d9369"],
   ["js/voice_clips.js", "a0f27ea36a"],
   ["manifest.webmanifest", "f1f4bae15a"]
 ];

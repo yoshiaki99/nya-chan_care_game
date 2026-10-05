@@ -167,7 +167,7 @@ G.CHARACTER = {
     teaSip:      'ふーふー… いい かおり ニャー',
     teaYum:      'ぺろり！ おかしも おいしい ニャー',
     teaDone:     'たのしい おちゃかい だった。 ありがとう ニャー！',
-    photoIntro:  'しゃしんを とって くれる ニャー？ カメラの ボタンを おして ニャー',
+    photoIntro:  'しゃしんを とって くれるの？ カメラの ボタンを おして ニャー',
     // photoPose は js/screens/play_photo.js の ポーズと 同じ じゅん
     photoPose:   ['にっこり ニャー！', 'おすまし ニャー', 'バイバイ ニャー！', 'うっとり ニャー'],
     photoSnap:   ['かわいく とれた ニャー？', 'もう いちまい ニャー！', 'すてき ニャー！'],
@@ -195,7 +195,7 @@ G.CHARACTER = {
     accNone:     'まだ なにも つけて ない ニャー',
     accSeason:   'に なったら プレゼントが とどく ニャー', // まえに「じゅうにがつ」などが つく
 
-    makeupIntro:   'メイク して くれる ニャー？ うれしい ニャー',
+    makeupIntro:   'メイク して くれるの？ うれしい ニャー',
     makeupPick:    'すきな いろを えらんで ニャー',
     cheekHint:     'ほっぺを ポンポン して ニャー',
     lipHint:       'おくちに ぬりぬり して ニャー',
@@ -212,6 +212,14 @@ G.CHARACTER = {
     bye:         'また あそびに きてね ニャー！',
     limit:       'きょうは ここまで。 また あした ニャー',
 
+    // ニューちゃんが 遊びに来たとき（js/character_nyu.js・js/nyu.js）
+    nyuWelcome:  'ニューちゃん、 いらっしゃい ニャー！',
+    nyuIntro:    'わたしの いもうとの ニューちゃん ニャー！',
+    nyuReply:    ['いいよ ニャー！', 'うふふ ニャー', 'ニューちゃん、 かわいい ニャー'],
+    nyuThanks:   'ありがとう ニャー！',
+    nyuShy:      'えへへ ニャー',
+    nyuBye:      'また きてね ニャー！',
+
     stickerGet:  'シールを もらった ニャー！',
     unlockGet:   'あたらしい リボンが ふえた ニャー！',
     unlockMakeup: 'あたらしい メイクが ふえた ニャー！',
@@ -221,3 +229,7 @@ G.CHARACTER = {
     dailyHeart:  'きょうの ごあいさつ ニャー'
   }
 };
+
+// キャラクターごとの 設定（ニューちゃんは js/character_nyu.js）
+G.CHARACTERS = G.CHARACTERS || {};
+G.CHARACTERS.nya = G.CHARACTER;

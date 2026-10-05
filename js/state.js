@@ -30,7 +30,8 @@ G.State = (function () {
       lastDay: null,
       play: { day: today(), sec: 0 },
       pet: { day: today(), count: 0, hearts: 0 },
-      settings: { limit: 0, bgm: 0.6, sfx: 0.8, voice: true, decay: 'real' }
+      nyu: { lastDay: null, count: 0 }, // ニューちゃんが 遊びに来た日・回数（要件定義書 N-73）
+      settings: { limit: 0, bgm: 0.6, sfx: 0.8, voice: true, decay: 'real', nyu: true }
     };
   }
 
@@ -202,6 +203,11 @@ G.State = (function () {
     return heart;
   }
 
+  /* ---- ニューちゃん（F-90：1日に 1回まで） ---- */
+  const nyuCameToday = () => d.nyu.lastDay === today();
+  const nyuVisits = () => d.nyu.count;
+  function markNyuVisit() { d.nyu.lastDay = today(); d.nyu.count++; save(); }
+
   /* ---- プレイ時間（F-101） ---- */
   function playSecToday() { return d.play.day === today() ? d.play.sec : 0; }
   function overLimit() { return d.settings.limit > 0 && playSecToday() >= d.settings.limit * 60; }
@@ -227,6 +233,7 @@ G.State = (function () {
     addHearts, hearts, stickerCount, takeNewStickers, takeNewUnlocks, isUnlocked, heartsToNextSticker,
     ribbon, setRibbon, makeup, setMakeup, addDeco, hasMakeup, clearMakeup,
     wear, setWear, hasAcc, takeSeasonGifts, clothes, setClothes, clothColor, clothColorIndex, setClothColor, photos, addPhoto, drawing, setDrawing, isNewDay, markDay, favoriteFood, pet,
+    nyuCameToday, nyuVisits, markNyuVisit,
     playSecToday, overLimit, settings, setSetting, reset
   };
 })();
