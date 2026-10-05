@@ -33,6 +33,7 @@ G.FOODS = [
 // リボン（5.8）。unlock = あつめたハートの数で ふえる
 // hue: 色相(度) sat/val: 彩度・明るさの倍率 pattern: もようの種類
 G.RIBBONS = [
+  { id: 'none',    label: 'なし',     unlock: 0,  swatch: 'none' }, // はじめは なにも つけていない（要件定義書 F-62）
   { id: 'pink',    label: 'ピンク',   unlock: 0,  swatch: '#f4a3b8', art: 'ribbon_pink' },
   { id: 'blue',    label: 'みずいろ', unlock: 0,  swatch: '#93c9ef', art: 'ribbon_blue',   hue: 205, sat: 1.15, val: 1.0 },
   { id: 'yellow',  label: 'きいろ',   unlock: 0,  swatch: '#f5d76a', art: 'ribbon_yellow', hue: 46,  sat: 1.65, val: 1.0 },
@@ -98,6 +99,23 @@ G.ACCESSORIES = [
   { id: 'wings',        slot: 'back', label: 'ようせいの はね',       unlock: 120 },
   { id: 'tailbow',      slot: 'tail', label: 'しっぽの リボン',       unlock: 75 }
 ];
+
+// 着せ替え（ふく。要件定義書 5.6.1）。絵は js/clothes.js。1着ずつ着る（slot = body）
+// colors = えらべる色（はじめの色が さいしょ）。unlock・season は アクセサリーと同じ
+G.CLOTHES = [
+  { id: 'tshirt',   label: 'Tシャツ',          unlock: 0, colors: ['#f47c7c', '#f6d860', '#8fc9ef'] },
+  { id: 'onepiece', label: 'ワンピース',        unlock: 0, colors: ['#f6a8c8', '#c9b3ee', '#a9dfc0'] },
+  { id: 'overall',  label: 'オーバーオール',    unlock: 0 },
+  { id: 'pajama',   label: 'パジャマ',          unlock: 8 },
+  { id: 'raincoat', label: 'レインコート',      unlock: 12 },
+  { id: 'sailor',   label: 'セーラーふく',      unlock: 28 },
+  { id: 'yukata',   label: 'ゆかた',            unlock: 48 },
+  { id: 'tutu',     label: 'バレエの ふく',      unlock: 68 },
+  { id: 'gown',     label: 'ドレス',            unlock: 85, colors: ['#c9a8ec', '#f6a8c8', '#9fd0f0'] },
+  { id: 'cape',     label: 'おばけの マント',    season: { month: 10, name: 'ハロウィン', when: 'じゅうがつ' } },
+  { id: 'santasuit', label: 'サンタの ふく',      season: { month: 12, name: 'クリスマス', when: 'じゅうにがつ' } }
+];
+G.CLOTHES_SLEEP = 'pajama'; // ねんねの ときに 着る服（もっていなくても ねんねの ときだけ 着る）
 
 // ごほうびシール（5.9）。ハート10こで1まい
 G.HEARTS_PER_STICKER = 10;

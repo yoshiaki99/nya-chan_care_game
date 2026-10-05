@@ -3,8 +3,9 @@ window.G = window.G || {};
 
 G.Chara = class {
   /* x, y = 足もとのまんなか（ステージ座標）。h = 高さ
-     acc = アクセサリーを つける（おふろでは はずす）。accHide = つけない場所（'face' など） */
-  constructor(parent, { x, y, h, wide = 1.3, acc = true, accHide = null }) {
+     acc = アクセサリーを つける（おふろでは はずす）。accHide = つけない場所（'face' など）
+     wearOver = いまだけ ちがう ものを 着る（ねんねの パジャマ など。{ body: 'pajama' }） */
+  constructor(parent, { x, y, h, wide = 1.3, acc = true, accHide = null, wearOver = null }) {
     const E = G.UI.el;
     this.x = x; this.y = y; this.h = h; this.w = h * wide;
     this.el = E('div', 'chara');
@@ -25,6 +26,7 @@ G.Chara = class {
     });
     this.acc = acc;
     this.accHide = accHide || [];
+    this.wearOver = wearOver;
     this.actor.appendChild(this.breather);
     this.flipper.appendChild(this.actor);
     this.jumper.appendChild(this.flipper);
@@ -177,7 +179,8 @@ G.Chara = class {
   paintAcc(i, key, src, sc, shift) {
     const B = this.accB[i], F = this.accF[i];
     const k = G.CharaArt.resolve(key);
-    const list = this.acc ? G.Accessory.layout(k, G.CharaArt.geo(k), G.State.wear(), G.State.ribbon(), this.accHide) : [];
+    const wear = this.wearOver ? Object.assign({}, G.State.wear(), this.wearOver) : G.State.wear();
+    const list = this.acc ? G.Accessory.layout(k, G.CharaArt.geo(k), wear, G.State.ribbon(), this.accHide) : [];
     B.style.display = F.style.display = 'none';
     list.forEach(it => {
       if (!it.r.ok) it.r.p.then(ok => { if (ok && this.pose === key && this.el.isConnected) this.redraw(); });

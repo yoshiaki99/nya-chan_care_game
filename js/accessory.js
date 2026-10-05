@@ -1,6 +1,7 @@
 /*
  * アクセサリー（おしゃれ）：ぼうし・メガネ・くびかざり・はね・しっぽのリボン。
- * 絵はこのファイルの SVG。face_normal の絵（1254px）と同じ座標で描いてある。
+ * くびのリボン（えらんでいる リボン）と ふく（js/clothes.js）も、ここで いっしょに かさねる。
+ * 絵はこのファイルの SVG。それぞれ G.CHARACTER.accessory.pivot の 目じるしの 座標で描いてある。
  * 一度 画像にしておき、G.Chara が ニャーちゃんの絵の まえ（はねは うしろ）に かさねる。
  * 絵ごとの つける場所は G.CHARACTER.accessory。
  */
@@ -9,7 +10,7 @@ window.G = window.G || {};
 G.Accessory = (function () {
   const RS = 0.8;   // 画像にするときの大きさ（ニャーちゃんの絵の下ごしらえ 1000/1254 と だいたい同じ）
   const PAD = 16;   // ふちのゆらぎ・線の太さのぶん
-  const FRONT = ['tail', 'neck', 'face', 'head']; // まえに描く順（あとのものほど手前）
+  const FRONT = ['body', 'tail', 'bow', 'neck', 'face', 'head']; // まえに描く順（あとのものほど手前）。body = ふく、bow = くびのリボン
   const BACK = ['back'];
 
   const HEART = 'M16 28C6 20 1 14 1 8.5 1 4 4.5 1 8.5 1c3 0 5.5 1.7 7.5 4.5C18 2.7 20.5 1 23.5 1 27.5 1 31 4 31 8.5 31 14 26 20 16 28z';
@@ -185,13 +186,27 @@ G.Accessory = (function () {
       ${[[150, 420], [250, 520], [300, 260], [380, 420], [90, 470], [180, 1000]].map(([x, y], i) => `<path d="${SPARK}" fill="#fffbe0" stroke="#e8cf7a" stroke-width="6" transform="translate(${x} ${y}) scale(${i % 2 ? .16 : .24}) translate(-50 -50)"/>`).join('')}
     </g>`,
 
-    tailbow: (rb) => `<g transform="translate(300 952) rotate(-36)">${ribbonBow(rb, 210)}</g>`
+    tailbow: (rb) => `<g transform="translate(300 952) rotate(-36)">${ribbonBow(rb, 210)}</g>`,
+
+    // くびのリボン（おしゃれの リボン）。結び目が (0, 0)
+    neckbow: (rb) => `<g>${ribbonBow(rb, 200)}</g>`
   };
   // リボンの色で 絵が かわるもの
-  const BY_RIBBON = { beret: true, tailbow: true };
+  const BY_RIBBON = { beret: true, tailbow: true, neckbow: true };
 
-  const ribbonOf = (id) => G.RIBBONS.find(r => r.id === id) || G.RIBBONS[0];
-  const markup = (id, ribbonId) => ART[id](ribbonOf(ribbonId));
+  // リボン「なし」のときの ベレーぼう・しっぽのリボンは ピンク（要件定義書 F-68）
+  const ribbonOf = (id) => G.RIBBONS.find(r => r.id === id && r.id !== 'none') || G.RIBBONS.find(r => r.id === 'pink');
+  const isCloth = (id) => !ART[id] && G.ClothesArt.has(id);
+  const known = (id) => !!ART[id] || isCloth(id);
+  /* 絵の SVG。opts = { noL: 左の そでを 描かない, color: ふくの 色（なければ えらんでいる色） } */
+  function markup(id, ribbonId, opts) {
+    if (isCloth(id)) {
+      const o = opts || {};
+      const c = G.CLOTHES.find(x => x.id === id);
+      return G.ClothesArt.markup(id, o.color || G.State.clothColor(id) || (c && c.colors ? c.colors[0] : null), o);
+    }
+    return ART[id](ribbonOf(ribbonId));
+  }
   function svgDoc(inner, box, scale) {
     const [x, y, w, h] = box;
     const size = scale ? ` width="${Math.round(w * scale)}" height="${Math.round(h * scale)}"` : '';
@@ -208,7 +223,7 @@ G.Accessory = (function () {
       const s = document.createElementNS(NS, 'svg');
       s.setAttribute('style', 'position:absolute;left:-9999px;top:0;width:10px;height:10px;visibility:hidden');
       document.body.appendChild(s);
-      Object.keys(ART).forEach(k => {
+      Object.keys(ART).concat(G.ClothesArt.ids()).forEach(k => {
         const g = document.createElementNS(NS, 'g');
         g.innerHTML = markup(k, 'pink');
         s.appendChild(g);
@@ -222,8 +237,10 @@ G.Accessory = (function () {
 
   /* 画像にした絵。読みこみは あとから終わる */
   const imgs = new Map();
-  function raster(id, ribbonId) {
-    const key = BY_RIBBON[id] ? id + '|' + ribbonId : id;
+  function raster(id, ribbonId, opts) {
+    const o = opts || {};
+    let key = BY_RIBBON[id] ? id + '|' + ribbonId : id;
+    if (isCloth(id)) key += '|' + G.State.clothColor(id) + '|' + (o.noL ? 1 : 0);
     let r = imgs.get(key);
     if (r) return r;
     r = { img: new Image(), ok: false };
@@ -234,7 +251,7 @@ G.Accessory = (function () {
       };
       r.img.onerror = () => res(false);
     });
-    r.img.src = dataUrl(svgDoc(markup(id, ribbonId), box(id), RS));
+    r.img.src = dataUrl(svgDoc(markup(id, ribbonId, o), box(id), RS));
     imgs.set(key, r);
     return r;
   }
@@ -257,14 +274,14 @@ G.Accessory = (function () {
     const P = G.CHARACTER.accessory.pivot;
     const out = [];
     FRONT.concat(BACK).forEach(slot => {
-      const id = wear[slot];
-      if (!id || !ART[id] || !A[slot] || (hide && hide.indexOf(slot) >= 0)) return;
-      const [tx, ty, rot, sc] = A[slot], [px, py] = P[slot];
+      const id = slot === 'bow' ? (ribbonId && ribbonId !== 'none' ? 'neckbow' : null) : wear[slot];
+      if (!id || !known(id) || !A[slot] || !P[slot] || (hide && hide.indexOf(slot) >= 0)) return;
+      const [tx, ty, rot, sc, opts] = A[slot], [px, py] = P[slot];
       const th = rot * Math.PI / 180, k2 = sc * geo.s;
       const a = Math.cos(th) * k2, b = Math.sin(th) * k2;
       // canvas = (T + R·sc·(p − P))·s − (x0, y0)
       const e = tx * geo.s - geo.x0 - (a * px - b * py), f = ty * geo.s - geo.y0 - (b * px + a * py);
-      out.push({ id, slot, back: BACK.indexOf(slot) >= 0, m: [a, b, -b, a, e, f], r: raster(id, ribbonId) });
+      out.push({ id, slot, back: BACK.indexOf(slot) >= 0, m: [a, b, -b, a, e, f], r: raster(id, ribbonId, opts) });
     });
     // まえのものは FRONT の順に
     return out.sort((x, y) => (FRONT.indexOf(x.slot) - FRONT.indexOf(y.slot)));
@@ -291,18 +308,18 @@ G.Accessory = (function () {
   }
 
   /* ボタン・おしらせ用の見本（<img>） */
-  function swatch(id, ribbonId, cls = '') {
+  function swatch(id, ribbonId, cls = '', opts) {
     const el = document.createElement('img');
     el.className = 'art acc-art ' + cls;
     el.draggable = false;
     el.alt = '';
-    el.src = dataUrl(svgDoc(markup(id, ribbonId || G.State.ribbon()), box(id)));
+    el.src = dataUrl(svgDoc(markup(id, ribbonId || G.State.ribbon(), opts), box(id)));
     return el;
   }
 
   /* つけている絵を 先に画像にしておく */
   function warm(wear, ribbonId) {
-    Object.values(wear).forEach(id => { if (id && ART[id]) raster(id, ribbonId); });
+    Object.values(wear).forEach(id => { if (id && known(id)) raster(id, ribbonId); });
   }
 
   return { layout, bounds, draw, swatch, warm };

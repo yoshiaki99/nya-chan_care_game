@@ -71,7 +71,7 @@ G.Screens = G.Screens || {};
     const stickers = G.State.takeNewStickers();
     const unlocks = G.State.takeNewUnlocks();
     const gifts = G.State.takeSeasonGifts();
-    if (!stickers.length && !unlocks.ribbons.length && !unlocks.makeup.length && !unlocks.acc.length && !gifts.length) return false;
+    if (!stickers.length && !unlocks.ribbons.length && !unlocks.makeup.length && !unlocks.acc.length && !unlocks.clothes.length && !gifts.length) return false;
     rewarding = true;
     for (const i of stickers) {
       const s = G.STICKERS[i];
@@ -88,6 +88,10 @@ G.Screens = G.Screens || {};
     for (const a of unlocks.acc) {
       const L = G.CHARACTER.lines;
       await UI.popup({ art: G.Accessory.swatch(a.id), title: L.unlockAcc, speak: L.unlockAcc + ' ' + a.label });
+    }
+    for (const c of unlocks.clothes) {
+      const L = G.CHARACTER.lines;
+      await UI.popup({ art: G.Accessory.swatch(c.id), title: L.unlockClothes, speak: L.unlockClothes + ' ' + c.label });
     }
     for (const a of gifts) { // きせつの プレゼント
       const L = G.CHARACTER.lines;

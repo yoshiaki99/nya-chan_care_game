@@ -118,7 +118,7 @@ G.Screens.home = {
         return;
       }
       G.Voice.speak(c.label, 'guide');
-      G.go(c.id === 'play' ? 'playmenu' : c.id === 'dress' ? (G.lastDressTab || 'dress') : c.id); // おしゃれは さいごに見た リボン／メイク
+      G.go(c.id === 'play' ? 'playmenu' : c.id === 'dress' ? (G.lastDressTab || 'dress') : c.id); // おしゃれは さいごに見た リボン／ふく／メイク／アクセサリー
     }
 
     /* 一番下がっているメーターのヒント（F-14） */

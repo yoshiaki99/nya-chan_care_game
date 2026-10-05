@@ -2,15 +2,16 @@
 window.G = window.G || {};
 G.Screens = G.Screens || {};
 
-/* おしゃれの上の「リボン｜メイク｜アクセサリー」きりかえ */
+/* おしゃれの上の「リボン｜ふく｜メイク｜アクセサリー」きりかえ */
 G.dressTabs = function (scr, active) {
   const UI = G.UI;
   const box = UI.el('div', 'dress-tabs');
-  UI.pos(box, 287, 20);
-  [['dress', 'リボン', G.Art.all.icon_dress()], ['makeup', 'メイク', G.Art.all.icon_makeup()], ['accessory', 'アクセサリー', '']].forEach(([id, label, art]) => {
-    const long = label.length > 4;
-    const t = UI.el('div', 'dtab' + (long ? ' long' : '') + (id === active ? ' on' : ''), `<div class="dt-icon">${art}</div><div class="dt-label">${label}</div>`);
+  UI.pos(box, 178, 20);
+  [['dress', 'リボン', G.Art.all.icon_dress()], ['clothes', 'ふく', ''], ['makeup', 'メイク', G.Art.all.icon_makeup()], ['accessory', 'アクセサリー', '']].forEach(([id, label, art]) => {
+    const size = label.length > 4 ? ' long' : label.length < 3 ? ' short' : '';
+    const t = UI.el('div', 'dtab' + size + (id === active ? ' on' : ''), `<div class="dt-icon">${art}</div><div class="dt-label">${label}</div>`);
     if (id === 'accessory') t.firstChild.appendChild(G.Accessory.swatch('tiara'));
+    if (id === 'clothes') t.firstChild.appendChild(G.Accessory.swatch('tshirt', null, '', { color: '#f47c7c' }));
     box.appendChild(t);
     UI.tap(t, () => { if (id !== active) { G.lastDressTab = id; G.go(id); } }, { sound: id === active ? 'soft' : 'whoosh', say: label });
   });
@@ -45,6 +46,9 @@ G.Screens.dress = {
     const SLOTS = [[50, 44], [205, 44], [360, 44], [127, 262], [282, 262]];
 
     function swatchArt(r) {
+      if (r.swatch === 'none') { // なし：てんせんの まる
+        return UI.el('div', 'sw-art art-svg', '<svg viewBox="0 0 120 96"><circle cx="60" cy="48" r="34" fill="none" stroke="#c9a9b2" stroke-width="6" stroke-dasharray="10 8"/><path d="M38 70 L82 26" stroke="#c9a9b2" stroke-width="6" stroke-linecap="round"/></svg>');
+      }
       if (r.art && G.Assets.has(r.art)) return G.Assets.node(r.art, 'sw-art');
       const d = UI.el('div', 'sw-art art-svg', G.Art.bow(r.swatch, r.pattern));
       return d;

@@ -17,13 +17,15 @@ G.State = (function () {
       v: 1,
       meters: { hunger: 2, clean: 3.5, fun: 2.5, energy: 4.5 },
       hearts: 0,
-      ribbon: 'pink',
+      ribbon: 'none',
       makeup: { cheek: null, lip: null, eye: null, deco: [] },
-      wear: { head: null, face: null, neck: null, back: null, tail: null }, // アクセサリー
+      wear: { head: null, face: null, neck: null, back: null, tail: null, body: null }, // アクセサリー・ふく（body）
+      clothColor: {}, // ふくの 色（ふくの id → colors の 何ばんめ）
       gifts: [],      // とどいた きせつの アクセサリー
       seenStickers: 0,
       seenUnlock: 0,
       seenAcc: 0,     // アクセサリーの おしらせは リボン・メイクと べつに かぞえる
+      seenClothes: 0, // ふくの おしらせも べつに かぞえる
       lastTime: Date.now(),
       lastDay: null,
       play: { day: today(), sec: 0 },
@@ -119,7 +121,9 @@ G.State = (function () {
     if (all.length) { d.seenUnlock = Math.max.apply(null, all.map(x => x.unlock)); save(); }
     const acc = G.ACCESSORIES.filter(a => !a.season && a.unlock > d.seenAcc && a.unlock <= d.hearts);
     if (acc.length) { d.seenAcc = Math.max.apply(null, acc.map(a => a.unlock)); save(); }
-    return { ribbons, makeup: looks, acc };
+    const clothes = G.CLOTHES.filter(c => !c.season && c.unlock > d.seenClothes && c.unlock <= d.hearts);
+    if (clothes.length) { d.seenClothes = Math.max.apply(null, clothes.map(c => c.unlock)); save(); }
+    return { ribbons, makeup: looks, acc, clothes };
   }
   const isUnlocked = (rb) => rb.unlock <= d.hearts;
   function heartsToNextSticker() {
@@ -146,10 +150,20 @@ G.State = (function () {
   const wear = () => d.wear;
   function setWear(slot, id) { d.wear[slot] = id; save(); }
   const hasAcc = (a) => (a.season ? d.gifts.indexOf(a.id) >= 0 : a.unlock <= d.hearts);
+
+  /* ---- ふく（着せ替え） ---- */
+  const clothes = () => d.wear.body || null;
+  function setClothes(id) { d.wear.body = id; save(); }
+  const clothColorIndex = (id) => d.clothColor[id] || 0;
+  function clothColor(id) {
+    const c = G.CLOTHES.find(x => x.id === id);
+    return c && c.colors ? c.colors[clothColorIndex(id) % c.colors.length] : null;
+  }
+  function setClothColor(id, i) { d.clothColor[id] = i; save(); }
   /* その月の きせつの アクセサリーを とどける（とどいたら ずっと つかえる） */
   function takeSeasonGifts() {
     const m = new Date().getMonth() + 1;
-    const out = G.ACCESSORIES.filter(a => a.season && a.season.month === m && d.gifts.indexOf(a.id) < 0);
+    const out = G.ACCESSORIES.concat(G.CLOTHES).filter(a => a.season && a.season.month === m && d.gifts.indexOf(a.id) < 0);
     if (out.length) { out.forEach(a => d.gifts.push(a.id)); save(); }
     return out;
   }
@@ -212,7 +226,7 @@ G.State = (function () {
     meter, setMeter, addMeter, level, isFull, lowest,
     addHearts, hearts, stickerCount, takeNewStickers, takeNewUnlocks, isUnlocked, heartsToNextSticker,
     ribbon, setRibbon, makeup, setMakeup, addDeco, hasMakeup, clearMakeup,
-    wear, setWear, hasAcc, takeSeasonGifts, photos, addPhoto, drawing, setDrawing, isNewDay, markDay, favoriteFood, pet,
+    wear, setWear, hasAcc, takeSeasonGifts, clothes, setClothes, clothColor, clothColorIndex, setClothColor, photos, addPhoto, drawing, setDrawing, isNewDay, markDay, favoriteFood, pet,
     playSecToday, overLimit, settings, setSetting, reset
   };
 })();
