@@ -111,7 +111,8 @@ G.Voice = (function () {
     halt();
     const fallbackMs = 900 + String(text).length * 120;
     if (!enabled || volume <= 0) return new Promise(r => setTimeout(r, fallbackMs));
-    const src = clips[norm(text)];
+    // ニューちゃんの声は「nyu:」をつけた文で さがす（ニャーちゃんと 同じ文でも、べつの声で 鳴らすため）
+    const src = clips[norm((who === 'nyu' ? 'nyu:' : '') + text)];
     if (src && G.Sound.ready()) {
       // 録音が読めなかったとき（ファイルが無いなど）は、ブラウザの読み上げに切りかえる
       return playClip(src, my).catch(() => (my === token ? synthSpeak(text, who, my, fallbackMs) : undefined));
