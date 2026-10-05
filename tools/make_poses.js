@@ -92,7 +92,7 @@ function blanket() {
   for (let y = 470; y < 1240; y += 50) edge += ` Q${688} ${y + 25} ${664} ${y + 50}`;
   const stars = [[160, 620], [420, 700], [260, 860], [520, 930], [140, 1060], [400, 1120], [600, 600]]
     .map(([x, y]) => spark(x, y, 22, '#f6d860')).join('');
-  return `<path d="M-20 470 L664 470 ${edge} L-20 1240 Z" fill="#bcd9f5" stroke="${INK}" stroke-width="13" stroke-linejoin="round"/>
+  return `<path d="M110 470 L664 470 ${edge} L110 1240 Q40 1240 40 1170 L40 540 Q40 470 110 470 Z" fill="#bcd9f5" stroke="${INK}" stroke-width="13" stroke-linejoin="round"/>
     <path d="M610 480 L610 1230" stroke="#9cc4ea" stroke-width="14"/>${stars}`;
 }
 

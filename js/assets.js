@@ -57,8 +57,10 @@ G.Assets = (function () {
   }
 
   function init() {
-    Object.entries(G.CHARACTER.images).forEach(([k, src]) => register('chara:' + k, src));
-    Object.entries(G.ART_FILES).forEach(([k, src]) => register(k, src));
+    // 実際に ある ファイル（js/asset_list.js）だけ 読みに いく。無い 絵は はじめから 描いた絵（G.Art）に する
+    const exists = (src) => !G.ASSET_FILES || G.ASSET_FILES.indexOf(src) >= 0;
+    Object.entries(G.CHARACTER.images).forEach(([k, src]) => { if (exists(src)) register('chara:' + k, src); });
+    Object.entries(G.ART_FILES).forEach(([k, src]) => { if (exists(src)) register(k, src); });
   }
 
   return { init, load, loadAll, has, status, img, node, keys: () => Object.keys(reg) };

@@ -4,14 +4,14 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = 'c71ac28db2';
+const VERSION = '96d64b05c4';
 const FILES = [
-  ["index.html", "d3ff0a5497"],
+  ["index.html", "0d784fafa9"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
   ["assets/characters/nya_act_bath_foam.png", "fdbed4afb1"],
   ["assets/characters/nya_act_eat.png", "f029eafb01"],
   ["assets/characters/nya_act_play_yarn.png", "3f6380a2da"],
-  ["assets/characters/nya_act_sleep.png", "965c4d45f2"],
+  ["assets/characters/nya_act_sleep.png", "f03dcdeb39"],
   ["assets/characters/nya_act_wave.png", "a6d137a608"],
   ["assets/characters/nya_base.png", "4d2b1d5ae6"],
   ["assets/characters/nya_face_dreamy.png", "be6987c530"],
@@ -26,9 +26,10 @@ const FILES = [
   ["icons/icon-512.png", "6dae5d97a6"],
   ["icons/og-image.png", "0d7edd464c"],
   ["js/accessory.js", "7e53f44681"],
-  ["js/art.js", "74bafbd9be"],
+  ["js/art.js", "1237df4eb4"],
   ["js/art_play.js", "cead13697d"],
-  ["js/assets.js", "49ffa77ec0"],
+  ["js/asset_list.js", "890f483da7"],
+  ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "056aadc0fd"],
   ["js/chara.js", "47379dcf34"],
   ["js/character.js", "aa4606fb76"],
