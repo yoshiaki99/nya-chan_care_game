@@ -644,6 +644,7 @@ body.portrait #stage { visibility: hidden; }
 .nyu { z-index: 2; touch-action: none; }
 .nyu .ny-move, .nyu .ny-flip { position: absolute; inset: 0; transform-origin: 50% 100%; }
 .nyu .ny-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.nyu .ny-cloth[src=""] { display: none; }
 .nyu .ny-shadow { position: absolute; left: 50%; bottom: -14px; width: 44%; height: 36px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(110, 60, 70, .22), rgba(110, 60, 70, 0) 70%); }
 .nyu.walking .ny-move { animation: nyWalk .38s ease-in-out infinite; }
 .nyu:not(.walking) .ny-move { animation: nyBreath 3.2s ease-in-out infinite; }

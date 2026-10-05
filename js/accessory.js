@@ -1,7 +1,7 @@
 /*
  * アクセサリー（おしゃれ）：ぼうし・メガネ・くびかざり・はね・しっぽのリボン。
  * くびのリボン（えらんでいる リボン）と ふく（js/clothes.js）も、ここで いっしょに かさねる。
- * 絵はこのファイルの SVG。それぞれ G.CHARACTER.accessory.pivot の 目じるしの 座標で描いてある。
+ * 絵はこのファイルの SVG。ニャーちゃんの 基準画（nya_base.png）の 座標で、線画風（黒い線＋パステル）に 描いてある。
  * 一度 画像にしておき、G.Chara が ニャーちゃんの絵の まえ（はねは うしろ）に かさねる。
  * 絵ごとの つける場所は G.CHARACTER.accessory。
  */
@@ -14,23 +14,14 @@ G.Accessory = (function () {
   const BACK = ['back'];
 
   const HEART = 'M16 28C6 20 1 14 1 8.5 1 4 4.5 1 8.5 1c3 0 5.5 1.7 7.5 4.5C18 2.7 20.5 1 23.5 1 27.5 1 31 4 31 8.5 31 14 26 20 16 28z';
-  const SPARK = 'M50 0C54 38 62 46 100 50 62 54 54 62 50 100 46 62 38 54 0 50 38 46 46 38 50 0z';
-  const EYE_L = [625, 535], EYE_R = [880, 455], TILT = -17; // face_normal の目（メガネの位置）
+  const INK = '#1d1a1c';
+  // 線の 属性（太さ w）。ニャーちゃんと 同じ 黒い 線
+  const L = (w = 9, col = INK) => `stroke="${col}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
+  // ニャーちゃんの 目（基準画 nya_base.png の 座標。メガネの 位置）
+  const EYE_L = [518, 338], EYE_R = [706, 320];
 
   const DEFS = `<defs>
-    <filter id="wc" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G"/></filter>
-    <filter id="wcSoft" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter>
-    <filter id="fluff" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>
-    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf0b8"/><stop offset=".5" stop-color="#ecc964"/><stop offset="1" stop-color="#c99a3e"/></linearGradient>
-    <radialGradient id="goldR" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#fff4c4"/><stop offset=".45" stop-color="#efcd6a"/><stop offset="1" stop-color="#bf8f35"/></radialGradient>
-    <radialGradient id="pearl" cx=".36" cy=".34" r=".72"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#f3eef4"/><stop offset="1" stop-color="#cbbccd"/></radialGradient>
-    <linearGradient id="navy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7f8fc2"/><stop offset="1" stop-color="#4c5b8f"/></linearGradient>
-    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ab8fdc"/><stop offset="1" stop-color="#6f529f"/></linearGradient>
-    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ee7b78"/><stop offset="1" stop-color="#c94a55"/></linearGradient>
-    <radialGradient id="wing" cx="1" cy="1" r="1.2"><stop offset="0" stop-color="#fff6fb"/><stop offset=".45" stop-color="#d8eefc"/><stop offset=".8" stop-color="#dccbf6"/><stop offset="1" stop-color="#f7cfe6"/></radialGradient>
-    <radialGradient id="wing2" cx="1" cy="0" r="1.2"><stop offset="0" stop-color="#fff6fb"/><stop offset=".5" stop-color="#d5f1e4"/><stop offset="1" stop-color="#dccbf6"/></radialGradient>
-    <linearGradient id="heartLens" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8fb4"/><stop offset="1" stop-color="#e2507f"/></linearGradient>
-    <radialGradient id="rose" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffe0ea"/><stop offset=".6" stop-color="#f59ab6"/><stop offset="1" stop-color="#d9657f"/></radialGradient>
+    <linearGradient id="rainbow" x1="0" x2="1"><stop offset="0" stop-color="#f6a1b5"/><stop offset=".2" stop-color="#f9c98a"/><stop offset=".4" stop-color="#f6e48a"/><stop offset=".6" stop-color="#a9e0b8"/><stop offset=".8" stop-color="#9fcdf2"/><stop offset="1" stop-color="#c8a9ec"/></linearGradient>
   </defs>`;
 
   /* ---------- 部品 ---------- */
@@ -42,154 +33,131 @@ G.Accessory = (function () {
     }
     return d + 'Z';
   }
-  function quad(p0, c, p2, t) {
-    const u = 1 - t;
-    return [u * u * p0[0] + 2 * u * t * c[0] + t * t * p2[0], u * u * p0[1] + 2 * u * t * c[1] + t * t * p2[1]];
-  }
-  /* 曲線にそって 等間隔に点を置く */
-  function along(p0, c, p2, gap) {
-    const pts = [], N = 400;
-    let prev = quad(p0, c, p2, 0), acc = gap;
-    for (let i = 0; i <= N; i++) {
-      const p = quad(p0, c, p2, i / N);
-      acc += Math.hypot(p[0] - prev[0], p[1] - prev[1]);
-      if (acc >= gap) { pts.push(p); acc = 0; }
-      prev = p;
-    }
-    return pts;
-  }
-  function flower(x, y, r, petal, center, n, rot) {
+  const at = (x, y, inner, rot = 0, s = 1) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})">${inner}</g>`;
+  const heart = (x, y, s, fill, w = 3) => at(x, y, `<path d="${HEART}" transform="translate(-16 -15)" fill="${fill}" ${L(w)}/>`, 0, s);
+  function flower(x, y, r, petal, center, n = 5) {
     let s = '';
     for (let k = 0; k < n; k++) {
-      s += `<ellipse cx="${x}" cy="${y - r * 0.55}" rx="${r * 0.42}" ry="${r * 0.6}" fill="${petal}" stroke="rgba(140,100,110,.35)" stroke-width="2.5" transform="rotate(${rot + k * 360 / n} ${x} ${y})"/>`;
+      const a = k * 2 * Math.PI / n - Math.PI / 2;
+      s += `<circle cx="${(x + Math.cos(a) * r * 0.62).toFixed(1)}" cy="${(y + Math.sin(a) * r * 0.62).toFixed(1)}" r="${(r * 0.46).toFixed(1)}" fill="${petal}" ${L(5)}/>`;
     }
-    return s + `<circle cx="${x}" cy="${y}" r="${r * 0.32}" fill="${center}" stroke="rgba(150,110,60,.4)" stroke-width="2"/>`;
+    return s + `<circle cx="${x}" cy="${y}" r="${(r * 0.34).toFixed(1)}" fill="${center}" ${L(5)}/>`;
   }
-  /* リボンの色（えらんでいるリボン）の 小さなリボン。結び目が (0, 0) */
-  function ribbonBow(rb, w) {
+  /* リボン（rb = えらんでいる リボン）。結び目が (0, 0)、w = はば */
+  function bow(rb, w) {
     const s = w / 120;
-    return G.Art.bow(rb.swatch, rb.pattern).replace('<svg ', `<svg x="${-60 * s}" y="${-46 * s}" width="${120 * s}" height="${96 * s}" `);
+    const fill = rb.swatch === 'rainbow' ? 'url(#rainbow)' : rb.swatch;
+    const dots = rb.pattern === 'dots' ? `<g fill="#fff">${[[-38, -12], [-22, 4], [-44, 8], [38, -12], [22, 4], [44, 8]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4.5"/>`).join('')}</g>` : '';
+    const glit = rb.pattern === 'glitter' ? `<g fill="#fffbe6">${[[-36, -10], [30, -14], [44, 6], [-20, 8]].map(([x, y]) => at(x, y, `<path d="${starPath(7, 3, 4)}"/>`)).join('')}</g>` : '';
+    return at(0, 0, `
+      <path d="M-6 4 L-26 46 L-12 42 L-6 54 L2 8Z M6 4 L26 46 L12 42 L6 54 L-2 8Z" fill="${fill}" ${L(4.5 / s)}/>
+      <path d="M0 0 C-20 -28 -54 -34 -56 -10 C-58 12 -26 20 0 0Z" fill="${fill}" ${L(4.5 / s)}/>
+      <path d="M0 0 C20 -28 54 -34 56 -10 C58 12 26 20 0 0Z" fill="${fill}" ${L(4.5 / s)}/>
+      ${dots}${glit}
+      <ellipse cx="0" cy="0" rx="12" ry="13" fill="${fill}" ${L(4.5 / s)}/>`, 0, s);
   }
   function glassesArms(stroke, w) {
-    return `<path d="M528 566 L468 556" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round" fill="none"/>
-      <path d="M966 428 L1012 404" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
+    return `<path d="M${EYE_L[0] - 56} ${EYE_L[1] - 6} L${EYE_L[0] - 110} ${EYE_L[1] - 18}" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round" fill="none"/>
+      <path d="M${EYE_R[0] + 56} ${EYE_R[1] - 8} L${EYE_R[0] + 110} ${EYE_R[1] - 22}" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
   }
-  const pearl = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#pearl)" stroke="#b6a7ba" stroke-width="2.5"/>`;
+  const pearl = (x, y, r) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#fbf7f2" ${L(4)}/><circle cx="${(x - r * .35).toFixed(1)}" cy="${(y - r * .35).toFixed(1)}" r="${(r * .3).toFixed(1)}" fill="#fff"/>`;
+  const arcPts = (x0, x1, y0, dip, n) => Array.from({ length: n }, (_, i) => { const t = i / (n - 1); return [x0 + (x1 - x0) * t, y0 + dip * 4 * t * (1 - t)]; });
 
-  /* ---------- 絵（rb = えらんでいるリボン） ---------- */
+  /* ---------- 絵（rb = えらんでいる リボン）。ニャーちゃんの 基準画の 座標で 描いてある ---------- */
+  // 目じるし（G.CHARACTER.accessory.pivot と 同じ）：あたま (615,200)・かお (612,330)・くび (617,604)・しっぽ (930,1045)・せなか (615,760)
   const ART = {
-    tiara: () => `<g transform="translate(706 312) rotate(-16) scale(.95)" filter="url(#wcSoft)">
-      <path d="M-160 4 L-128 -40 L-98 -10 L-58 -74 L-22 -22 L0 -116 L22 -22 L58 -74 L98 -10 L128 -40 L160 4 Q0 -36 -160 4Z" fill="url(#gold)" stroke="#a87f2c" stroke-width="5" stroke-linejoin="round"/>
-      <path d="M-40 -24 Q0 -70 40 -24" fill="none" stroke="#fff4c4" stroke-width="5" stroke-linecap="round" opacity=".8"/>
-      <path d="M-170 2 Q0 -40 170 2 L174 28 Q0 -14 -174 28Z" fill="url(#gold)" stroke="#a87f2c" stroke-width="5" stroke-linejoin="round"/>
-      <path d="M0 -80 L20 -52 L0 -24 L-20 -52Z" fill="#9ed6f2" stroke="#4f97c4" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M-6 -66 L0 -74 L6 -66" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-      ${[[0, -116, 11], [-58, -74, 10], [58, -74, 10], [-128, -40, 9], [128, -40, 9]].map(([x, y, r]) => pearl(x, y, r)).join('')}
-      ${[[-120, 4], [-60, -4], [0, -7], [60, -4], [120, 4]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i === 2 ? 9 : 7}" fill="${i % 2 ? '#c9b3ee' : '#fff'}" stroke="#a88fcf" stroke-width="2.5"/>`).join('')}
-    </g>`,
+    tiara: () => at(615, 196, `
+      <path d="M-120 10 L-104 -40 L-70 -6 L-36 -62 L0 -14 L36 -62 L70 -6 L104 -40 L120 10 Q0 -10 -120 10Z" fill="#f6d860" ${L(8)}/>
+      <path d="M-128 8 Q0 -14 128 8 L130 30 Q0 8 -130 30Z" fill="#f6d860" ${L(8)}/>
+      <path d="M0 -52 L16 -30 L0 -10 L-16 -30Z" fill="#8fd0f2" ${L(6)}/>
+      ${[[-104, -40], [-36, -62], [36, -62], [104, -40]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="#fbf7f2" ${L(5)}/>`).join('')}
+      ${[-80, -40, 40, 80].map((x, i) => `<circle cx="${x}" cy="${i % 3 ? 14 : 18}" r="7" fill="${i % 2 ? '#f7a8c4' : '#c9b3ee'}" ${L(4)}/>`).join('')}`, -4, 1.3),
 
     flowers: () => {
-      const P0 = [372, 372], C = [628, 214], P2 = [906, 258];
-      const pts = along(P0, C, P2, 66);
-      const kinds = [['#ffffff', '#f6cf55', 6], ['#f8e27a', '#e7a83a', 5], ['#d6c2f3', '#f6e08a', 5], ['#ffd6c9', '#f2b04f', 5]];
+      const pts = arcPts(440, 790, 226, -30, 7).map(([x, y], i) => [x, y - (x - 440) * 0.05]);
+      const kinds = [['#ffffff', '#f6d860'], ['#f7a8c4', '#fff3b0'], ['#c9b3ee', '#f6d860'], ['#fff3b0', '#f39a6c']];
       let leaves = '', fl = '';
-      pts.forEach((p, i) => {
-        const t = i / (pts.length - 1);
-        const q = quad(P0, C, P2, Math.min(1, t + 0.01)), q0 = quad(P0, C, P2, Math.max(0, t - 0.01));
-        const ang = Math.atan2(q[1] - q0[1], q[0] - q0[0]) * 180 / Math.PI;
-        leaves += `<ellipse cx="${p[0] + 26}" cy="${p[1] + 6}" rx="26" ry="11" fill="#9fcd8a" stroke="#6f9f5c" stroke-width="2.5" transform="rotate(${ang + 25} ${p[0]} ${p[1]})"/>`;
-        const [pc, cc, n] = kinds[i % kinds.length];
-        fl += flower(p[0], p[1], i % 2 ? 30 : 36, pc, cc, n, i * 17);
+      pts.forEach(([x, y], i) => {
+        leaves += `<ellipse cx="${x + 22}" cy="${y + 10}" rx="22" ry="10" transform="rotate(${i % 2 ? 30 : -20} ${x} ${y})" fill="#9fd68e" ${L(5)}/>`;
+        const [p, c] = kinds[i % kinds.length];
+        fl += flower(x, y, i % 2 ? 40 : 48, p, c);
       });
-      return `<g filter="url(#wcSoft)"><path d="M${P0} Q${C} ${P2}" fill="none" stroke="#8dbb78" stroke-width="10" stroke-linecap="round"/>${leaves}${fl}</g>`;
+      return leaves + fl;
     },
 
-    beret: (rb) => `<g transform="translate(598 196) rotate(-24)">
-      <g filter="url(#wc)">
-        <path d="M-262 30 C-270 -60 -150 -128 10 -128 C170 -128 280 -70 268 20 C258 92 150 120 0 120 C-150 120 -256 96 -262 30Z" fill="url(#navy)" stroke="#3d4a78" stroke-width="5"/>
-        <path d="M-150 -86 C-90 -116 10 -122 70 -110" fill="none" stroke="#a9b6e0" stroke-width="10" stroke-linecap="round" opacity=".7"/>
-        <path d="M-178 84 Q0 136 178 84 L172 116 Q0 168 -172 116Z" fill="#46548a" stroke="#34406b" stroke-width="5" stroke-linejoin="round"/>
-        <path d="M8 -128 C4 -150 14 -164 30 -160 C40 -150 34 -136 26 -126Z" fill="#4c5b8f" stroke="#34406b" stroke-width="4"/>
-      </g>
-      <g transform="translate(150 98) rotate(10)">${ribbonBow(rb, 108)}</g>
-    </g>`,
+    beret: (rb) => at(630, 178, `
+      <path d="M-220 30 C-226 -46 -120 -96 10 -96 C150 -96 236 -50 226 22 C218 74 120 92 0 92 C-120 92 -216 76 -220 30Z" fill="#6f86c6" ${L(9)}/>
+      <path d="M-120 -56 C-70 -76 0 -80 50 -72" fill="none" stroke="#a9b8e6" stroke-width="12" stroke-linecap="round"/>
+      <path d="M-170 66 Q0 110 170 66 L166 94 Q0 136 -166 94Z" fill="#5a6fb0" ${L(8)}/>
+      <path d="M6 -96 C2 -116 12 -128 26 -124 C36 -114 30 -102 24 -94Z" fill="#6f86c6" ${L(6)}/>
+      ${at(160, 76, bow(rb, 90), 10)}`, -8),
 
-    witch: () => `<g transform="translate(606 300) rotate(-14)" filter="url(#wc)">
-      <ellipse cx="0" cy="0" rx="330" ry="76" fill="url(#purple)" stroke="#55397f" stroke-width="5"/>
-      <path d="M-200 -14 C-170 -150 -100 -300 -20 -380 C20 -420 90 -440 130 -404 C80 -396 46 -356 64 -300 C104 -196 160 -100 200 -14 Q0 26 -200 -14Z" fill="url(#purple)" stroke="#55397f" stroke-width="5" stroke-linejoin="round"/>
-      <path d="M-196 -24 Q0 16 196 -24 L180 -84 Q0 -48 -182 -84Z" fill="#f4b45f" stroke="#c9822f" stroke-width="5" stroke-linejoin="round"/>
-      <g transform="translate(-10 -50)"><path d="${starPath(30, 13)}" fill="#ffe27a" stroke="#d1a72c" stroke-width="4" stroke-linejoin="round"/></g>
-      <g transform="translate(-70 -200) rotate(15)"><path d="${starPath(18, 8)}" fill="#ffe27a" opacity=".9"/></g>
-      <g transform="translate(40 -290) rotate(-10)"><path d="${starPath(14, 6)}" fill="#ffe27a" opacity=".9"/></g>
-      <path d="M-120 -120 C-90 -220 -50 -300 0 -350" fill="none" stroke="#c6b0ee" stroke-width="9" stroke-linecap="round" opacity=".6"/>
-    </g>`,
+    witch: () => at(615, 200, `
+      <ellipse cx="0" cy="0" rx="250" ry="56" fill="#8a6bc4" ${L(9)}/>
+      <path d="M-150 -10 C-130 -110 -80 -220 -10 -290 C20 -320 76 -330 104 -300 C64 -296 40 -264 52 -220 C80 -140 120 -70 150 -10 Q0 18 -150 -10Z" fill="#8a6bc4" ${L(9)}/>
+      <path d="M-148 -18 Q0 12 148 -18 L136 -64 Q0 -36 -138 -64Z" fill="#f6a24a" ${L(8)}/>
+      ${at(-6, -40, `<path d="${starPath(26, 11)}" fill="#ffe27a" ${L(6)}/>`)}
+      ${at(-50, -160, `<path d="${starPath(14, 6)}" fill="#ffe27a" ${L(4)}/>`, 15)}`, -6),
 
-    santa: () => `<g transform="translate(606 286) rotate(-16)">
-      <path d="M-204 -8 C-176 -190 -40 -310 120 -306 C226 -302 306 -236 336 -150 C282 -196 200 -206 158 -168 C200 -112 212 -52 204 -8Z" fill="url(#red)" stroke="#a83a46" stroke-width="5" stroke-linejoin="round" filter="url(#wc)"/>
-      <path d="M-120 -120 C-80 -210 0 -262 90 -270" fill="none" stroke="#f6a5a0" stroke-width="10" stroke-linecap="round" opacity=".6"/>
-      <rect x="-236" y="-46" width="472" height="88" rx="44" fill="#fffdfa" stroke="#e3d6d0" stroke-width="5" filter="url(#fluff)"/>
-      <circle cx="338" cy="-150" r="52" fill="#fffdfa" stroke="#e3d6d0" stroke-width="5" filter="url(#fluff)"/>
-    </g>`,
+    santa: () => at(615, 204, `
+      <path d="M-170 -6 C-150 -150 -40 -240 90 -236 C180 -232 248 -180 270 -110 C224 -150 160 -156 126 -126 C160 -82 168 -36 164 -6Z" fill="#e5484d" ${L(9)}/>
+      <rect x="-196" y="-36" width="392" height="70" rx="35" fill="#fffaf2" ${L(9)}/>
+      <circle cx="272" cy="-112" r="42" fill="#fffaf2" ${L(9)}/>`, -6),
 
     glasses: () => `<g>
-      <circle cx="${EYE_L[0]}" cy="${EYE_L[1]}" r="96" fill="#ffffff" fill-opacity=".14" stroke="#c99a3e" stroke-width="11"/>
-      <circle cx="${EYE_R[0]}" cy="${EYE_R[1]}" r="86" fill="#ffffff" fill-opacity=".14" stroke="#c99a3e" stroke-width="10"/>
-      <path d="M718 508 Q752 474 797 484" fill="none" stroke="#c99a3e" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="${EYE_L[0]}" cy="${EYE_L[1]}" r="58" fill="#ffffff" fill-opacity=".18" stroke="#c99a3e" stroke-width="10"/>
+      <circle cx="${EYE_R[0]}" cy="${EYE_R[1]}" r="58" fill="#ffffff" fill-opacity=".18" stroke="#c99a3e" stroke-width="10"/>
+      <circle cx="${EYE_L[0]}" cy="${EYE_L[1]}" r="64" fill="none" ${L(4)}/><circle cx="${EYE_R[0]}" cy="${EYE_R[1]}" r="64" fill="none" ${L(4)}/>
+      <path d="M${EYE_L[0] + 58} ${EYE_L[1] - 8} Q612 296 ${EYE_R[0] - 58} ${EYE_R[1] - 6}" fill="none" stroke="#c99a3e" stroke-width="10" stroke-linecap="round"/>
       ${glassesArms('#c99a3e', 9)}
-      <path d="M570 490 A78 78 0 0 1 640 462" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".75"/>
-      <path d="M832 410 A70 70 0 0 1 892 388" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".75"/>
+      <path d="M${EYE_L[0] - 34} ${EYE_L[1] - 24} A40 40 0 0 1 ${EYE_L[0] - 6} ${EYE_L[1] - 42}" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+      <path d="M${EYE_R[0] - 34} ${EYE_R[1] - 24} A40 40 0 0 1 ${EYE_R[0] - 6} ${EYE_R[1] - 42}" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
     </g>`,
 
     heartglasses: () => `<g>
-      <g transform="translate(${EYE_L[0]} ${EYE_L[1] + 4}) rotate(${TILT}) scale(6.6) translate(-16 -15)"><path d="${HEART}" fill="url(#heartLens)" fill-opacity=".5" stroke="#d9406f" stroke-width="1.5" stroke-linejoin="round"/></g>
-      <g transform="translate(${EYE_R[0]} ${EYE_R[1] + 4}) rotate(${TILT}) scale(5.9) translate(-16 -15)"><path d="${HEART}" fill="url(#heartLens)" fill-opacity=".5" stroke="#d9406f" stroke-width="1.6" stroke-linejoin="round"/></g>
-      <path d="M722 492 Q756 466 792 474" fill="none" stroke="#d9406f" stroke-width="10" stroke-linecap="round"/>
-      ${glassesArms('#d9406f', 9)}
-      <path d="M560 478 q20 -22 46 -20" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
-      <path d="M828 404 q18 -20 40 -18" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+      ${[EYE_L, EYE_R].map(([x, y]) => at(x, y + 4, `<path d="${HEART}" transform="translate(-16 -15)" fill="#ff8fb4" fill-opacity=".55" ${L(1.3, '#c8336a')}/>`, -4, 4.4)).join('')}
+      <path d="M${EYE_L[0] + 60} ${EYE_L[1] - 14} Q612 300 ${EYE_R[0] - 60} ${EYE_R[1] - 12}" fill="none" stroke="#c8336a" stroke-width="10" stroke-linecap="round"/>
+      ${glassesArms('#c8336a', 9)}
     </g>`,
 
     starglasses: () => `<g>
-      <g transform="translate(${EYE_L[0]} ${EYE_L[1] + 6}) rotate(${TILT})"><path d="${starPath(116, 62)}" fill="#fff7c2" fill-opacity=".3" stroke="#f0b52e" stroke-width="12" stroke-linejoin="round"/></g>
-      <g transform="translate(${EYE_R[0]} ${EYE_R[1] + 6}) rotate(${TILT})"><path d="${starPath(104, 56)}" fill="#fff7c2" fill-opacity=".3" stroke="#f0b52e" stroke-width="11" stroke-linejoin="round"/></g>
-      <path d="M716 500 Q754 470 800 478" fill="none" stroke="#f0b52e" stroke-width="10" stroke-linecap="round"/>
-      ${glassesArms('#f0b52e', 9)}
+      ${[EYE_L, EYE_R].map(([x, y]) => at(x, y + 4, `<path d="${starPath(76, 40)}" fill="#fff3a8" fill-opacity=".45" stroke="#e8a92a" stroke-width="11" stroke-linejoin="round"/><path d="${starPath(82, 44)}" fill="none" ${L(4)}/>`, -4)).join('')}
+      <path d="M${EYE_L[0] + 64} ${EYE_L[1] - 12} Q612 300 ${EYE_R[0] - 64} ${EYE_R[1] - 10}" fill="none" stroke="#e8a92a" stroke-width="10" stroke-linecap="round"/>
+      ${glassesArms('#e8a92a', 9)}
     </g>`,
 
     pearl: () => {
-      const pts = along([646, 790], [738, 948], [846, 828], 27);
-      const low = pts.reduce((a, p) => (p[1] > a[1] ? p : a), pts[0]);
-      const [x, y] = low;
-      return `<g>${pts.map(p => pearl(p[0], p[1], 14)).join('')}
-        <path d="M${x} ${y + 12} C${x + 22} ${y + 40} ${x + 18} ${y + 66} ${x} ${y + 66} C${x - 18} ${y + 66} ${x - 22} ${y + 40} ${x} ${y + 12}Z" fill="url(#pearl)" stroke="#b6a7ba" stroke-width="3"/></g>`;
+      const pts = arcPts(468, 768, 616, 86, 13);
+      return pts.map(([x, y]) => pearl(x, y, 14)).join('') +
+        `<path d="M618 700 C640 728 636 760 618 764 C600 760 596 728 618 700Z" fill="#fbf7f2" ${L(5)}/>`;
     },
 
-    bell: () => `<g transform="translate(826 846) scale(1.15)">
-      <ellipse cx="0" cy="-48" rx="13" ry="11" fill="none" stroke="#b8892f" stroke-width="7"/>
-      <circle r="44" fill="url(#goldR)" stroke="#a87f2c" stroke-width="5"/>
-      <path d="M-42 -6 Q0 8 42 -6" stroke="#a87f2c" stroke-width="5" fill="none"/>
-      <circle cx="0" cy="17" r="8" fill="#7a5530"/><rect x="-3" y="18" width="6" height="24" fill="#7a5530"/>
-      <ellipse cx="-16" cy="-20" rx="12" ry="7" fill="#fff" opacity=".7" transform="rotate(-30 -16 -20)"/>
+    bell: () => `<g>
+      <path d="M440 604 Q617 652 800 600 L802 630 Q617 684 438 634Z" fill="#e5484d" ${L(8)}/>
+      ${at(618, 690, `
+        <circle cx="0" cy="0" r="44" fill="#f6d860" ${L(8)}/>
+        <path d="M-42 -6 Q0 10 42 -6" fill="none" ${L(6)}/>
+        <circle cx="0" cy="16" r="8" fill="${INK}"/><path d="M0 18 L0 40" ${L(6)}/>
+        <ellipse cx="-16" cy="-20" rx="11" ry="6" fill="#fff" transform="rotate(-30 -16 -20)"/>`)}
     </g>`,
 
     locket: () => `<g>
-      <path d="M690 780 Q730 838 764 846 Q800 838 826 788" fill="none" stroke="#c99a3e" stroke-width="5" stroke-dasharray="2 7" stroke-linecap="round"/>
-      <g transform="translate(764 878) scale(2.5) translate(-16 -14)"><path d="${HEART}" fill="url(#rose)" stroke="#c99a3e" stroke-width="2.4" stroke-linejoin="round"/></g>
-      <ellipse cx="748" cy="864" rx="9" ry="5" fill="#fff" opacity=".8" transform="rotate(-30 748 864)"/>
+      <path d="M470 612 Q540 700 618 712 Q700 700 768 610" fill="none" stroke="#c99a3e" stroke-width="5" stroke-dasharray="2 9" stroke-linecap="round"/>
+      ${heart(618, 742, 2.6, '#f39ab6', 2.6)}
+      <ellipse cx="604" cy="730" rx="8" ry="5" fill="#fff" transform="rotate(-30 604 730)"/>
     </g>`,
 
-    wings: () => `<g filter="url(#wcSoft)">
-      <path d="M560 762 C540 560 470 262 360 172 C288 116 214 168 236 262 C268 402 420 640 560 782Z" fill="url(#wing2)" fill-opacity=".92" stroke="#a58fd6" stroke-width="6"/>
-      <path d="M560 772 C500 560 330 330 160 300 C40 280 -2 400 58 500 C140 622 380 742 560 806Z" fill="url(#wing)" fill-opacity=".95" stroke="#a58fd6" stroke-width="6"/>
-      <path d="M560 832 C440 852 220 882 120 952 C40 1012 80 1082 170 1062 C300 1032 460 942 560 862Z" fill="url(#wing)" fill-opacity=".9" stroke="#a58fd6" stroke-width="6"/>
-      <path d="M550 790 C420 640 260 440 120 380 M552 770 C500 560 420 330 300 220 M550 846 C400 880 250 940 140 1010" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"/>
-      ${[[150, 420], [250, 520], [300, 260], [380, 420], [90, 470], [180, 1000]].map(([x, y], i) => `<path d="${SPARK}" fill="#fffbe0" stroke="#e8cf7a" stroke-width="6" transform="translate(${x} ${y}) scale(${i % 2 ? .16 : .24}) translate(-50 -50)"/>`).join('')}
+    wings: () => `<g>
+      <path d="M470 700 C400 600 280 540 220 590 C170 640 230 720 300 740 C240 770 220 850 280 870 C340 890 420 820 470 780Z" fill="#e6dcfb" ${L(8)}/>
+      <path d="M760 700 C830 600 950 540 1010 590 C1060 640 1000 720 930 740 C990 770 1010 850 950 870 C890 890 810 820 760 780Z" fill="#e6dcfb" ${L(8)}/>
+      <path d="M440 720 C380 660 300 620 260 630 M440 760 C380 780 320 820 300 850 M790 720 C850 660 930 620 970 630 M790 760 C850 780 910 820 930 850" fill="none" stroke="#b39ce6" stroke-width="7" stroke-linecap="round"/>
+      ${[[260, 600], [970, 600], [300, 860], [930, 860]].map(([x, y]) => at(x, y, `<path d="${starPath(18, 7, 4)}" fill="#fff3a8" ${L(4)}/>`)).join('')}
     </g>`,
 
-    tailbow: (rb) => `<g transform="translate(300 952) rotate(-36)">${ribbonBow(rb, 210)}</g>`,
+    tailbow: (rb) => at(930, 1045, bow(rb, 170), -24),
 
     // くびのリボン（おしゃれの リボン）。結び目が (0, 0)
-    neckbow: (rb) => `<g>${ribbonBow(rb, 200)}</g>`
+    neckbow: (rb) => bow(rb, 190)
   };
   // リボンの色で 絵が かわるもの
   const BY_RIBBON = { beret: true, tailbow: true, neckbow: true };
@@ -322,5 +290,14 @@ G.Accessory = (function () {
     Object.values(wear).forEach(id => { if (id && known(id)) raster(id, ribbonId); });
   }
 
-  return { layout, bounds, draw, swatch, warm };
+  /* ふくだけの 絵（基準画と 同じ 1254px の わく）。tf = SVG の transform（ニューちゃんの 体に 合わせる など） */
+  function clothesDataUrl(id, opts, tf = '') {
+    if (!isCloth(id)) return '';
+    return dataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1254 1254" width="1254" height="1254">${DEFS}<g transform="${tf}">${markup(id, null, opts)}</g></svg>`);
+  }
+
+  /* たしかめ用（tools/check_svg.js）：その アクセサリーの SVG */
+  const swatchSvg = (id, ribbonId) => markup(id, ribbonId);
+
+  return { layout, bounds, draw, swatch, warm, clothesDataUrl, swatchSvg };
 })();

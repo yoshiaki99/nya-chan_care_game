@@ -75,24 +75,29 @@ G.CHARACTER = {
   // シールを はれる顔のはんい（目と目を むすぶ線を 1 としたときの、だ円）
   decoArea: { u: 0.55, v: 0.05, ru: 0.95, rv: 0.62 },
 
-  // アクセサリーを つける場所。アクセサリーの絵は js/accessory.js の 座標で描いてある。
-  //   pivot = アクセサリーの絵の 目じるし（あたま=おでこ、かお=目と目のあいだ、くび=くびの まんなか、
-  //           しっぽ=しっぽのまんなか、せなか=せなか）
-  //   poses = 絵ごとに、目じるしが来る場所 [x, y, 回転(度), 大きさ]。ほかの絵の名前を書くと その絵と同じ
+  // アクセサリーを つける場所。アクセサリー・ふく・くびのリボンの絵は、基準画の 座標で描いてある（js/accessory.js・js/clothes.js）。
+  //   pivot = 絵の上の 目じるし（あたま=おでこの上、かお=目と目のあいだ、くび=くびの まんなか、しっぽ=しっぽの まんなか、
+  //           せなか=せなか、body=からだ、bow=くびのリボンの 結び目）
+  //   poses = 絵ごとに、目じるしが来る場所 [x, y, 回転(度), 大きさ, オプション]。ほかの絵の名前を書くと その絵と同じ
   // ここに無い絵（おふろの あわ など）・書いていない場所には つけない。絵を差し替えたら、ここも合わせる
-  accessory: {
-    // body（ふく）は js/clothes.js、bow（くびのリボン）は 結び目が (0, 0) の 座標で描いてある
-    pivot: { head: [700, 300], face: [756, 498], neck: [843, 760], tail: [300, 952], back: [550, 800], body: [615, 880], bow: [0, 0] },
-    poses: {
-      base: { head: [700, 222, 12, 1.0], face: [612, 330, 12, 0.76], neck: [660, 600, 4, 0.9], tail: [985, 965, -20, 0.8], back: [615, 820, 0, 0.9], body: [615, 880, 0, 1], bow: [615, 604, 0, 1] },
-      face_normal: 'base', face_happy: 'base', face_dreamy: 'base', face_prim: 'base', face_sleepy: 'base', face_lonely: 'base',
-      act_eat: 'base', act_yarn: 'base', act_fluffy: 'base',
-      // 手を あげている 絵：左の そでは 描かない
-      act_wave: { head: [700, 222, 12, 1.0], face: [612, 330, 12, 0.76], neck: [660, 600, 4, 0.9], tail: [985, 965, -20, 0.8], back: [615, 820, 0, 0.9], body: [615, 880, 0, 1, { noL: true }], bow: [615, 604, 0, 1] },
-      // ねる 絵：もうふの 中は つけない（ぼうしだけ。メガネも はずす）
-      act_sleep: { head: [1040, 865, 102, 1.0] }
-    }
-  },
+  accessory: (function () {
+    const pivot = { head: [615, 200], face: [612, 330], neck: [617, 604], tail: [930, 1045], back: [615, 760], body: [615, 880], bow: [0, 0] };
+    const base = {};
+    Object.keys(pivot).forEach(k => { base[k] = pivot[k].concat([0, 1]); });
+    base.bow = [617, 604, 0, 1];
+    return {
+      pivot,
+      poses: {
+        base,
+        face_normal: 'base', face_happy: 'base', face_dreamy: 'base', face_prim: 'base', face_sleepy: 'base', face_lonely: 'base',
+        act_eat: 'base', act_yarn: 'base', act_fluffy: 'base',
+        // 手を あげている 絵：左の そでは 描かない
+        act_wave: Object.assign({}, base, { body: [615, 880, 0, 1, { noL: true }] }),
+        // ねる 絵（右に 90° まわした 絵）：もうふの 中は つけない（ぼうしだけ。メガネも はずす）
+        act_sleep: { head: [1027, 780, 90, 1] }
+      }
+    };
+  })(),
 
   // あそぶ（毛糸玉）の絵の中の毛糸玉の位置。絵の外わくに対する割合（tools/make_poses.js の YARN）
   yarnBallInPose: { x: 0.287, y: 0.905 },

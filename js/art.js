@@ -76,7 +76,7 @@ G.Art = (function () {
       extra = `<g fill="#fffbe6">${[[28, 30], [44, 22], [86, 26], [96, 38], [50, 70], [72, 76], [22, 40]].map(([x, y]) => `<path transform="translate(${x} ${y}) scale(.09)" d="M50 0C54 38 62 46 100 50 62 54 54 62 50 100 46 62 38 54 0 50 38 46 46 38 50 0z"/>`).join('')}</g>`;
     }
     return svg('0 0 120 96', `<defs>${defs}</defs>
-      <g stroke="rgba(120,80,90,.35)" stroke-width="2.5" stroke-linejoin="round">
+      <g stroke="#3b3236" stroke-width="3" stroke-linejoin="round">
         <path d="M56 50 38 88l13-4 7 11 5-42z" fill="${fill}"/>
         <path d="M64 50l18 38-13-4-7 11-5-42z" fill="${fill}"/>
         <path d="M60 45C40 18 10 10 8 30c-2 19 22 33 52 15z" fill="${fill}"/>
@@ -85,7 +85,7 @@ G.Art = (function () {
       ${extra}
       <path d="M22 26c6-6 16-4 26 6" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="4" stroke-linecap="round"/>
       <path d="M98 26c-6-6-16-4-26 6" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="4" stroke-linecap="round"/>
-      <ellipse cx="60" cy="46" rx="11" ry="13" fill="${fill}" stroke="rgba(120,80,90,.4)" stroke-width="2.5"/>
+      <ellipse cx="60" cy="46" rx="11" ry="13" fill="${fill}" stroke="#3b3236" stroke-width="3"/>
       <ellipse cx="57" cy="42" rx="4" ry="3" fill="#fff" opacity=".5"/>`);
   }
 
@@ -359,7 +359,7 @@ G.Art = (function () {
         <rect x="870" y="140" width="300" height="410" fill="${c.sky}"/>
         ${sky}
         <path d="M870 470 q80 -50 160 -10 q70 -40 140 0 v90 h-300z" fill="${c.hill}" ${I(4)}/>
-        <path d="M950 470v-40M1080 460v-60" ${I(8)} stroke="${c.trunk}"/>
+        <path d="M950 470v-40M1080 460v-60" ${ink(8, c.trunk)}/>
         <circle cx="950" cy="420" r="36" fill="${c.tree}" ${I(4)}/><circle cx="1080" cy="392" r="46" fill="${c.tree}" ${I(4)}/>
       </g>
       <path d="M880 540V290a140 140 0 0 1 280 0v250z" fill="none" stroke="${c.frame}" stroke-width="22"/>
@@ -428,7 +428,7 @@ G.Art = (function () {
     for (let x = 0; x <= 1366; x += 76) tiles.push(`M${x} 320V700`);
     for (let y = 320; y <= 700; y += 76) tiles.push(`M0 ${y}H1366`);
     const bubbles = [[930, 486, 34], [990, 466, 44], [1066, 458, 50], [1140, 466, 42], [1210, 484, 34], [1240, 410, 14], [960, 404, 12], [1110, 380, 18]]
-      .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" ${I(3.5)} stroke="#7fb6d6"/>`).join('');
+      .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" ${ink(3.5, '#7fb6d6')}/>`).join('');
     return svg('0 0 1366 1024', `
       <defs>
         <pattern id="${p}f" width="120" height="120" patternUnits="userSpaceOnUse"><rect width="120" height="120" fill="#fff6f8"/><rect width="60" height="60" fill="#fbdde5"/><rect x="60" y="60" width="60" height="60" fill="#fbdde5"/></pattern>
@@ -474,7 +474,7 @@ G.Art = (function () {
         </g>
       </g>
       <!-- うかぶ あわ -->
-      <g fill="#fff" ${I(3)} stroke="#7fb6d6"><circle cx="480" cy="190" r="18"/><circle cx="520" cy="246" r="10"/><circle cx="860" cy="256" r="14"/><circle cx="420" cy="300" r="8"/></g>
+      <g fill="#fff" ${ink(3, '#7fb6d6')}><circle cx="480" cy="190" r="18"/><circle cx="520" cy="246" r="10"/><circle cx="860" cy="256" r="14"/><circle cx="420" cy="300" r="8"/></g>
       <!-- バスマット -->
       <ellipse cx="560" cy="910" rx="330" ry="80" fill="#f7c3d0" ${I(4)}/>
       <ellipse cx="560" cy="910" rx="290" ry="60" fill="none" stroke="#fff" stroke-width="7" stroke-dasharray="4 16" stroke-linecap="round"/>

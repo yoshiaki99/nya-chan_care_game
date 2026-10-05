@@ -1,6 +1,7 @@
 /*
  * ニューちゃんが 遊びに来る（要件定義書 5.9 F-90〜F-98）
- * ・G.NyuSprite：ニューちゃんの 表示と動き。メイク・ふく・アクセサリーは つけないので（F-9A）、絵を 1まい 出すだけの かるい しくみ
+ * ・G.NyuSprite：ニューちゃんの 表示と動き。メイク・アクセサリーは つけないので（F-9A）、絵を 1まい 出して、
+ *   ニャーちゃんと おそろいの ふく（F-6I）を 上に かさねるだけの かるい しくみ
  * ・G.NyuVisit ：いつ 来て、なにを して、いつ 帰るか
  */
 window.G = window.G || {};
@@ -18,7 +19,12 @@ G.NyuSprite = class {
     this.img.className = 'ny-img';
     this.img.alt = '';
     this.img.draggable = false;
+    this.cloth = document.createElement('img'); // おそろいの ふく
+    this.cloth.className = 'ny-img ny-cloth';
+    this.cloth.alt = '';
+    this.cloth.draggable = false;
     this.flip.appendChild(this.img);
+    this.flip.appendChild(this.cloth);
     this.move.appendChild(this.flip);
     this.el.appendChild(UI.el('div', 'ny-shadow'));
     this.el.appendChild(this.move);
@@ -36,7 +42,15 @@ G.NyuSprite = class {
     const ok = (p) => !G.ASSET_FILES || G.ASSET_FILES.indexOf(p) >= 0;
     return ok(s) ? s : this.CH.images.base;
   }
-  setPose(key) { this.pose = key; this.img.src = this.src(key); }
+  setPose(key) { this.pose = key; this.img.src = this.src(key); this.dress(); }
+  /* ニャーちゃんと おそろいの ふくを 着る（ニャーちゃんが 着ていなければ 着ない） */
+  dress() {
+    if (!this.cloth) return;
+    const id = G.State.clothes();
+    const url = id ? G.Accessory.clothesDataUrl(id, { noL: this.pose === 'wave' }, this.CH.clothesTransform) : '';
+    if (url) { if (this.cloth.getAttribute('src') !== url) this.cloth.src = url; this.cloth.style.display = ''; }
+    else this.cloth.style.display = 'none';
+  }
   /* しばらく ちがう 顔に して、もとに もどす */
   flash(key, ms = 1600) {
     clearTimeout(this.tempTimer);
@@ -136,8 +150,8 @@ G.NyuVisit = (function () {
     } else {
       await sc.guard(ctx.sayNya(L.nyuWelcome, 'face_happy'));
     }
-    if (S.clothes()) { // ふくを ほめてくれる
-      await sc.guard(sayNyu(N.praise, 'happy'));
+    if (S.clothes()) { // おそろいの ふくで きてくれる（F-6I）
+      await sc.guard(sayNyu(N.osoroi, 'happy'));
       await sc.guard(ctx.sayNya(L.nyuShy, 'face_dreamy'));
     }
     if (Math.random() < 1 / 3) { // ときどき おみやげ（F-93）
@@ -206,6 +220,25 @@ G.NyuVisit = (function () {
       if (!V.active || !sprite || ctx.isBusy() || G.isRewarding()) return;
       if (Date.now() - V.startedAt > STAY_MS) { leave(); return; }
       if (Math.random() < 0.035) chat();
+    },
+
+    /* あそびの 画面で いっしょに はしゃぐ（F-94）。来ていなければ なにも しない。かえすもの：ニューちゃん（または null） */
+    joinPlay(scr, sc, { x, y, h, cheer = true }) {
+      if (!V.active) return null;
+      const UI = G.UI;
+      const s = new G.NyuSprite(scr, { x, y, h });
+      sc.add(() => s.remove());
+      UI.tap(s.el, () => { s.flash('dreamy', 1600); s.hop(); const p = s.point(0.5, 0.2); UI.hearts(p.x, p.y, 2); G.Sound.play('meow'); }, { sound: 'soft' });
+      if (cheer) {
+        sc.interval(() => { // ときどき ぴょん！ と はしゃぐ
+          if (Math.random() < 0.5) return;
+          s.flash('happy', 1400);
+          s.hop();
+          const p = s.point(0.6, 0.1);
+          UI.notes(p.x, p.y, 1);
+        }, 2600);
+      }
+      return s;
     },
 
     /* またね（おしまい）：いっしょに 手を ふって 帰る */
