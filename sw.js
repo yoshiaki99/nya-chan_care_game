@@ -4,7 +4,7 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = '7e2c377dc5';
+const VERSION = '3706b16fc4';
 const FILES = [
   ["index.html", "77a1a9a885"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
@@ -24,7 +24,7 @@ const FILES = [
   ["assets/characters/nyu_base.png", "123b0e4a49"],
   ["assets/characters/nyu_face_dreamy.png", "ef8f9b193a"],
   ["assets/characters/nyu_face_happy.png", "0d77fd75bc"],
-  ["css/style.css", "e0fa33f881"],
+  ["css/style.css", "e5c7b8545c"],
   ["icons/apple-touch-icon.png", "d8d1bbd691"],
   ["icons/icon-192.png", "b0cfaf3cb0"],
   ["icons/icon-512.png", "6dae5d97a6"],
@@ -34,7 +34,7 @@ const FILES = [
   ["js/art_play.js", "cead13697d"],
   ["js/asset_list.js", "d42ae4a261"],
   ["js/assets.js", "44269b1a2d"],
-  ["js/audio.js", "056aadc0fd"],
+  ["js/audio.js", "cb8e63ec45"],
   ["js/chara.js", "47379dcf34"],
   ["js/character.js", "5de1a216cd"],
   ["js/character_nyu.js", "be4f6ef6bc"],

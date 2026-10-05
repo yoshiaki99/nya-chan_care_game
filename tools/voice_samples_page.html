@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ニャーちゃん・ニューちゃんの声 聞きくらべ</title>
+<style>
+  :root {
+    --font: "Hiragino Maru Gothic ProN", "Hiragino Sans", "M PLUS Rounded 1c", sans-serif;
+    --bg: #f6e4dc; --card: #fff8ef; --line: #ecd3cb;
+    --pink: #f4a7b9; --pink-d: #e47f9a; --rose: #c95f7f; --gold: #dcbb72; --ink: #6b4a52; --sub: #9a7d84;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); line-height: 1.6; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 26px; margin: 0 0 4px; color: var(--rose); }
+  .lead { margin: 0 0 20px; color: var(--sub); font-size: 14px; }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  button { font: inherit; color: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 14px; }
+  button:hover { border-color: var(--pink-d); }
+  button.stop { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .wrap { overflow-x: auto; background: var(--card); border-radius: 16px; border: 1px solid var(--line); }
+  table { border-collapse: collapse; width: 100%; min-width: 900px; }
+  th, td { padding: 10px 10px; border-bottom: 1px solid var(--line); text-align: center; vertical-align: middle; }
+  thead th { font-size: 13px; font-weight: normal; color: var(--sub); background: #fdf0ea; position: sticky; top: 0; }
+  thead th .line { display: block; color: var(--ink); font-size: 14px; margin-bottom: 4px; }
+  thead th button { font-size: 12px; padding: 2px 10px; }
+  tbody th { text-align: left; min-width: 230px; }
+  .nm { font-size: 17px; color: var(--rose); display: flex; align-items: center; gap: 6px; }
+  .tag { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: #f9dfe6; color: var(--rose); font-weight: normal; white-space: nowrap; }
+  .tag.pre { background: #f3ead2; color: #8a6a24; }
+  .memo { font-size: 12px; color: var(--sub); font-weight: normal; margin-top: 2px; }
+  .row-tools { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .row-tools button { font-size: 12px; padding: 2px 10px; }
+  .pick { border-color: var(--gold); }
+  .pick.on { background: var(--gold); color: #fff; }
+  tr.picked th, tr.picked td { background: #fff2d6; }
+  .play { width: 44px; height: 44px; border-radius: 50%; padding: 0; font-size: 16px; background: var(--pink); color: #fff; border: none; }
+  .play:hover { background: var(--pink-d); }
+  .play.now { background: var(--rose); box-shadow: 0 0 0 4px #f9dfe6; }
+  .play[disabled] { background: #e8dcd8; cursor: default; }
+  .note { margin-top: 18px; font-size: 13px; color: var(--sub); }
+</style>
+</head>
+<body>
+<main>
+  <h1>ニャーちゃん・ニューちゃんの声 聞きくらべ</h1>
+  <p class="lead">Gemini 3.8 Flash TTS でつくった声の候補です。▶ でセリフごと、「ぜんぶ聞く」で候補ごと・セリフごとにまとめて聞けます。気に入った候補に ★ をつけておけます（このブラウザにだけ残ります）。</p>
+  <div class="tools">
+    <button id="stop" class="stop">■ とめる</button>
+  </div>
+  <div class="wrap"><table id="t"></table></div>
+  <p class="note">「声をつくる」の候補は、文章で声を説明して新しく作った声です（Voice design）。「用意された声」は Google が用意している30種類の声に、「かわいい子ネコの女の子」という話し方の指示をつけたものです。ニャーちゃん用の候補はニャーちゃんのセリフだけ、ニューちゃん用の候補はニューちゃんのセリフだけを作ります。</p>
+</main>
+<script>
+const DATA = /*DATA*/null;
+if (!DATA) {
+  document.querySelector('main').innerHTML = '<h1>これは ひな形です</h1><p class="lead">聞きくらべは assets/voice_samples/聞きくらべ.html を開いてください。</p>';
+  throw new Error('template');
+}
+const audio = new Audio();
+let queue = [], current = null;
+
+function stop() { queue = []; audio.pause(); mark(null); }
+function mark(btn) { if (current) current.classList.remove('now'); current = btn; if (btn) btn.classList.add('now'); }
+function next() {
+  const btn = queue.shift();
+  if (!btn) return mark(null);
+  mark(btn);
+  audio.src = btn.dataset.src;
+  audio.play().catch(next);
+}
+audio.addEventListener('ended', () => setTimeout(next, 350));
+audio.addEventListener('error', next);
+function playList(btns) { stop(); queue = btns.filter(b => !b.disabled); next(); }
+
+function load(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; } }
+function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* なし */ } }
+let picks = load('nya-voice-picks');
+
+const t = document.getElementById('t');
+const head = document.createElement('thead');
+head.innerHTML = '<tr><th></th>' + DATA.lines.map((l, i) =>
+  `<th><span class="line">「${l.shown}」</span><button data-col="${i}">この セリフを ぜんぶ聞く</button></th>`).join('') + '</tr>';
+t.appendChild(head);
+const body = document.createElement('tbody');
+DATA.candidates.forEach(c => {
+  const tr = document.createElement('tr');
+  tr.dataset.key = c.key;
+  const tag = c.kind === 'design' ? '<span class="tag">声をつくる</span>' : '<span class="tag pre">用意された声</span>';
+  tr.innerHTML = `<th><div class="nm">${c.name} ${tag}</div><div class="memo">${c.memo || ''}</div>
+    <div class="row-tools"><button data-row>ぜんぶ聞く</button><button class="pick" data-pick>★</button></div></th>` +
+    DATA.lines.map(l => {
+      const src = DATA.audio[c.key + '/' + l.key];
+      return src ? `<td><button class="play" data-src="${src}" title="${c.name}：${l.shown}">▶</button></td>`
+                 : '<td><button class="play" disabled title="まだ ありません">–</button></td>';
+    }).join('');
+  body.appendChild(tr);
+});
+t.appendChild(body);
+
+function refreshPicks() {
+  body.querySelectorAll('tr').forEach(tr => {
+    const on = picks.includes(tr.dataset.key);
+    tr.classList.toggle('picked', on);
+    tr.querySelector('[data-pick]').classList.toggle('on', on);
+  });
+}
+refreshPicks();
+
+t.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.classList.contains('play')) return playList([b]);
+  if (b.hasAttribute('data-row')) return playList([...b.closest('tr').querySelectorAll('.play')]);
+  if (b.dataset.col != null) return playList([...body.querySelectorAll('tr')].map(tr => tr.querySelectorAll('.play')[+b.dataset.col]));
+  if (b.hasAttribute('data-pick')) {
+    const k = b.closest('tr').dataset.key;
+    picks = picks.includes(k) ? picks.filter(x => x !== k) : picks.concat(k);
+    save('nya-voice-picks', picks); refreshPicks();
+  }
+});
+document.getElementById('stop').onclick = stop;
+</script>
+</body>
+</html>

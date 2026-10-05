@@ -5,8 +5,9 @@
   --pink: #f4a7b9;
   --pink-d: #e47f9a;
   --rose: #c95f7f;
-  --gold: #dcbb72;
-  --gold-d: #b8913f;
+  /* わく線（ニャーちゃんの 線画に 合わせた こげ茶。名前は むかしの まま --gold） */
+  --gold: #5a4448;
+  --gold-d: #3f2f33;
   --ink: #6b4a52;
 }
 
@@ -148,7 +149,7 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
   width: 150px; height: 150px; border-radius: 42px; z-index: 4;
   background: radial-gradient(circle at 35% 28%, #fff 0, #fffaf3 50%, #fbe9df 100%);
   border: 5px solid #fff;
-  box-shadow: 0 0 0 4px var(--gold), 0 10px 0 4px rgba(184, 145, 63, .35), 0 14px 26px rgba(120, 60, 70, .18);
+  box-shadow: 0 0 0 4px var(--gold), 0 10px 0 4px rgba(90, 68, 72, .35), 0 14px 26px rgba(120, 60, 70, .18);
   transition: transform .12s;
 }
 .btn-care .bc-icon { position: absolute; left: 16px; top: 6px; width: 108px; height: 108px; pointer-events: none; }
@@ -163,12 +164,12 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .care-sleep { --lc: #d4a42c; }
 .care-dress { --lc: #a785dc; }
 .btn-bye { --lc: #8aa86b; }
-.btn-care.need { animation: need 1.5s ease-in-out infinite; box-shadow: 0 0 0 5px var(--gold), 0 0 30px 10px rgba(255, 220, 130, .85), 0 10px 0 4px rgba(184, 145, 63, .35); }
+.btn-care.need { animation: need 1.5s ease-in-out infinite; box-shadow: 0 0 0 5px var(--gold), 0 0 30px 10px rgba(255, 220, 130, .85), 0 10px 0 4px rgba(90, 68, 72, .35); }
 
 /* ---- もどる（左上） ---- */
 .btn-back {
   left: 20px; top: 20px; width: 124px; height: 124px; border-radius: 50%; background: #fff; z-index: 8;
-  box-shadow: 0 0 0 4px var(--gold), 0 8px 0 4px rgba(184, 145, 63, .3), 0 12px 20px rgba(120, 60, 70, .15);
+  box-shadow: 0 0 0 4px var(--gold), 0 8px 0 4px rgba(90, 68, 72, .3), 0 12px 20px rgba(120, 60, 70, .15);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   transition: transform .12s;
 }
@@ -226,7 +227,7 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 /* ---- ごはん ---- */
 .food-table {
   border-radius: 46% / 50%; background: radial-gradient(ellipse at 50% 40%, #fffefa, #f4e3d6);
-  box-shadow: 0 0 0 6px var(--gold), 0 14px 0 6px rgba(184, 145, 63, .3), 0 24px 40px rgba(120, 60, 70, .15);
+  box-shadow: 0 0 0 6px var(--gold), 0 14px 0 6px rgba(90, 68, 72, .3), 0 24px 40px rgba(120, 60, 70, .15);
 }
 .food-item { touch-action: none; z-index: 3; }
 .food-item .fi-art { width: 100%; height: 100%; transition: opacity .2s; }
@@ -252,7 +253,7 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
   transition: box-shadow .3s;
 }
 .tool:not(.active) .t-art, .tool:not(.active) .t-label { opacity: .45; filter: grayscale(.5); }
-.tool.active { animation: need 1.6s ease-in-out infinite; box-shadow: 0 0 0 5px var(--gold), 0 0 34px 12px rgba(255, 225, 140, .85), 0 8px 0 5px rgba(184, 145, 63, .35); }
+.tool.active { animation: need 1.6s ease-in-out infinite; box-shadow: 0 0 0 5px var(--gold), 0 0 34px 12px rgba(255, 225, 140, .85), 0 8px 0 5px rgba(90, 68, 72, .35); }
 .tool.done { background: rgba(255, 255, 255, .8); }
 .tool .t-art { position: absolute; left: 22px; top: 10px; width: 136px; height: 136px; pointer-events: none; }
 .tool .t-label { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-size: 28px; pointer-events: none; }
@@ -276,7 +277,7 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 /* ---- あそぶ ---- */
 .game-card {
   border-radius: 50px; background: var(--cream); border: 6px solid #fff; z-index: 3;
-  box-shadow: 0 0 0 4px var(--gold), 0 12px 0 4px rgba(184, 145, 63, .3), 0 18px 30px rgba(120, 60, 70, .15);
+  box-shadow: 0 0 0 4px var(--gold), 0 12px 0 4px rgba(90, 68, 72, .3), 0 18px 30px rgba(120, 60, 70, .15);
   transition: transform .12s;
 }
 .gc-art { position: absolute; left: 57px; top: 14px; width: 150px; height: 150px; pointer-events: none; }
@@ -342,10 +343,10 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .dtab {
   position: relative; width: 206px; height: 100px; border-radius: 50px; display: flex; align-items: center; gap: 4px; padding: 0 16px 0 12px;
   background: #fffaf3; border: 5px solid #fff; transition: transform .12s;
-  box-shadow: 0 0 0 4px var(--gold), 0 8px 0 4px rgba(184, 145, 63, .3), 0 12px 20px rgba(120, 60, 70, .15);
+  box-shadow: 0 0 0 4px var(--gold), 0 8px 0 4px rgba(90, 68, 72, .3), 0 12px 20px rgba(120, 60, 70, .15);
 }
 .dtab:not(.on) { animation: breathe 2.6s ease-in-out infinite; }
-.dtab.on { background: linear-gradient(#f7b6c6, #e98aa5); box-shadow: 0 0 0 5px var(--gold), 0 0 26px 8px rgba(255, 220, 130, .75), 0 8px 0 4px rgba(184, 145, 63, .35); }
+.dtab.on { background: linear-gradient(#f7b6c6, #e98aa5); box-shadow: 0 0 0 5px var(--gold), 0 0 26px 8px rgba(255, 220, 130, .75), 0 8px 0 4px rgba(90, 68, 72, .35); }
 .dt-icon { width: 76px; height: 76px; flex: none; pointer-events: none; }
 .dt-icon svg { width: 100%; height: 100%; display: block; }
 .dt-label { font-size: 34px; letter-spacing: .04em; color: var(--rose); pointer-events: none; white-space: nowrap; }
@@ -510,7 +511,7 @@ img.acc-art { object-fit: contain; }
 .crayon.sel { transform: translateY(-34px) scale(1.06); }
 .draw-tool {
   z-index: 4; border-radius: 30px; background: rgba(255, 250, 244, .95); border: 4px solid #fff;
-  box-shadow: 0 0 0 3px var(--gold), 0 8px 0 3px rgba(184, 145, 63, .3); transition: transform .12s;
+  box-shadow: 0 0 0 3px var(--gold), 0 8px 0 3px rgba(90, 68, 72, .3); transition: transform .12s;
 }
 .draw-tool.sel { box-shadow: 0 0 0 5px #e98aa5, 0 0 24px 6px rgba(240, 150, 180, .6); transform: scale(1.06); }
 .dt-art { position: absolute; left: 50%; top: 6px; width: 68px; height: 68px; transform: translateX(-50%); pointer-events: none; }
@@ -531,9 +532,9 @@ img.acc-art { object-fit: contain; }
 .cake-bar > * { position: absolute; pointer-events: auto; }
 .cake-tool, .cake-top {
   border-radius: 40px; background: rgba(255, 250, 244, .95); border: 5px solid #fff; touch-action: none;
-  box-shadow: 0 0 0 4px var(--gold), 0 10px 0 4px rgba(184, 145, 63, .3), 0 14px 24px rgba(120, 60, 70, .15); transition: transform .12s;
+  box-shadow: 0 0 0 4px var(--gold), 0 10px 0 4px rgba(90, 68, 72, .3), 0 14px 24px rgba(120, 60, 70, .15); transition: transform .12s;
 }
-.cake-tool.sel { box-shadow: 0 0 0 6px #e98aa5, 0 0 30px 10px rgba(240, 150, 180, .55), 0 10px 0 4px rgba(184, 145, 63, .3); transform: translateY(-10px); }
+.cake-tool.sel { box-shadow: 0 0 0 6px #e98aa5, 0 0 30px 10px rgba(240, 150, 180, .55), 0 10px 0 4px rgba(90, 68, 72, .3); transform: translateY(-10px); }
 .ct-art { position: absolute; left: 50%; top: 8px; width: 120px; height: 150px; transform: translateX(-50%); pointer-events: none; }
 .candle-tool .ct-art { width: 50px; }
 .ct-art svg, .ctp-art svg { width: 100%; height: 100%; display: block; }
@@ -587,7 +588,7 @@ img.acc-art { object-fit: contain; }
 .pf-c.br { right: 0; bottom: 0; border-right-width: 9px; border-bottom-width: 9px; border-bottom-right-radius: 22px; }
 .photo-shutter {
   z-index: 4; border-radius: 60px; background: radial-gradient(circle at 35% 28%, #fff 0, #fffaf3 50%, #fbe9df 100%); border: 6px solid #fff;
-  box-shadow: 0 0 0 5px var(--gold), 0 12px 0 5px rgba(184, 145, 63, .35), 0 18px 30px rgba(120, 60, 70, .2); transition: transform .12s;
+  box-shadow: 0 0 0 5px var(--gold), 0 12px 0 5px rgba(90, 68, 72, .35), 0 18px 30px rgba(120, 60, 70, .2); transition: transform .12s;
   animation: breathe 2.4s ease-in-out infinite;
 }
 .photo-shutter.pressed { transform: scale(.92); animation: none; }
@@ -596,7 +597,7 @@ img.acc-art { object-fit: contain; }
 .ps-label { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font-size: 44px; color: var(--rose); letter-spacing: .1em; pointer-events: none; }
 .photo-album-btn {
   z-index: 4; border-radius: 40px; background: rgba(255, 250, 244, .95); border: 5px solid #fff;
-  box-shadow: 0 0 0 4px var(--gold), 0 10px 0 4px rgba(184, 145, 63, .3); transition: transform .12s;
+  box-shadow: 0 0 0 4px var(--gold), 0 10px 0 4px rgba(90, 68, 72, .3); transition: transform .12s;
 }
 .photo-album-btn.pressed { transform: scale(.92); }
 .pa-art { position: absolute; left: 25px; top: 4px; width: 120px; height: 120px; pointer-events: none; }
