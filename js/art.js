@@ -76,7 +76,7 @@ G.Art = (function () {
       extra = `<g fill="#fffbe6">${[[28, 30], [44, 22], [86, 26], [96, 38], [50, 70], [72, 76], [22, 40]].map(([x, y]) => `<path transform="translate(${x} ${y}) scale(.09)" d="M50 0C54 38 62 46 100 50 62 54 54 62 50 100 46 62 38 54 0 50 38 46 46 38 50 0z"/>`).join('')}</g>`;
     }
     return svg('0 0 120 96', `<defs>${defs}</defs>
-      <g stroke="rgba(120,80,90,.35)" stroke-width="2.5" stroke-linejoin="round">
+      <g stroke="#3b3236" stroke-width="3" stroke-linejoin="round">
         <path d="M56 50 38 88l13-4 7 11 5-42z" fill="${fill}"/>
         <path d="M64 50l18 38-13-4-7 11-5-42z" fill="${fill}"/>
         <path d="M60 45C40 18 10 10 8 30c-2 19 22 33 52 15z" fill="${fill}"/>
@@ -85,7 +85,7 @@ G.Art = (function () {
       ${extra}
       <path d="M22 26c6-6 16-4 26 6" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="4" stroke-linecap="round"/>
       <path d="M98 26c-6-6-16-4-26 6" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="4" stroke-linecap="round"/>
-      <ellipse cx="60" cy="46" rx="11" ry="13" fill="${fill}" stroke="rgba(120,80,90,.4)" stroke-width="2.5"/>
+      <ellipse cx="60" cy="46" rx="11" ry="13" fill="${fill}" stroke="#3b3236" stroke-width="3"/>
       <ellipse cx="57" cy="42" rx="4" ry="3" fill="#fff" opacity=".5"/>`);
   }
 
@@ -308,167 +308,176 @@ G.Art = (function () {
       <circle cx="75" cy="30" r="4" fill="#6b5463"/><circle cx="125" cy="30" r="4" fill="#6b5463"/>`);
   }
 
-  /* ---------- 背景：おへや ---------- */
+  /* ---------- 背景：おへや（ニャーちゃんと 同じ 線画風：こい線 ＋ パステルの べたぬり） ---------- */
+  const BGINK = '#3b3236';
+  const ink = (w = 4, col = BGINK) => `stroke="${col}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
   function bgRoom(night = false) {
     const c = night ? {
-      wallTop: '#5c5a88', wallBot: '#4a4774', stripe: '#545183', dot: '#7a76a8', frame: '#6c689a', gold: '#b7a173',
-      wains: '#4b4673', floorA: '#6a5470', floorB: '#57445e', line: '#3f3149', rug: '#8c6688', rugB: '#a27e9c',
-      piano: '#2e2433', pianoHi: '#4b3a4e', keys: '#d9d3dc', sofa: '#8a6385', sofaHi: '#a07b9a', curt: '#7e6491', curtHi: '#9a7fab',
-      skyTop: '#1b2150', skyBot: '#38407a', city: '#2b2b55', pic: '#56608c', rose: '#b87c9c'
+      wall: '#56547e', dot: '#68669a', wains: '#4a5c78', rail: '#6d6a96', floor: '#6c5c76', plank: '#5a4c64',
+      sky: '#232a5a', hill: '#3c5a5a', tree: '#3f6a62', trunk: '#5a4a52', curt: '#8676a6', frame: '#7c7aa6',
+      piano: '#7a5f70', pianoP: '#6a5262', keys: '#d8d2dc', rug: '#86648e', rugIn: '#9c7aa2', pot: '#a2707a', leaf: '#4f7a66',
+      pic: '#e9e2c4', shade: '#ffe08a', ink: '#221c26'
     } : {
-      wallTop: '#fdf4ea', wallBot: '#f7e4d9', stripe: '#f8e7df', dot: '#f2c8cf', frame: '#fffaf5', gold: '#e2c48a',
-      wains: '#f5d9d6', floorA: '#ebcca8', floorB: '#dbb28c', line: '#c99f7a', rug: '#f2c3cc', rugB: '#fbe6ea',
-      piano: '#5d4352', pianoHi: '#7d5f6f', keys: '#fffdf8', sofa: '#f0b7c3', sofaHi: '#f7d0d8', curt: '#f2b5c3', curtHi: '#f9d4dc',
-      skyTop: '#bfe1f5', skyBot: '#fbeef2', city: '#cdbbd9', pic: '#cfe6f2', rose: '#f37d9b'
+      wall: '#fff3da', dot: '#f9dfb6', wains: '#d5efe0', rail: '#ffffff', floor: '#f3d8b0', plank: '#ddb98d',
+      sky: '#cdeaf8', hill: '#b6e3a8', tree: '#9fd68e', trunk: '#c79a6e', curt: '#ffe39a', frame: '#ffffff',
+      piano: '#d9ae8c', pianoP: '#c79a76', keys: '#ffffff', rug: '#f8c6d3', rugIn: '#fde3ea', pot: '#f0a98c', leaf: '#8fd08a',
+      pic: '#fffaf0', shade: '#fff1b8', ink: BGINK
     };
+    const I = (w) => ink(w, c.ink);
     const p = id('r');
-    const panels = [20, 248, 476, 704, 932, 1160].map(x =>
-      `<rect x="${x + 12}" y="548" width="196" height="116" rx="12" fill="none" stroke="${c.frame}" stroke-width="5"/>
-       <rect x="${x + 24}" y="560" width="172" height="92" rx="8" fill="none" stroke="${c.gold}" stroke-width="2" opacity=".8"/>`).join('');
-    const floorLines = [768, 846, 934].map(y => `<path d="M0 ${y}H1366" stroke="${c.line}" stroke-width="2" opacity=".35"/>`).join('') +
-      [[120, 700, 768], [420, 768, 846], [760, 700, 768], [1080, 768, 846], [260, 846, 934], [640, 846, 934], [1000, 934, 1024], [1200, 846, 934], [440, 934, 1024]]
-        .map(([x, a, b]) => `<path d="M${x} ${a}V${b}" stroke="${c.line}" stroke-width="2" opacity=".3"/>`).join('');
-    const keys = Array.from({ length: 15 }, (_, i) => `<line x1="${62 + i * 25.4}" y1="540" x2="${62 + i * 25.4}" y2="578" stroke="#cfc4bc" stroke-width="1.5"/>`).join('');
-    const blacks = [0, 1, 3, 4, 5, 7, 8, 10, 11, 12, 14].map(i => `<rect x="${76 + i * 25.4}" y="540" width="14" height="22" rx="2" fill="${c.piano}"/>`).join('');
-    const stars = night ? [[900, 160], [960, 120], [1080, 150], [1110, 230], [930, 260], [1040, 300], [880, 330]].map(([x, y], i) =>
-      `<circle cx="${x}" cy="${y}" r="${i % 2 ? 2.5 : 3.5}" fill="#fff6c9" opacity=".9"/>`).join('') +
-      `<circle cx="1060" cy="200" r="36" fill="#fff3b8"/><circle cx="1076" cy="190" r="32" fill="${c.skyTop}"/>` : `
-      <g fill="#fff" opacity=".85"><ellipse cx="930" cy="190" rx="40" ry="14"/><ellipse cx="960" cy="180" rx="28" ry="14"/><ellipse cx="1080" cy="260" rx="34" ry="11"/><ellipse cx="1100" cy="252" rx="22" ry="11"/></g>`;
-    const lamp = night ? `<radialGradient id="${p}lg"><stop offset="0" stop-color="#ffd89a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd89a" stop-opacity="0"/></radialGradient>` : '';
+    const planks = [772, 852, 942].map(y => `<path d="M0 ${y}H1366" stroke="${c.plank}" stroke-width="3"/>`).join('') +
+      [[140, 704, 772], [480, 772, 852], [820, 704, 772], [1120, 772, 852], [300, 852, 942], [700, 852, 942], [1040, 942, 1024], [1240, 852, 942], [460, 942, 1024]]
+        .map(([x, a, b]) => `<path d="M${x} ${a}V${b}" stroke="${c.plank}" stroke-width="3"/>`).join('');
+    const whites = Array.from({ length: 15 }, (_, i) => `<path d="M${84 + i * 25} 548V602" ${I(2.5)}/>`).join('');
+    const blacks = [0, 1, 3, 4, 5, 7, 8, 10, 11, 12].map(i => `<rect x="${78 + i * 25 + 17}" y="548" width="14" height="32" rx="3" fill="${c.ink}"/>`).join('');
+    const sky = night
+      ? `${[[900, 220], [960, 190], [1090, 210], [1120, 300], [930, 330], [1040, 360]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 2 ? 3 : 4.5}" fill="#fff6c9"/>`).join('')}
+         <path d="M1062 228 a40 40 0 1 0 34 56 a32 32 0 1 1 -34 -56z" fill="#fff0a8" ${I(4)}/>`
+      : `<circle cx="1080" cy="250" r="34" fill="#ffe27a" ${I(4)}/>
+         <path d="M908 236 q8 -26 34 -20 q14 -20 38 -6 q26 0 26 22 q0 18 -24 18 h-60 q-22 0 -14 -14z" fill="#fff" ${I(4)}/>`;
+    const glow = night ? `<radialGradient id="${p}g"><stop offset="0" stop-color="#ffd98a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>` : '';
     return svg('0 0 1366 1024', `
       <defs>
-        <linearGradient id="${p}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.wallTop}"/><stop offset="1" stop-color="${c.wallBot}"/></linearGradient>
-        <pattern id="${p}s" width="80" height="80" patternUnits="userSpaceOnUse"><rect width="40" height="80" fill="${c.stripe}"/><circle cx="60" cy="20" r="4.5" fill="${c.dot}" opacity=".6"/><circle cx="60" cy="60" r="2.5" fill="${c.dot}" opacity=".5"/></pattern>
-        <linearGradient id="${p}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.floorB}"/><stop offset=".3" stop-color="${c.floorA}"/><stop offset="1" stop-color="${c.floorB}"/></linearGradient>
-        <linearGradient id="${p}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.skyTop}"/><stop offset="1" stop-color="${c.skyBot}"/></linearGradient>
-        <clipPath id="${p}c"><path d="M872 556V236a128 128 0 0 1 256 0v320z"/></clipPath>
-        ${lamp}
+        <pattern id="${p}d" width="64" height="64" patternUnits="userSpaceOnUse"><circle cx="16" cy="16" r="5" fill="${c.dot}"/><circle cx="48" cy="48" r="5" fill="${c.dot}"/></pattern>
+        <clipPath id="${p}w"><path d="M880 540V290a140 140 0 0 1 280 0v250z"/></clipPath>
+        ${glow}
       </defs>
-      <rect width="1366" height="700" fill="url(#${p}w)"/>
-      <rect y="30" width="1366" height="482" fill="url(#${p}s)" opacity=".8"/>
-      <rect width="1366" height="26" fill="${c.frame}"/><rect y="26" width="1366" height="6" fill="${c.gold}"/>
-      <rect y="510" width="1366" height="16" fill="${c.gold}"/>
-      <rect y="526" width="1366" height="156" fill="${c.wains}"/>
-      ${panels}
-      <rect y="680" width="1366" height="24" fill="${c.frame}"/>
-      <rect y="702" width="1366" height="322" fill="url(#${p}f)"/>
-      ${floorLines}
+      <!-- かべ -->
+      <rect width="1366" height="700" fill="${c.wall}"/>
+      <rect y="30" width="1366" height="486" fill="url(#${p}d)"/>
+      <rect y="-4" width="1366" height="30" fill="${c.rail}" ${I(4)}/>
+      <rect y="520" width="1366" height="168" fill="${c.wains}"/>
+      <rect y="508" width="1366" height="18" fill="${c.rail}" ${I(4)}/>
+      ${[40, 300, 1180].map(x => `<rect x="${x}" y="548" width="200" height="110" rx="14" fill="none" ${I(3)} opacity=".35"/>`).join('')}
+      <rect y="682" width="1366" height="22" fill="${c.rail}" ${I(4)}/>
+      <!-- ゆか -->
+      <rect y="704" width="1366" height="320" fill="${c.floor}"/>
+      ${planks}
 
       <!-- まど -->
-      <path d="M872 556V236a128 128 0 0 1 256 0v320z" fill="url(#${p}k)"/>
-      <g clip-path="url(#${p}c)">
-        ${stars}
-        <path d="M872 470l30-14 26 10 24-22 32 16 22-12 30 18 28-10 32 14 32-8v114H872z" fill="${c.city}"/>
-        <!-- 木 -->
-        <path d="M948 500v-60M1060 500v-80" stroke="${night ? '#6b5a66' : '#b98d6a'}" stroke-width="10" stroke-linecap="round"/>
-        <g fill="${night ? '#5f7a6a' : '#a9d89a'}"><circle cx="948" cy="420" r="42"/><circle cx="1060" cy="390" r="54"/><circle cx="1098" cy="430" r="34"/></g>
-        <path d="M872 520l40-8 40 10 50-6 60 8 66-6v40H872z" fill="${c.city}" opacity=".8"/>
+      <g clip-path="url(#${p}w)">
+        <rect x="870" y="140" width="300" height="410" fill="${c.sky}"/>
+        ${sky}
+        <path d="M870 470 q80 -50 160 -10 q70 -40 140 0 v90 h-300z" fill="${c.hill}" ${I(4)}/>
+        <path d="M950 470v-40M1080 460v-60" ${ink(8, c.trunk)}/>
+        <circle cx="950" cy="420" r="36" fill="${c.tree}" ${I(4)}/><circle cx="1080" cy="392" r="46" fill="${c.tree}" ${I(4)}/>
       </g>
-      <path d="M872 556V236a128 128 0 0 1 256 0v320z" fill="none" stroke="${c.frame}" stroke-width="18"/>
-      <path d="M1000 108v448M872 330h256M872 446h256" stroke="${c.frame}" stroke-width="9"/>
-      <rect x="852" y="552" width="296" height="20" rx="6" fill="${c.frame}" stroke="${c.gold}" stroke-width="2"/>
+      <path d="M880 540V290a140 140 0 0 1 280 0v250z" fill="none" stroke="${c.frame}" stroke-width="22"/>
+      <path d="M880 540V290a140 140 0 0 1 280 0v250z" fill="none" ${I(5)}/>
+      <path d="M868 552V290a152 152 0 0 1 304 0v262" fill="none" ${I(4)}/>
+      <path d="M1020 150v390M880 380h280" stroke="${c.frame}" stroke-width="12"/>
+      <path d="M1020 150v390M880 380h280" fill="none" ${I(3)} opacity=".6"/>
+      <rect x="852" y="540" width="336" height="24" rx="8" fill="${c.frame}" ${I(4)}/>
       <!-- カーテン -->
-      <path d="M820 70c40 0 70 10 84 20-10 120-6 300 16 470-30 8-60 8-100 0z" fill="${c.curt}"/>
-      <path d="M840 90c10 140 10 300 6 470" fill="none" stroke="${c.curtHi}" stroke-width="12" stroke-linecap="round" opacity=".8"/>
-      <path d="M1180 70c-40 0-70 10-84 20 10 120 6 300-16 470 30 8 60 8 100 0z" fill="${c.curt}"/>
-      <path d="M1160 90c-10 140-10 300-6 470" fill="none" stroke="${c.curtHi}" stroke-width="12" stroke-linecap="round" opacity=".8"/>
-      <path d="M800 60h400v34c-30 22-60 22-100 6-40 18-80 18-100 0-20 18-60 18-100 0-40 16-70 16-100-6z" fill="${c.curt}" stroke="${c.gold}" stroke-width="3"/>
-      <circle cx="880" cy="372" r="11" fill="${c.gold}"/><circle cx="1120" cy="372" r="11" fill="${c.gold}"/>
+      <path d="M820 120 C850 120 880 130 892 140 C880 300 884 460 906 600 C870 610 840 610 812 600 C830 440 826 280 820 120Z" fill="${c.curt}" ${I(4)}/>
+      <path d="M1220 120 C1190 120 1160 130 1148 140 C1160 300 1156 460 1134 600 C1170 610 1200 610 1228 600 C1210 440 1214 280 1220 120Z" fill="${c.curt}" ${I(4)}/>
+      <path d="M846 170c6 120 8 280 -4 400M1194 170c-6 120 -8 280 4 400" fill="none" ${I(3)} opacity=".45"/>
+      <path d="M804 104h432v34c-36 26-72 26-108 4-36 24-72 24-108 0-36 24-72 24-108 0-36 22-72 22-108-4z" fill="${c.curt}" ${I(4)}/>
 
-      <!-- がくぶち -->
-      <ellipse cx="250" cy="176" rx="74" ry="92" fill="${c.pic}" stroke="${c.gold}" stroke-width="12"/>
-      <path d="M182 200c30-24 60-24 80-6s40 10 58-8v60c-40 40-100 40-138 8z" fill="${night ? '#4c5a78' : '#bfe0c4'}" opacity=".9"/>
-      <circle cx="270" cy="138" r="14" fill="${night ? '#fff3b8' : '#fff4c4'}"/>
-      <!-- かべの あかり -->
-      <g transform="translate(560 200)"><path d="M0 0v40" stroke="${c.gold}" stroke-width="5"/><path d="M-22 40h44l-8 30h-28z" fill="${c.gold}"/><path d="M-26 0c0-30 52-30 52 0z" fill="${night ? '#ffe2a6' : '#fff2d8'}" stroke="${c.gold}" stroke-width="3"/></g>
-      ${night ? `<circle cx="560" cy="190" r="140" fill="url(#${p}lg)"/><circle cx="330" cy="300" r="120" fill="url(#${p}lg)"/>` : ''}
+      <!-- えを かざる がくぶち（おえかきの え が ここに はいる） -->
+      <rect x="306" y="166" width="228" height="166" rx="10" fill="#e9c48c" ${I(4)}/>
+      <rect x="322" y="182" width="196" height="134" rx="4" fill="${c.pic}" ${I(3)}/>
+      <g transform="translate(420 250)">
+        <path d="M-50 0 C-30 -34 30 -34 44 0 C30 34 -30 34 -50 0Z" fill="#9ccdf0" ${I(4)}/>
+        <path d="M44 0 L74 -24 L70 24 Z" fill="#9ccdf0" ${I(4)}/>
+        <circle cx="-26" cy="-6" r="5" fill="${c.ink}"/>
+      </g>
 
       <!-- ピアノ -->
       <g>
-        <rect x="46" y="322" width="408" height="26" rx="9" fill="${c.pianoHi}"/>
-        <rect x="60" y="346" width="380" height="176" fill="${c.piano}"/>
-        <rect x="84" y="364" width="332" height="138" rx="10" fill="none" stroke="${c.gold}" stroke-width="3" opacity=".7"/>
-        <g transform="rotate(-3 250 410)"><rect x="196" y="374" width="112" height="76" rx="4" fill="#fffaf2"/>
-          <path d="M206 392h92M206 404h92M206 416h92M206 428h92" stroke="#d8cfc6" stroke-width="1.5"/>
-          <circle cx="226" cy="404" r="5" fill="#8a7684"/><circle cx="252" cy="416" r="5" fill="#8a7684"/><circle cx="280" cy="398" r="5" fill="#8a7684"/></g>
-        <rect x="40" y="518" width="420" height="24" rx="6" fill="${c.pianoHi}"/>
-        <rect x="56" y="540" width="388" height="40" fill="${c.keys}"/>
-        ${keys}${blacks}
-        <rect x="60" y="580" width="380" height="102" fill="${c.piano}"/>
-        <rect x="90" y="596" width="140" height="70" rx="8" fill="none" stroke="${c.gold}" stroke-width="3" opacity=".6"/>
-        <rect x="270" y="596" width="140" height="70" rx="8" fill="none" stroke="${c.gold}" stroke-width="3" opacity=".6"/>
-        <path d="M236 676h28" stroke="${c.gold}" stroke-width="8" stroke-linecap="round"/>
-        <!-- ばら の かびん -->
-        <path d="M108 322c-8-20-6-36 10-44h20c16 8 18 24 10 44z" fill="${night ? '#8fa2c0' : '#cfe6f2'}" stroke="${c.gold}" stroke-width="2"/>
-        <g fill="${c.rose}"><circle cx="112" cy="262" r="13"/><circle cx="138" cy="254" r="14"/><circle cx="160" cy="268" r="12"/><circle cx="126" cy="240" r="10"/></g>
-        <g fill="${night ? '#5f8a6a' : '#9ed29a'}"><ellipse cx="98" cy="276" rx="10" ry="5" transform="rotate(30 98 276)"/><ellipse cx="172" cy="282" rx="10" ry="5" transform="rotate(-30 172 282)"/></g>
-        <!-- しょくだい -->
-        <path d="M380 322v-40M362 282h36" stroke="${c.gold}" stroke-width="6" stroke-linecap="round"/>
-        <rect x="374" y="250" width="12" height="32" rx="3" fill="#fffaf0"/>
-        <path d="M380 236q8 8 0 16-8-8 0-16z" fill="#ffc96b"/>
+        <rect x="50" y="318" width="404" height="30" rx="10" fill="${c.piano}" ${I(4)}/>
+        <rect x="62" y="346" width="380" height="176" fill="${c.piano}" ${I(4)}/>
+        <rect x="88" y="366" width="328" height="136" rx="12" fill="${c.pianoP}" ${I(3)}/>
+        <g transform="rotate(-3 250 410)"><rect x="196" y="378" width="112" height="76" rx="4" fill="#fffdf6" ${I(3)}/>
+          <path d="M208 396h88M208 410h88M208 424h88M208 438h88" stroke="${c.ink}" stroke-width="1.5" opacity=".35"/>
+          <circle cx="228" cy="410" r="5" fill="${c.ink}"/><circle cx="254" cy="424" r="5" fill="${c.ink}"/><circle cx="282" cy="402" r="5" fill="${c.ink}"/></g>
+        <rect x="44" y="520" width="416" height="28" rx="6" fill="${c.piano}" ${I(4)}/>
+        <rect x="70" y="548" width="364" height="54" fill="${c.keys}" ${I(4)}/>
+        ${whites}${blacks}
+        <rect x="62" y="602" width="380" height="80" fill="${c.piano}" ${I(4)}/>
+        <path d="M236 668h32" ${I(8)}/>
+        <!-- おはなの はちうえ -->
+        <path d="M100 318 l8 -40 h44 l8 40z" fill="${c.pot}" ${I(4)}/>
+        <path d="M130 278 v-30" ${I(5)}/>
+        <g fill="#f7a8c4">${[[112, 244], [130, 230], [148, 244], [130, 256]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="12" ${I(3)}/>`).join('')}</g>
+        <circle cx="130" cy="244" r="8" fill="#ffe27a" ${I(3)}/>
+        <!-- スタンドの あかり -->
+        <path d="M244 318 v-46" ${I(5)}/>
+        <path d="M210 272 h68 l-12 -44 h-44z" fill="${c.shade}" ${I(4)}/>
+        ${night ? `<circle cx="244" cy="252" r="170" fill="url(#${p}g)"/>` : ''}
       </g>
 
-      <!-- ソファ -->
+      <!-- はちうえ（右） -->
       <g>
-        <path d="M1190 600c0-40 30-60 90-60h86v170h-176z" fill="${c.sofa}"/>
-        <path d="M1206 596c10-30 40-40 80-40h80" fill="none" stroke="${c.sofaHi}" stroke-width="14" stroke-linecap="round"/>
-        <rect x="1176" y="690" width="190" height="70" rx="22" fill="${c.sofa}"/>
-        <path d="M1200 700h166" stroke="${c.sofaHi}" stroke-width="10" stroke-linecap="round"/>
-        <path d="M1160 650c0-26 40-26 40 0v100h-40z" fill="${c.sofa}" stroke="${c.sofaHi}" stroke-width="4"/>
-        <circle cx="1180" cy="652" r="18" fill="${c.sofaHi}"/>
-        <path d="M1190 758l-6 24M1350 758l4 24" stroke="${c.gold}" stroke-width="8" stroke-linecap="round"/>
+        <path d="M1250 700 l-14 -86 h96 l-14 86z" fill="${c.pot}" ${I(4)}/>
+        <path d="M1284 614 C1270 560 1230 540 1214 500 M1284 614 C1290 550 1310 520 1340 500 M1284 614 C1284 560 1280 520 1290 470" fill="none" ${I(5)}/>
+        ${[[1214, 500, -30], [1340, 500, 30], [1290, 470, 0], [1250, 560, -50], [1316, 548, 50]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="24" ry="40" transform="rotate(${r} ${x} ${y})" fill="${c.leaf}" ${I(4)}/>`).join('')}
       </g>
 
       <!-- じゅうたん -->
-      <ellipse cx="683" cy="908" rx="480" ry="104" fill="${c.rugB}"/>
-      <ellipse cx="683" cy="908" rx="450" ry="88" fill="${c.rug}"/>
-      <ellipse cx="683" cy="908" rx="390" ry="68" fill="none" stroke="${c.rugB}" stroke-width="5" stroke-dasharray="14 10"/>
-      <ellipse cx="683" cy="908" rx="300" ry="48" fill="none" stroke="${c.gold}" stroke-width="2.5" opacity=".6"/>
+      <ellipse cx="683" cy="900" rx="480" ry="108" fill="${c.rug}" ${I(4)}/>
+      <ellipse cx="683" cy="900" rx="400" ry="80" fill="none" stroke="${c.rugIn}" stroke-width="8" stroke-dasharray="18 14"/>
     `, 'preserveAspectRatio="xMidYMid slice"');
   }
 
-  /* ---------- 背景：おふろば ---------- */
+  /* ---------- 背景：おふろば（線画風） ---------- */
   function bgBath() {
     const p = id('b');
+    const I = (w) => ink(w);
+    const tiles = [];
+    for (let x = 0; x <= 1366; x += 76) tiles.push(`M${x} 320V700`);
+    for (let y = 320; y <= 700; y += 76) tiles.push(`M0 ${y}H1366`);
+    const bubbles = [[930, 486, 34], [990, 466, 44], [1066, 458, 50], [1140, 466, 42], [1210, 484, 34], [1240, 410, 14], [960, 404, 12], [1110, 380, 18]]
+      .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" ${ink(3.5, '#7fb6d6')}/>`).join('');
     return svg('0 0 1366 1024', `
       <defs>
-        <pattern id="${p}t" width="72" height="72" patternUnits="userSpaceOnUse"><rect width="72" height="72" fill="#dff1f4"/><rect x="3" y="3" width="66" height="66" rx="10" fill="#e9f7f9"/><circle cx="20" cy="18" r="6" fill="#fff" opacity=".7"/></pattern>
-        <pattern id="${p}f" width="120" height="120" patternUnits="userSpaceOnUse"><rect width="120" height="120" fill="#fff6f8"/><rect width="60" height="60" fill="#fbdfe6"/><rect x="60" y="60" width="60" height="60" fill="#fbdfe6"/></pattern>
-        <linearGradient id="${p}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf3"/><stop offset="1" stop-color="#fbefe6"/></linearGradient>
+        <pattern id="${p}f" width="120" height="120" patternUnits="userSpaceOnUse"><rect width="120" height="120" fill="#fff6f8"/><rect width="60" height="60" fill="#fbdde5"/><rect x="60" y="60" width="60" height="60" fill="#fbdde5"/></pattern>
       </defs>
-      <rect width="1366" height="320" fill="url(#${p}w)"/>
-      <rect width="1366" height="26" fill="#fffaf5"/><rect y="26" width="1366" height="6" fill="#e2c48a"/>
-      <rect y="320" width="1366" height="390" fill="url(#${p}t)"/>
-      <rect y="306" width="1366" height="16" fill="#e2c48a"/>
-      <rect y="702" width="1366" height="322" fill="url(#${p}f)"/>
-      <rect y="696" width="1366" height="12" fill="#fffaf5"/>
+      <!-- かべ -->
+      <rect width="1366" height="320" fill="#fff7e8"/>
+      <rect y="-4" width="1366" height="30" fill="#fff" ${I(4)}/>
+      <rect y="320" width="1366" height="384" fill="#d9f1f3"/>
+      <path d="${tiles.join('')}" stroke="#b3dde2" stroke-width="3"/>
+      <rect y="306" width="1366" height="18" fill="#fff" ${I(4)}/>
+      <!-- ゆか -->
+      <rect y="700" width="1366" height="324" fill="url(#${p}f)"/>
+      <rect y="694" width="1366" height="14" fill="#fff" ${I(4)}/>
       <!-- まるい まど -->
-      <circle cx="683" cy="150" r="88" fill="#cfe9f7" stroke="#fffaf5" stroke-width="16"/>
-      <circle cx="683" cy="150" r="88" fill="none" stroke="#e2c48a" stroke-width="4"/>
-      <path d="M683 62v176M595 150h176" stroke="#fffaf5" stroke-width="8"/>
-      <g fill="#fff" opacity=".9"><ellipse cx="640" cy="120" rx="26" ry="9"/><ellipse cx="724" cy="188" rx="22" ry="8"/></g>
+      <circle cx="683" cy="160" r="86" fill="#cdeaf8" ${I(5)}/>
+      <circle cx="683" cy="160" r="100" fill="none" stroke="#fff" stroke-width="18"/>
+      <circle cx="683" cy="160" r="110" fill="none" ${I(4)}/>
+      <path d="M683 74v172M597 160h172" stroke="#fff" stroke-width="10"/>
+      <path d="M640 130 q10 -18 30 -12 q14 -12 28 0 q16 0 14 14 h-66z" fill="#fff" ${I(3)}/>
       <!-- かがみ -->
-      <ellipse cx="240" cy="230" rx="96" ry="120" fill="#e3f2f8" stroke="#e2c48a" stroke-width="14"/>
-      <path d="M190 170c20-30 50-40 70-36M180 220c10-16 20-24 30-26" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".9"/>
+      <ellipse cx="240" cy="226" rx="96" ry="120" fill="#e6f5fb" ${I(5)}/>
+      <ellipse cx="240" cy="226" rx="108" ry="132" fill="none" stroke="#f3cf8f" stroke-width="14"/>
+      <ellipse cx="240" cy="226" rx="116" ry="140" fill="none" ${I(4)}/>
+      <path d="M192 168c18 -28 46 -38 66 -34M182 214c10 -16 20 -24 30 -26" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
       <!-- タオルかけ -->
-      <path d="M70 450h300" stroke="#c9a253" stroke-width="10" stroke-linecap="round"/>
-      <circle cx="70" cy="450" r="12" fill="#e2c48a"/><circle cx="370" cy="450" r="12" fill="#e2c48a"/>
-      <path d="M120 446h200v150c-40 14-160 14-200 0z" fill="#f6b8c6"/>
-      <path d="M120 560c60 12 140 12 200 0M120 578c60 12 140 12 200 0" fill="none" stroke="#fff" stroke-width="6" opacity=".9"/>
+      <path d="M70 452h300" ${I(10)}/>
+      <path d="M70 452h300" stroke="#f3cf8f" stroke-width="5" stroke-linecap="round"/>
+      <path d="M120 448h200v150c-40 14-160 14-200 0z" fill="#f8b9c8" ${I(4)}/>
+      <path d="M120 560c60 12 140 12 200 0M120 578c60 12 140 12 200 0" fill="none" stroke="#fff" stroke-width="6"/>
       <!-- よくそう -->
       <g>
-        <g fill="#f8fdff" stroke="#a9d8ee" stroke-width="3"><circle cx="930" cy="500" r="40"/><circle cx="990" cy="476" r="52"/><circle cx="1070" cy="470" r="58"/><circle cx="1150" cy="480" r="50"/><circle cx="1220" cy="500" r="40"/><circle cx="1240" cy="420" r="16"/><circle cx="960" cy="420" r="12"/><circle cx="1110" cy="390" r="20"/></g>
-        <path d="M870 520h420c0 140-60 220-210 220S870 660 870 520z" fill="#ffffff" stroke="${LINE}" stroke-width="4"/>
-        <path d="M858 508h444a14 14 0 0 1 0 28H858a14 14 0 0 1 0-28z" fill="#ecd08f" stroke="#b8913f" stroke-width="3"/>
-        <path d="M900 560c20 80 80 130 170 136" fill="none" stroke="#eef6f9" stroke-width="16" stroke-linecap="round"/>
-        <path d="M950 724l-26 52M1210 724l26 52" stroke="#c9a253" stroke-width="16" stroke-linecap="round"/>
-        <circle cx="922" cy="780" r="12" fill="#e2c48a"/><circle cx="1238" cy="780" r="12" fill="#e2c48a"/>
+        ${bubbles}
+        <path d="M870 520h420c0 140-60 220-210 220S870 660 870 520z" fill="#ffffff" ${I(5)}/>
+        <path d="M858 506h444a15 15 0 0 1 0 30H858a15 15 0 0 1 0-30z" fill="#ffe08e" ${I(4)}/>
+        <path d="M902 566c20 76 80 124 168 130" fill="none" stroke="#e8f4f8" stroke-width="16" stroke-linecap="round"/>
+        <path d="M950 724l-26 52M1210 724l26 52" ${I(14)}/>
+        <path d="M950 724l-26 52M1210 724l26 52" stroke="#f3cf8f" stroke-width="7" stroke-linecap="round"/>
+        <!-- あひる -->
+        <g transform="translate(1238 488)">
+          <path d="M-30 4 C-34 -20 -10 -26 4 -16 C10 -40 40 -38 42 -16 C44 -2 34 6 24 8 C20 20 -24 22 -30 4Z" fill="#ffe27a" ${I(4)}/>
+          <path d="M40 -18 l18 4 l-16 8z" fill="#f6a24a" ${I(3)}/>
+          <circle cx="26" cy="-22" r="4" fill="${BGINK}"/>
+        </g>
       </g>
       <!-- うかぶ あわ -->
-      <g fill="#ffffff" fill-opacity=".55" stroke="#a9d8ee" stroke-width="2.5"><circle cx="480" cy="180" r="18"/><circle cx="520" cy="240" r="10"/><circle cx="860" cy="250" r="14"/><circle cx="420" cy="300" r="8"/></g>
+      <g fill="#fff" ${ink(3, '#7fb6d6')}><circle cx="480" cy="190" r="18"/><circle cx="520" cy="246" r="10"/><circle cx="860" cy="256" r="14"/><circle cx="420" cy="300" r="8"/></g>
       <!-- バスマット -->
-      <ellipse cx="560" cy="910" rx="330" ry="80" fill="#f6c3cf"/>
-      <ellipse cx="560" cy="910" rx="300" ry="64" fill="none" stroke="#fff" stroke-width="6" stroke-dasharray="4 14" stroke-linecap="round"/>
+      <ellipse cx="560" cy="910" rx="330" ry="80" fill="#f7c3d0" ${I(4)}/>
+      <ellipse cx="560" cy="910" rx="290" ry="60" fill="none" stroke="#fff" stroke-width="7" stroke-dasharray="4 16" stroke-linecap="round"/>
     `, 'preserveAspectRatio="xMidYMid slice"');
   }
 

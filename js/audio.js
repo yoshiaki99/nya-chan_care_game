@@ -234,26 +234,35 @@ G.Sound = (function () {
     F: [m('F2'), [m('A3'), m('C4'), m('F4')]], Am: [m('A2'), [m('A3'), m('C4'), m('E4')]],
     Dm: [m('D3'), [m('F3'), m('A3'), m('D4')]]
   };
-  function waltz() {
-    const mel = [
-      ['E5', 1], ['D5', 1], ['C5', 1], ['G4', 2], ['E4', 1], ['F4', 1], ['G4', 1], ['A4', 1], ['G4', 3],
-      ['D5', 1], ['C5', 1], ['B4', 1], ['A4', 2], ['G4', 1], ['E4', 1], ['G4', 1], ['C5', 1], ['E5', 3],
-      ['F5', 1], ['E5', 1], ['D5', 1], ['C5', 2], ['A4', 1], ['G4', 1], ['A4', 1], ['G4', 1], ['E5', 2], ['C5', 1],
-      ['D5', 1], ['E5', 1], ['F5', 1], ['B4', 2], ['D5', 1], ['C5', 1], ['G4', 1], ['E4', 1], ['C5', 3],
-      ['A5', 1], ['G5', 1], ['F5', 1], ['C5', 2], ['F5', 1], ['E5', 1], ['D5', 1], ['C5', 1], ['G4', 3],
-      ['F5', 1], ['E5', 1], ['D5', 1], ['B4', 2], ['G4', 1], ['C5', 1], ['E5', 1], ['G5', 1], ['C6', 3]
+  /* おへやの 曲：あかるく はずむ 4びょうし（ニャーちゃんの おうち。要件定義書 7.2） */
+  function hop() {
+    const bars = [
+      [['G4', .5], ['C5', .5], ['E5', .5], ['G5', .5], ['E5', 1], ['C5', 1]],
+      [['D5', .5], ['E5', .5], ['F5', .5], ['D5', .5], ['B4', 1], ['G4', 1]],
+      [['A4', .5], ['C5', .5], ['E5', .5], ['A5', .5], ['G5', 1], ['E5', 1]],
+      [['F5', .5], ['E5', .5], ['D5', .5], ['C5', .5], ['D5', 2]],
+      [['A4', .5], ['C5', .5], ['F5', .5], ['A5', .5], ['G5', 1], ['F5', 1]],
+      [['E5', .5], ['G5', .5], ['E5', .5], ['C5', .5], ['G4', 2]],
+      [['D5', .5], ['F5', .5], ['A5', .5], ['F5', .5], ['B4', .5], ['D5', .5], ['G5', 1]],
+      [['C5', 1], ['G4', .5], ['E4', .5], ['C5', 2]]
     ];
-    const chords = ['C', 'C', 'G7', 'G7', 'G7', 'G7', 'C', 'C', 'F', 'F', 'C', 'Am', 'Dm', 'G7', 'C', 'C', 'F', 'F', 'C', 'C', 'Dm', 'G7', 'C', 'C'];
+    const second = bars.slice(0, 3).concat([[['F5', .5], ['E5', .5], ['D5', .5], ['B4', .5], ['C5', 2]]], bars.slice(4, 7),
+      [[['C5', .5], ['E5', .5], ['G5', .5], ['E5', .5], ['C6', 2]]]);
+    const chords = ['C', 'G7', 'Am', 'G7', 'F', 'C', 'G7', 'C', 'C', 'G7', 'Am', 'G7', 'F', 'C', 'G7', 'C'];
     const ev = [];
     let b = 0;
-    mel.forEach(([n, d]) => { ev.push({ b, d, n: m(n), v: 0.15, i: 'p' }); b += d; });
+    bars.concat(second).forEach(bar => bar.forEach(([n, d]) => {
+      ev.push({ b, d: d * 0.72, n: m(n), v: 0.15, i: 'p' }); // すこし みじかく（はずむように）
+      b += d;
+    }));
     chords.forEach((c, bar) => {
       const [bass, tri] = CH[c];
-      ev.push({ b: bar * 3, d: 1, n: bass, v: 0.12, i: 'b' });
-      [1, 2].forEach(k => tri.forEach(n => ev.push({ b: bar * 3 + k, d: 0.7, n, v: 0.035, i: 'p' })));
+      [0, 2].forEach(k => ev.push({ b: bar * 4 + k, d: 0.8, n: k ? bass + 7 : bass, v: 0.11, i: 'b' }));
+      [1, 3].forEach(k => tri.forEach(n => ev.push({ b: bar * 4 + k, d: 0.32, n, v: 0.03, i: 'p' })));
+      [1.5, 3.5].forEach(k => tri.forEach(n => ev.push({ b: bar * 4 + k, d: 0.22, n: n + 12, v: 0.016, i: 'm' })));
     });
     ev.sort((a, c) => a.b - c.b);
-    return { ev, len: chords.length * 3, bpm: 116 };
+    return { ev, len: chords.length * 4, bpm: 132 };
   }
   function lullaby() {
     const A = [['C5', 1], ['C5', 1], ['C5', 1], ['D5', 1], ['E5', 2], ['D5', 2], ['C5', 1], ['E5', 1], ['D5', 1], ['D5', 1], ['C5', 4]];
@@ -267,7 +276,7 @@ G.Sound = (function () {
     ev.sort((a, c) => a.b - c.b);
     return { ev, len: 64, bpm: 84 };
   }
-  const SONGS = { room: waltz, lullaby };
+  const SONGS = { room: hop, lullaby };
 
   let bgm = null;
   function playBgm(name) {

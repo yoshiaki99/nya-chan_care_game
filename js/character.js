@@ -12,7 +12,7 @@ G.CHARACTER = {
   credit: 'キャラクター「ニャーちゃん」の著作権は、作者に帰属します。',
 
   // ゲームで使うキャラクターの絵（背景透過PNG。1254×1254 の正方形に、足もとを下にそろえて置く）
-  // まだ無い絵は fallbacks の絵で代わりに出す（いまは基準画 nya_base.png だけ）
+  // 表情・動作の絵は tools/make_poses.js が 基準画 nya_base.png から 作る。まだ無い絵は fallbacks の絵で代わりに出す
   images: {
     base:        'assets/characters/nya_base.png',
     face_normal: 'assets/characters/nya_face_normal.png',
@@ -27,7 +27,7 @@ G.CHARACTER = {
     act_yarn:    'assets/characters/nya_act_play_yarn.png',
     act_sleep:   'assets/characters/nya_act_sleep.png',
     act_wave:    'assets/characters/nya_act_wave.png',
-    title:       'assets/title/title_nya.png'
+    title:       'assets/characters/nya_act_wave.png' // タイトルは 手を ふる 絵
   },
 
   // 絵がまだ無いときに代わりに使う絵
@@ -39,8 +39,8 @@ G.CHARACTER = {
     title: 'face_happy'
   },
 
-  // 絵ごとの表示の大きさ（1 = 枠いっぱい）。丸くなって眠る絵（よこ長）などを描いたら ここで合わせる
-  poseScale: {},
+  // 絵ごとの表示の大きさ（1 = 枠いっぱい）。横に なって ねる 絵は 小さめに
+  poseScale: { act_sleep: 0.78 },
 
   // 絵ごとの横のずれの補正（高さに対する割合）
   poseShift: {},
@@ -59,26 +59,48 @@ G.CHARACTER = {
   //   eyes   = [左目, 右目]。それぞれ [x, y, 大きさ]（あいている目は黒目のまんなか、とじた目はまつげの線のまんなか）
   //   closed = 目をとじている絵 / cheeks = [左のほっぺ, 右のほっぺ] / mouth = [x, y, よこはば, たてはば]
   // ここに無い絵（おふろの あわ など）には メイクを描かない。絵を差し替えたら、ここも合わせる
-  face: {
-    base: { eyes: [[518, 338, 46], [706, 320, 46]], cheeks: [[430, 413], [829, 391]], mouth: [615, 392, 112, 30] }
-  },
+  face: (function () {
+    // 立っている 絵は みんな 基準画と 同じ 顔の いち（tools/make_poses.js で 目・口だけ かきかえている）
+    const F = { eyes: [[518, 338, 46], [706, 320, 46]], cheeks: [[430, 413], [829, 391]], mouth: [617, 430, 124, 26] };
+    const closed = Object.assign({}, F, { closed: true, eyes: [[518, 340, 46], [706, 322, 46]] });
+    return {
+      base: F, face_normal: F, face_prim: closed, face_lonely: Object.assign({}, F, { eyes: [[518, 346, 40], [706, 328, 40]] }),
+      face_happy: closed, face_dreamy: closed, face_sleepy: closed,
+      act_eat: closed, act_wave: closed, act_yarn: closed, act_fluffy: closed,
+      // 横に なって ねる 絵（基準画を 右に 90° まわした 座標：x' = 1227 − y、y' = x + 165）
+      act_sleep: { eyes: [[887, 683, 46], [905, 871, 46]], closed: true, cheeks: [[814, 595], [836, 994]], mouth: [797, 782, 26, 124] }
+    };
+  })(),
+
   // シールを はれる顔のはんい（目と目を むすぶ線を 1 としたときの、だ円）
   decoArea: { u: 0.55, v: 0.05, ru: 0.95, rv: 0.62 },
 
-  // アクセサリーを つける場所。アクセサリーの絵は js/accessory.js の 座標で描いてある。
-  //   pivot = アクセサリーの絵の 目じるし（あたま=おでこ、かお=目と目のあいだ、くび=くびの まんなか、
-  //           しっぽ=しっぽのまんなか、せなか=せなか）
-  //   poses = 絵ごとに、目じるしが来る場所 [x, y, 回転(度), 大きさ]。ほかの絵の名前を書くと その絵と同じ
+  // アクセサリーを つける場所。アクセサリー・ふく・くびのリボンの絵は、基準画の 座標で描いてある（js/accessory.js・js/clothes.js）。
+  //   pivot = 絵の上の 目じるし（あたま=おでこの上、かお=目と目のあいだ、くび=くびの まんなか、しっぽ=しっぽの まんなか、
+  //           せなか=せなか、body=からだ、bow=くびのリボンの 結び目）
+  //   poses = 絵ごとに、目じるしが来る場所 [x, y, 回転(度), 大きさ, オプション]。ほかの絵の名前を書くと その絵と同じ
   // ここに無い絵（おふろの あわ など）・書いていない場所には つけない。絵を差し替えたら、ここも合わせる
-  accessory: {
-    pivot: { head: [700, 300], face: [756, 498], neck: [843, 760], tail: [300, 952], back: [550, 800] },
-    poses: {
-      base: { head: [700, 222, 12, 1.0], face: [612, 330, 12, 0.76], neck: [660, 600, 4, 0.9], tail: [985, 965, -20, 0.8], back: [615, 820, 0, 0.9] }
-    }
-  },
+  accessory: (function () {
+    const pivot = { head: [615, 200], face: [612, 330], neck: [617, 604], tail: [930, 1045], back: [615, 760], body: [615, 880], bow: [0, 0] };
+    const base = {};
+    Object.keys(pivot).forEach(k => { base[k] = pivot[k].concat([0, 1]); });
+    base.bow = [617, 604, 0, 1];
+    return {
+      pivot,
+      poses: {
+        base,
+        face_normal: 'base', face_happy: 'base', face_dreamy: 'base', face_prim: 'base', face_sleepy: 'base', face_lonely: 'base',
+        act_eat: 'base', act_yarn: 'base', act_fluffy: 'base',
+        // 手を あげている 絵：左の そでは 描かない
+        act_wave: Object.assign({}, base, { body: [615, 880, 0, 1, { noL: true }] }),
+        // ねる 絵（右に 90° まわした 絵）：もうふの 中は つけない（ぼうしだけ。メガネも はずす）
+        act_sleep: { head: [1027, 780, 90, 1] }
+      }
+    };
+  })(),
 
-  // あそぶ（毛糸玉）の絵の中の毛糸玉の位置。絵の外わくに対する割合
-  yarnBallInPose: { x: 0.70, y: 0.87 },
+  // あそぶ（毛糸玉）の絵の中の毛糸玉の位置。絵の外わくに対する割合（tools/make_poses.js の YARN）
+  yarnBallInPose: { x: 0.287, y: 0.905 },
 
   // 鳴き声・声の高さ（読み上げ）
   voicePitch: 1.45,
@@ -93,7 +115,7 @@ G.CHARACTER = {
     bored:       'ねえねえ、 いっしょに あそぼ ニャー？',
     sleepy:      'ふぁ〜あ、 ねむく なっちゃった ニャー',
     lonely:      'さみしい ニャー…',
-    content:     ['おひさま ぽかぽか ニャー', 'きょうも いい きもち ニャー！', 'ぼく、 おさかなが だいすき ニャー', 'なでなで してくれる ニャー？', 'ピアノの おと、 すき ニャー'],
+    content:     ['おひさま ぽかぽか ニャー', 'きょうも いい きもち ニャー！', 'わたし、 おさかなが だいすき ニャー', 'なでなで してくれる ニャー？', 'ピアノの おと、 すき ニャー'],
     pet:         ['ゴロゴロ ニャー…', 'きもちいい ニャー〜', 'うふふ、 くすぐったい ニャー'],
 
     fullFood:    'もう おなか いっぱい ニャー！',
@@ -124,7 +146,7 @@ G.CHARACTER = {
     teaserIntro: 'ねこじゃらしを ゆびで うごかして ニャー',
     teaserCheer: ['にゃっ ニャー！', 'えいっ ニャー！', 'つかまえた ニャー！'],
     teaserDone:  'たのしかった！ ねこじゃらし だいすき ニャー',
-    hideIntro:   'かくれんぼ しよ！ ぼくを さがして ニャー',
+    hideIntro:   'かくれんぼ しよ！ わたしを さがして ニャー',
     hideAsk:     'もういいかい ニャー？',
     hideReady:   'もういいよ ニャー！',
     hideMiss:    ['ここには いない ニャー', 'うふふ、 どこかな ニャー？'],
@@ -150,7 +172,7 @@ G.CHARACTER = {
     teaSip:      'ふーふー… いい かおり ニャー',
     teaYum:      'ぺろり！ おかしも おいしい ニャー',
     teaDone:     'たのしい おちゃかい だった。 ありがとう ニャー！',
-    photoIntro:  'しゃしんを とって くれる ニャー？ カメラの ボタンを おして ニャー',
+    photoIntro:  'しゃしんを とって くれるの？ カメラの ボタンを おして ニャー',
     // photoPose は js/screens/play_photo.js の ポーズと 同じ じゅん
     photoPose:   ['にっこり ニャー！', 'おすまし ニャー', 'バイバイ ニャー！', 'うっとり ニャー'],
     photoSnap:   ['かわいく とれた ニャー？', 'もう いちまい ニャー！', 'すてき ニャー！'],
@@ -166,13 +188,19 @@ G.CHARACTER = {
     dressDone:   'じゃーん！ にあってる ニャー？',
     dressLocked: 'ハートを あつめると つけられる ニャー',
 
+    clothesIntro: 'どの ふくを きようかな ニャー？',
+    clothesDone:  ['じゃーん！ にあってる ニャー？', 'この ふく、 すき ニャー！', 'くるっと まわって… どう ニャー？'],
+    clothesColor: 'この いろも すてき ニャー',
+    clothesOff:   'ぬいだ ニャー',
+    clothesNone:  'いまは なにも きて ない ニャー',
+
     accIntro:    'どれを つけて みる ニャー？',
-    accDone:     ['じゃーん！ にあってる ニャー？', 'わあ、 かわいい！ ありがとう ニャー！', 'うふふ、 かっこいい ニャー？'],
+    accDone:     ['じゃーん！ にあってる ニャー？', 'わあ、 かわいい！ ありがとう ニャー！', 'うふふ、 すてき ニャー？'],
     accOff:      'はずした ニャー',
     accNone:     'まだ なにも つけて ない ニャー',
     accSeason:   'に なったら プレゼントが とどく ニャー', // まえに「じゅうにがつ」などが つく
 
-    makeupIntro:   'メイク して くれる ニャー？ うれしい ニャー',
+    makeupIntro:   'メイク して くれるの？ うれしい ニャー',
     makeupPick:    'すきな いろを えらんで ニャー',
     cheekHint:     'ほっぺを ポンポン して ニャー',
     lipHint:       'おくちに ぬりぬり して ニャー',
@@ -189,11 +217,24 @@ G.CHARACTER = {
     bye:         'また あそびに きてね ニャー！',
     limit:       'きょうは ここまで。 また あした ニャー',
 
+    // ニューちゃんが 遊びに来たとき（js/character_nyu.js・js/nyu.js）
+    nyuWelcome:  'ニューちゃん、 いらっしゃい ニャー！',
+    nyuIntro:    'わたしの いもうとの ニューちゃん ニャー！',
+    nyuReply:    ['いいよ ニャー！', 'うふふ ニャー', 'ニューちゃん、 かわいい ニャー'],
+    nyuThanks:   'ありがとう ニャー！',
+    nyuShy:      'えへへ ニャー',
+    nyuBye:      'また きてね ニャー！',
+
     stickerGet:  'シールを もらった ニャー！',
     unlockGet:   'あたらしい リボンが ふえた ニャー！',
     unlockMakeup: 'あたらしい メイクが ふえた ニャー！',
     unlockAcc:   'あたらしい アクセサリーが ふえた ニャー！',
+    unlockClothes: 'あたらしい ふくが ふえた ニャー！',
     giftAcc:     'プレゼントが とどいた ニャー！',
     dailyHeart:  'きょうの ごあいさつ ニャー'
   }
 };
+
+// キャラクターごとの 設定（ニューちゃんは js/character_nyu.js）
+G.CHARACTERS = G.CHARACTERS || {};
+G.CHARACTERS.nya = G.CHARACTER;

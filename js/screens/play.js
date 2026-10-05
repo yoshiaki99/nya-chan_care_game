@@ -83,6 +83,7 @@ G.Screens.yarn = {
     const chara = new G.Chara(scr, { x: 380, y: 900, h: 420 });
     chara.setMood('face_happy');
     chara.setPose('face_happy', 0);
+    G.NyuVisit.joinPlay(scr, sc, { x: 1210, y: 940, h: 330 }); // ニューちゃんが 来ていたら いっしょに
     const bubble = new UI.Bubble(scr);
     const placeBubble = () => { const p = chara.bubbleSpot(0.06, 420); bubble.place(p.x, p.y, p.side); }; // リボンの高さ（しっぽより上）
 
@@ -290,6 +291,7 @@ G.Screens.butterfly = {
     const chara = new G.Chara(scr, { x: 683, y: 900, h: 420 });
     chara.setMood('face_happy');
     chara.setPose('face_happy', 0);
+    G.NyuVisit.joinPlay(scr, sc, { x: 1210, y: 940, h: 330 }); // ニューちゃんが 来ていたら いっしょに
     const bubble = new UI.Bubble(scr);
     const placeBubble = () => { const p = chara.bubbleSpot(0.06, 420); bubble.place(p.x, p.y, p.side); }; // リボンの高さ（しっぽより上）
 

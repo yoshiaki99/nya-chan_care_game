@@ -20,9 +20,20 @@ G.Screens.photo = {
     UI.pos(finder, VF.x, VF.y, VF.w, VF.h);
     scr.appendChild(finder);
 
-    const chara = new G.Chara(scr, { x: VF.x + VF.w / 2, y: VF.y + VF.h - 50, h: 470 });
+    // ニューちゃんが 来ていたら いっしょに うつる（F-94）。ニャーちゃんは すこし 左へ
+    const withNyu = G.NyuVisit.active;
+    const chara = new G.Chara(scr, { x: VF.x + VF.w * (withNyu ? 0.38 : 0.5), y: VF.y + VF.h - 50, h: 470 });
     chara.setMood('face_happy');
     chara.setPose('face_happy', 0);
+    const nyu = G.NyuVisit.joinPlay(scr, sc, { x: VF.x + VF.w * 0.76, y: VF.y + VF.h - 46, h: 470 * G.CHARACTERS.nyu.scale, cheer: false });
+    const NYU_POSES = ['happy', 'base', 'wave', 'dreamy']; // ニャーちゃんの ポーズに あわせる
+
+    // はいけい（しゃしんに いれる）：画像が なければ ゲームの中で 描いた 絵を 画像に して つかう
+    let bgImg = G.Assets.img('bg_room');
+    if (!bgImg && G.Art.all.bg_room) {
+      bgImg = new Image();
+      bgImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(G.Art.all.bg_room().replace('<svg ', '<svg width="1366" height="1024" '));
+    }
     const bubble = new UI.Bubble(scr);
     const placeBubble = () => { const p = chara.topSpot(0.5, 0.02); bubble.place(p.x, p.y, p.side); };
 
@@ -48,6 +59,7 @@ G.Screens.photo = {
       chara.face(Math.random() < 0.3 ? -1 : 1);
       chara.setPose(p.pose, 260);
       p.move();
+      if (nyu) { nyu.setPose(NYU_POSES[poseI]); nyu.hop(); }
       if (speak) { placeBubble(); bubble.say(L.photoPose[poseI], { hold: 300 }); }
     }
     sc.interval(() => {
@@ -71,7 +83,7 @@ G.Screens.photo = {
       g.fillStyle = '#fbe6ea';
       g.fillRect(0, 0, OW, OH);
       // はいけい：画面と 同じ みえかた（#bg は 画面いっぱいに cover で ひろげている）
-      const img = G.Assets.img('bg_room');
+      const img = bgImg && bgImg.complete && bgImg.naturalWidth ? bgImg : null;
       if (img) {
         const vw = window.innerWidth, vh = window.innerHeight, sc0 = UI.getScale();
         const s = Math.max(vw / img.naturalWidth, vh / img.naturalHeight);
@@ -112,6 +124,14 @@ G.Screens.photo = {
         g.drawImage(cv, -w * k / 2, -h * k / 2, w * k, h * k);
         g.restore();
       });
+      // ニューちゃん（来ていたら）
+      if (nyu) {
+        const r = UI.rectOf(nyu.flip);
+        [nyu.img, nyu.cloth].forEach(im => {
+          if (!im.complete || !im.naturalWidth || im.style.display === 'none') return;
+          g.drawImage(im, (r.x - VF.x) * k, (r.y - VF.y) * k, r.w * k, r.h * k);
+        });
+      }
       // ひづけ（むかしの カメラみたいに）
       const d = new Date();
       g.font = 'bold 22px "Courier New", monospace';

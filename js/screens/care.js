@@ -352,7 +352,7 @@ G.Screens.sleep = {
     UI.pos(cushion, 451, 600, 464, 303); // ねている絵より ひとまわり大きく
     cushion.appendChild(G.Assets.node('item_cushion', 'cu-art'));
     scr.appendChild(cushion);
-    const chara = new G.Chara(scr, { x: 290, y: 800, h: 440 });
+    const chara = new G.Chara(scr, { x: 290, y: 800, h: 440, wearOver: { body: G.CLOTHES_SLEEP } }); // ねんねは パジャマで
     chara.setMood('face_sleepy');
     chara.setPose('face_sleepy', 0);
     const bubble = new UI.Bubble(scr);

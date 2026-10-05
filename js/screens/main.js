@@ -72,7 +72,11 @@ G.Screens.home = {
     chara.setMood(moodFace());
     chara.setPose(chara.mood, 0);
     const bubble = new UI.Bubble(scr);
-    const placeBubble = () => { const p = chara.bubbleSpot(0.34); bubble.place(p.x, p.y, p.side); };
+    const placeBubble = () => {
+      // ニューちゃんが 右に いる ときは、ふきだしを 左に 出す
+      if (G.NyuVisit.active) { const r = chara.rect(); bubble.place(r.x + r.w * 0.2, r.y + r.h * 0.34, 'left'); return; }
+      const p = chara.bubbleSpot(0.34); bubble.place(p.x, p.y, p.side);
+    };
     sc.timeout(placeBubble, 30);
     const say = async (text, face, ms = 2600) => {
       placeBubble();
@@ -80,6 +84,9 @@ G.Screens.home = {
       await bubble.say(text);
     };
     G.petting(chara, sc, { enabled: () => !G.isRewarding() });
+
+    /* ニューちゃん（妹）が 遊びに来る（5.9） */
+    G.NyuVisit.enterHome({ scr, sc, chara, sayNya: say, isBusy: () => busy, setBusy: (b) => { busy = b; } });
 
     /* おえかきで かいた え（ピアノの上の かべに かざる） */
     const drawn = S.drawing();
@@ -118,7 +125,7 @@ G.Screens.home = {
         return;
       }
       G.Voice.speak(c.label, 'guide');
-      G.go(c.id === 'play' ? 'playmenu' : c.id === 'dress' ? (G.lastDressTab || 'dress') : c.id); // おしゃれは さいごに見た リボン／メイク
+      G.go(c.id === 'play' ? 'playmenu' : c.id === 'dress' ? (G.lastDressTab || 'dress') : c.id); // おしゃれは さいごに見た リボン／ふく／メイク／アクセサリー
     }
 
     /* 一番下がっているメーターのヒント（F-14） */
@@ -188,9 +195,10 @@ G.Screens.home = {
       await sc.wait(300);
       await sc.guard(hint(true) || Promise.resolve());
       busy = false;
+      await sc.guard(G.NyuVisit.afterIntro());
       hintAt = Date.now() + 22000;
     })();
-    sc.interval(() => { if (!busy) G.checkRewards(); }, 1500);
+    sc.interval(() => { if (!busy) G.checkRewards(); G.NyuVisit.tick(); }, 1500);
   },
   leave() { this.onTick = null; }
 };
@@ -202,6 +210,7 @@ G.Screens.end = {
     const UI = G.UI, L = G.CHARACTER.lines;
     const reason = params.reason || 'bye';
     const night = reason === 'night';
+    const withNyu = !night && G.NyuVisit.active; // ニューちゃんが 来ていたら、ふきだしを 左に
     if (night) G.setBg('bg_room_night');
     G.State.saveNow();
     const title = UI.el('div', 'end-title', night ? 'おやすみなさい' : 'またね！');
@@ -220,7 +229,8 @@ G.Screens.end = {
 
     (async () => {
       await sc.wait(500);
-      const p = night ? chara.topSpot(0.55, 0.02) : chara.bubbleSpot(0.3);
+      const r = chara.rect();
+      const p = night ? chara.topSpot(0.55, 0.02) : withNyu ? { x: r.x + r.w * 0.2, y: r.y + r.h * 0.3, side: 'left' } : chara.bubbleSpot(0.3);
       bubble.place(p.x, p.y, p.side);
       if (!night) chara.wiggle();
       G.Sound.play(night ? 'lightsOff' : 'meow');
@@ -237,6 +247,7 @@ G.Screens.end = {
       again.style.pointerEvents = '';
     })();
     if (night) sc.interval(() => { const h = chara.point(0.78, 0.3); UI.zzz(h.x, h.y); }, 1600);
+    else G.NyuVisit.bye(scr, sc); // ニューちゃんが 来ていたら いっしょに 手を ふる
     UI.tap(again, () => G.go('title'), { say: 'はじめに もどる' });
   }
 };

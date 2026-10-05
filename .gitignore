@@ -10,3 +10,6 @@ tools/voice_wav/
 # Python
 __pycache__/
 *.pyc
+
+# 声の候補の WAV（大きい。聞きくらべ.html と voices.json だけ入れる）
+assets/voice_samples/*/

@@ -71,7 +71,7 @@ G.Screens = G.Screens || {};
     const stickers = G.State.takeNewStickers();
     const unlocks = G.State.takeNewUnlocks();
     const gifts = G.State.takeSeasonGifts();
-    if (!stickers.length && !unlocks.ribbons.length && !unlocks.makeup.length && !unlocks.acc.length && !gifts.length) return false;
+    if (!stickers.length && !unlocks.ribbons.length && !unlocks.makeup.length && !unlocks.acc.length && !unlocks.clothes.length && !gifts.length) return false;
     rewarding = true;
     for (const i of stickers) {
       const s = G.STICKERS[i];
@@ -88,6 +88,10 @@ G.Screens = G.Screens || {};
     for (const a of unlocks.acc) {
       const L = G.CHARACTER.lines;
       await UI.popup({ art: G.Accessory.swatch(a.id), title: L.unlockAcc, speak: L.unlockAcc + ' ' + a.label });
+    }
+    for (const c of unlocks.clothes) {
+      const L = G.CHARACTER.lines;
+      await UI.popup({ art: G.Accessory.swatch(c.id), title: L.unlockClothes, speak: L.unlockClothes + ' ' + c.label });
     }
     for (const a of gifts) { // きせつの プレゼント
       const L = G.CHARACTER.lines;
@@ -132,6 +136,9 @@ G.Screens = G.Screens || {};
           <label>BGM<input type="range" min="0" max="100" data-k="bgm" value="${Math.round(st.bgm * 100)}"></label>
           <label>効果音<input type="range" min="0" max="100" data-k="sfx" value="${Math.round(st.sfx * 100)}"></label>
           <div class="row"><span>読み上げ</span><div class="seg" data-k="voice"><button data-v="1">あり</button><button data-v="0">なし</button></div></div></section>
+        <section><h3>ニューちゃん（妹）が遊びに来る</h3>
+          <div class="seg" data-k="nyu"><button data-v="1">あり</button><button data-v="0">なし</button></div>
+          <p class="note">「あり」にすると、1日に1回まで、ときどきおへやに遊びに来ます（来ない日もあります）。</p></section>
         <section><h3>げんきメーターの減り方</h3>
           <div class="seg" data-k="decay"><button data-v="real">実際の時間（1〜2時間で1目盛り）</button><button data-v="play">遊んでいる間だけ（10〜20分で1目盛り）</button></div></section>
         <section><h3>オフラインで遊ぶ</h3>
@@ -157,7 +164,7 @@ G.Screens = G.Screens || {};
       wrap.querySelectorAll('.seg').forEach(seg => {
         const k = seg.dataset.k;
         let v = S.settings()[k];
-        if (k === 'voice') v = v ? '1' : '0';
+        if (k === 'voice' || k === 'nyu') v = v ? '1' : '0';
         seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', String(v) === b.dataset.v));
       });
     };
@@ -166,7 +173,7 @@ G.Screens = G.Screens || {};
       const k = b.parentElement.dataset.k;
       let v = b.dataset.v;
       if (k === 'limit') v = parseInt(v, 10);
-      if (k === 'voice') v = v === '1';
+      if (k === 'voice' || k === 'nyu') v = v === '1';
       S.setSetting(k, v);
       G.Sound.play('tap');
       sync();
