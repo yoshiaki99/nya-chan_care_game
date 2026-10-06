@@ -169,12 +169,9 @@ G.Art = (function () {
       <path d="M76.5 128.1A25 6.2 0 0 0 123.5 128.1M123.5 123.9A25 6.2 0 0 0 76.5 123.9" opacity=".85"/>
       </g>
       <ellipse cx="66" cy="121" rx="7" ry="2.2" fill="#fff" opacity=".9"/>
-      <path d="M100 22C93 37 77 50 77 68a23 23 0 0 0 46 0C123 50 107 37 100 22z" fill="#8fd0f6" stroke="#5b9fcf" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M88 63c-2 7 0 14 6 18" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
-      <ellipse cx="110" cy="57" rx="3.5" ry="5" fill="#fff" opacity=".8"/>
       <g fill="#a6d8f5">
-      <path d="M52 54q1.5 7 8 8-6.5 1-8 8-1.5-7-8-8 6.5-1 8-8z"/>
-      <path d="M148 70q1 5 6 6-5 1-6 6-1-5-6-6 5-1 6-6z"/>
+      <path d="M60 78q1.5 7 8 8-6.5 1-8 8-1.5-7-8-8 6.5-1 8-8z"/>
+      <path d="M140 84q1 5 6 6-5 1-6 6-1-5-6-6 5-1 6-6z"/>
       </g>`),
     item_parfait: () => svg('0 0 200 200', `
       <ellipse cx="100" cy="177" rx="74" ry="14" fill="#fffdf9" stroke="#b9a294" stroke-width="3"/>
