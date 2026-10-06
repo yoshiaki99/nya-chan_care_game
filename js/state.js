@@ -18,7 +18,8 @@ G.State = (function () {
       meters: { hunger: 2, clean: 3.5, fun: 2.5, energy: 4.5 },
       hearts: 0,
       ribbon: 'none',
-      makeup: { cheek: null, lip: null, eye: null, deco: [] },
+      ribbonSide: 'right', // リボンを つける みみ（'left' | 'right'。おしゃれの 画面で 見て ひだり・みぎ）
+      makeup: { cheek: null, lip: null, eye: null },
       wear: { head: null, face: null, neck: null, back: null, tail: null, body: null }, // アクセサリー・ふく（body）
       clothColor: {}, // ふくの 色（ふくの id → colors の 何ばんめ）
       gifts: [],      // とどいた きせつの アクセサリー
@@ -51,10 +52,15 @@ G.State = (function () {
       const raw = localStorage.getItem(KEY);
       d = raw ? merge(defaults(), JSON.parse(raw)) : defaults();
     } catch (e) { d = defaults(); }
-    // こわれた シール（いちが わからない もの）は すてる。のこすと ニャーちゃんが 描けなくなる
     const m = d.makeup;
     if (!m || typeof m !== 'object') d.makeup = defaults().makeup;
-    else m.deco = (Array.isArray(m.deco) ? m.deco : []).filter(s => s && Number.isFinite(s.u) && Number.isFinite(s.v) && Number.isFinite(s.rot));
+    else delete m.deco; // 顔の シールは なくした（2026-10-06）。前の セーブに のこっていても すてる
+    // なくなった ふく・アクセサリー（セーラーふく など）を 着ていたら はずす。のこすと 絵が 描けない
+    Object.keys(d.wear).forEach(slot => {
+      const id = d.wear[slot];
+      if (id && !(slot === 'body' ? G.CLOTHES : G.ACCESSORIES).some(x => x.id === id)) d.wear[slot] = null;
+    });
+    if (!G.RIBBONS.some(r => r.id === d.ribbon)) d.ribbon = 'none';
     catchUp();
     applySettings();
   }
@@ -134,18 +140,14 @@ G.State = (function () {
 
   const ribbon = () => d.ribbon;
   function setRibbon(id) { d.ribbon = id; save(); }
+  const ribbonSide = () => (d.ribbonSide === 'left' ? 'left' : 'right');
+  function setRibbonSide(side) { d.ribbonSide = side === 'left' ? 'left' : 'right'; save(); }
 
   /* ---- メイク ---- */
   const makeup = () => d.makeup;
   function setMakeup(cat, id) { d.makeup[cat] = id; save(); }
-  function addDeco(s) {
-    if (!s || !Number.isFinite(s.u) || !Number.isFinite(s.v) || !Number.isFinite(s.rot)) return;
-    d.makeup.deco.push(s);
-    while (d.makeup.deco.length > G.MAKEUP_DECO_MAX) d.makeup.deco.shift();
-    save();
-  }
-  function hasMakeup() { const m = d.makeup; return !!(m.cheek || m.lip || m.eye || m.deco.length); }
-  function clearMakeup() { d.makeup = { cheek: null, lip: null, eye: null, deco: [] }; save(); }
+  function hasMakeup() { const m = d.makeup; return !!(m.cheek || m.lip || m.eye); }
+  function clearMakeup() { d.makeup = { cheek: null, lip: null, eye: null }; save(); }
 
   /* ---- アクセサリー ---- */
   const wear = () => d.wear;
@@ -231,7 +233,7 @@ G.State = (function () {
     load, save, saveNow, hasSave, tick, catchUp,
     meter, setMeter, addMeter, level, isFull, lowest,
     addHearts, hearts, stickerCount, takeNewStickers, takeNewUnlocks, isUnlocked, heartsToNextSticker,
-    ribbon, setRibbon, makeup, setMakeup, addDeco, hasMakeup, clearMakeup,
+    ribbon, setRibbon, ribbonSide, setRibbonSide, makeup, setMakeup, hasMakeup, clearMakeup,
     wear, setWear, hasAcc, takeSeasonGifts, clothes, setClothes, clothColor, clothColorIndex, setClothColor, photos, addPhoto, drawing, setDrawing, isNewDay, markDay, favoriteFood, pet,
     nyuCameToday, nyuVisits, markNyuVisit,
     playSecToday, overLimit, settings, setSetting, reset

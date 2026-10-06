@@ -1,6 +1,6 @@
 /*
  * アクセサリー（おしゃれ）：ぼうし・メガネ・くびかざり・はね・しっぽのリボン。
- * くびのリボン（えらんでいる リボン）と ふく（js/clothes.js）も、ここで いっしょに かさねる。
+ * みみの リボン（えらんでいる リボン）と ふく（js/clothes.js）も、ここで いっしょに かさねる。
  * 絵はこのファイルの SVG。ニャーちゃんの 基準画（nya_base.png）の 座標で、線画風（黒い線＋パステル）に 描いてある。
  * 一度 画像にしておき、G.Chara が ニャーちゃんの絵の まえ（はねは うしろ）に かさねる。
  * 絵ごとの つける場所は G.CHARACTER.accessory。
@@ -10,7 +10,7 @@ window.G = window.G || {};
 G.Accessory = (function () {
   const RS = 0.8;   // 画像にするときの大きさ（ニャーちゃんの絵の下ごしらえ 1000/1254 と だいたい同じ）
   const PAD = 16;   // ふちのゆらぎ・線の太さのぶん
-  const FRONT = ['body', 'tail', 'bow', 'neck', 'face', 'head']; // まえに描く順（あとのものほど手前）。body = ふく、bow = くびのリボン
+  const FRONT = ['body', 'tail', 'neck', 'face', 'bow', 'head']; // まえに描く順（あとのものほど手前）。body = ふく、bow = みみの リボン（ぼうしの うしろ）
   const BACK = ['back'];
 
   const HEART = 'M16 28C6 20 1 14 1 8.5 1 4 4.5 1 8.5 1c3 0 5.5 1.7 7.5 4.5C18 2.7 20.5 1 23.5 1 27.5 1 31 4 31 8.5 31 14 26 20 16 28z';
@@ -156,11 +156,11 @@ G.Accessory = (function () {
 
     tailbow: (rb) => at(930, 1045, bow(rb, 170), -24),
 
-    // くびのリボン（おしゃれの リボン）。結び目が (0, 0)
-    neckbow: (rb) => bow(rb, 190)
+    // みみの リボン（おしゃれの リボン）。結び目が (0, 0)
+    earbow: (rb) => bow(rb, 190)
   };
   // リボンの色で 絵が かわるもの
-  const BY_RIBBON = { beret: true, tailbow: true, neckbow: true };
+  const BY_RIBBON = { beret: true, tailbow: true, earbow: true };
 
   // リボン「なし」のときの ベレーぼう・しっぽのリボンは ピンク（要件定義書 F-68）
   const ribbonOf = (id) => G.RIBBONS.find(r => r.id === id && r.id !== 'none') || G.RIBBONS.find(r => r.id === 'pink');
@@ -242,9 +242,10 @@ G.Accessory = (function () {
     const P = G.CHARACTER.accessory.pivot;
     const out = [];
     FRONT.concat(BACK).forEach(slot => {
-      const id = slot === 'bow' ? (ribbonId && ribbonId !== 'none' ? 'neckbow' : null) : wear[slot];
-      if (!id || !known(id) || !A[slot] || !P[slot] || (hide && hide.indexOf(slot) >= 0)) return;
-      const [tx, ty, rot, sc, opts] = A[slot], [px, py] = P[slot];
+      const id = slot === 'bow' ? (ribbonId && ribbonId !== 'none' ? 'earbow' : null) : wear[slot];
+      const at = slot === 'bow' ? 'bow' + (G.State.ribbonSide() === 'left' ? 'L' : 'R') : slot; // リボンは えらんだ みみ
+      if (!id || !known(id) || !A[at] || !P[slot] || (hide && hide.indexOf(slot) >= 0)) return;
+      const [tx, ty, rot, sc, opts] = A[at], [px, py] = P[slot];
       const th = rot * Math.PI / 180, k2 = sc * geo.s;
       const a = Math.cos(th) * k2, b = Math.sin(th) * k2;
       // canvas = (T + R·sc·(p − P))·s − (x0, y0)

@@ -112,21 +112,7 @@ G.Sound = (function () {
     const g = ctx.createGain(); env(g, t, v, 0.02, dur);
     o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + 0.05);
   }
-  function sing(midi, t, dur = 0.45, v = 0.1, dest = sfxBus) {
-    const f = mtof(midi + 12);
-    const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = f;
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 5.5;
-    const lg = ctx.createGain(); lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.012, t + 0.25);
-    lfo.connect(lg); lg.connect(o.frequency);
-    const bp = ctx.createBiquadFilter(); bp.type = 'lowpass'; bp.frequency.value = 2600;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(v, t + 0.05);
-    g.gain.setValueAtTime(v, t + dur * 0.7);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.15);
-    o.connect(bp); bp.connect(g); g.connect(dest);
-    o.start(t); lfo.start(t); o.stop(t + dur + 0.2); lfo.stop(t + dur + 0.2);
-  }
+
 
   /* ---- 効果音 ---- */
   const sfx = {
@@ -171,19 +157,13 @@ G.Sound = (function () {
     lock: () => { tone({ f: 330, dur: 0.12, vol: 0.12 }); tone({ f: 330, dur: 0.12, vol: 0.1, at: 0.14 }); },
     lightsOff: () => tone({ type: 'triangle', f: 660, f2: 330, dur: 0.6, vol: 0.06, attack: 0.05 }),
     wake: () => [m('G5'), m('C6'), m('E6'), m('G6')].forEach((n, i) => musicBox(n, ctx.currentTime + i * 0.12, 0.8, 0.16)),
-    // あそぶ（ねこじゃらし・かくれんぼ・おえかき・ケーキ・おちゃかい・しゃしん）
+    // あそぶ（ねこじゃらし・ネズミの おもちゃ・おえかき・しゃしん）・おふろの おもちゃ
+    squeak: () => { tone({ type: 'triangle', f: 1900, f2: 2600, dur: 0.07, vol: 0.07 }); tone({ type: 'triangle', f: 2200, f2: 3000, dur: 0.06, vol: 0.06, at: 0.09 }); },
     pounce: () => { tone({ f: 380, f2: 900, dur: 0.16, vol: 0.12 }); noiseHit({ at: 0.14, f: 1800, q: 1.2, dur: 0.08, vol: 0.12 }); },
-    peek: () => tone({ type: 'triangle', f: 500, f2: 760, dur: 0.18, vol: 0.08 }),
-    found: () => { tone({ f: 523, f2: 1046, dur: 0.18, vol: 0.14 }); [m('E6'), m('G6'), m('C7')].forEach((n, i) => musicBox(n, ctx.currentTime + 0.12 + i * 0.08, 0.6, 0.14)); },
-    curtain: () => noiseHit({ ftype: 'lowpass', f: 900, f2: 300, dur: 0.6, vol: 0.12, attack: 0.1 }),
     scribble: () => noiseHit({ f: 2600 + Math.random() * 1200, q: 3, dur: 0.06, vol: 0.05 }),
     stamp: () => { tone({ f: 260, f2: 180, dur: 0.08, vol: 0.14 }); tone({ f: 1200, f2: 1600, dur: 0.1, vol: 0.05, at: 0.05 }); },
-    squeeze: () => noiseHit({ ftype: 'lowpass', f: 700 + Math.random() * 300, dur: 0.16, vol: 0.12, attack: 0.04 }),
-    place: () => { tone({ f: 700, f2: 520, dur: 0.08, vol: 0.12 }); tone({ type: 'triangle', f: 1400, dur: 0.08, vol: 0.04, at: 0.04 }); },
-    blow: () => noiseHit({ ftype: 'lowpass', f: 1400, f2: 500, dur: 0.7, vol: 0.16, attack: 0.08 }),
     pour: () => { noiseHit({ f: 900, f2: 1700, q: 1.6, dur: 1.4, vol: 0.09, attack: 0.15 }); noiseHit({ ftype: 'lowpass', f: 500, dur: 1.4, vol: 0.06, attack: 0.2 }); },
     plop: () => { tone({ f: 900, f2: 300, dur: 0.12, vol: 0.12 }); tone({ f: 1500, f2: 2400, dur: 0.08, vol: 0.05, at: 0.08 }); },
-    clink: () => [2637, 3520].forEach((f, i) => tone({ f, dur: 0.5, vol: 0.05, at: i * 0.04 })),
     shutter: () => { noiseHit({ f: 3000, q: 0.8, dur: 0.05, vol: 0.22 }); noiseHit({ at: 0.09, f: 2200, q: 0.8, dur: 0.06, vol: 0.18 }); tone({ f: 1800, f2: 1200, dur: 0.06, vol: 0.05 }); }
   };
 
@@ -207,25 +187,6 @@ G.Sound = (function () {
       g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.12);
       s.stop(ctx.currentTime + 0.6);
     }
-  }
-
-  /* ---- ピアノ・うた ---- */
-  function note(midi, opts = {}) {
-    if (!ctx || ctx.state !== 'running') return;
-    const t = ctx.currentTime;
-    piano(midi, t, 0.7, 0.32);
-    if (opts.sing) sing(midi, t + 0.02, 0.45, 0.09);
-  }
-  function melody(notes, bpm, opts = {}) { // notes: [[midi, beats], ...]
-    if (!ctx || ctx.state !== 'running') return 0;
-    const spb = 60 / bpm;
-    let t = ctx.currentTime + 0.1;
-    notes.forEach(([n, b]) => {
-      piano(n, t, b * spb, 0.26);
-      if (opts.sing) sing(n, t + 0.02, b * spb * 0.85, 0.08);
-      t += b * spb;
-    });
-    return (t - ctx.currentTime) * 1000;
   }
 
   /* ---- BGM ---- */
@@ -319,7 +280,7 @@ G.Sound = (function () {
   }
 
   return {
-    init, play, note, melody, shower, playBgm, stopBgm, setVolume, duck, m,
+    init, play, shower, playBgm, stopBgm, setVolume, duck, m,
     ready: () => !!ctx && ctx.state === 'running',
     context: () => ctx, voiceOut: () => voiceBus
   };

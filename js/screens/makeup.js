@@ -1,4 +1,4 @@
-/* メイク（おしゃれ）：ほっぺ・くちべに・アイシャドウ・シール */
+/* メイク（おしゃれ）：ほっぺ・くちべに・アイシャドウ */
 window.G = window.G || {};
 G.Screens = G.Screens || {};
 
@@ -8,7 +8,6 @@ G.Screens.makeup = {
     const UI = G.UI, S = G.State, L = G.CHARACTER.lines;
     const pick = (a) => Array.isArray(a) ? a[Math.floor(Math.random() * a.length)] : a;
     const GOAL = 9;  // こする回数（これで ぬりおわる）
-    const DECO_SPOTS = [[-0.28, 0.2], [1.2, 0.26], [0.45, -0.4], [0.02, 0.46], [0.95, -0.28]]; // おてつだいで はる場所
     UI.backButton(scr, () => G.go('home'));
     G.dressTabs(scr, 'makeup');
 
@@ -24,7 +23,7 @@ G.Screens.makeup = {
 
     let tool = null;     // { cat, it }。cat が 'cotton' のときは おとす
     let progress = 0, busy = false, auto = false, rub = null, hand = null;
-    let gotHeart = false, lastSnd = 0, again = 0, decoN = 0, idleAt = Date.now() + 14000;
+    let gotHeart = false, lastSnd = 0, again = 0, idleAt = Date.now() + 14000;
     const hinted = {};
     G.petting(chara, sc, { enabled: () => !tool && !busy });
 
@@ -33,9 +32,10 @@ G.Screens.makeup = {
     UI.pos(panel, 790, 310, 540, 680);
     scr.appendChild(panel);
     const catBtns = {};
+    const catX = (540 - (G.MAKEUP.length * 130 - 8)) / 2; // まんなかに よせる
     G.MAKEUP.forEach((c, i) => {
       const b = UI.el('div', 'mk-cat', `<div class="mc-icon">${G.Art.makeupCat(c.id)}</div><div class="mc-label${c.label.length > 4 ? ' long' : ''}">${c.label}</div>`);
-      UI.pos(b, 14 + i * 130, 14, 122, 136);
+      UI.pos(b, catX + i * 130, 14, 122, 136);
       panel.appendChild(b);
       catBtns[c.id] = b;
       UI.tap(b, () => setCat(c.id), { sound: 'tap', say: c.label });
@@ -78,7 +78,7 @@ G.Screens.makeup = {
       const m = S.makeup();
       swatches.forEach(({ it, e }) => {
         e.classList.toggle('sel', !!tool && tool.it === it);
-        e.classList.toggle('on', cat !== 'deco' && m[cat] === it.id);
+        e.classList.toggle('on', m[cat] === it.id);
       });
       cot.classList.toggle('sel', !!tool && tool.cat === 'cotton');
     }
@@ -90,11 +90,11 @@ G.Screens.makeup = {
       hideCursor();
       if (t) {
         cursor.innerHTML = G.Art.makeupTool(t.cat, t.it);
-        cursor.className = 'mk-cursor' + (t.cat === 'deco' ? ' deco' : t.cat === 'cotton' ? ' cotton' : '');
+        cursor.className = 'mk-cursor' + (t.cat === 'cotton' ? ' cotton' : '');
       }
       refresh();
     }
-    const isOn = (t) => t.cat !== 'cotton' && t.cat !== 'deco' && S.makeup()[t.cat] === t.it.id;
+    const isOn = (t) => t.cat !== 'cotton' && S.makeup()[t.cat] === t.it.id;
 
     /* ぬる場所に わっかを出す */
     function targetsOnStage(c) {
@@ -102,7 +102,7 @@ G.Screens.makeup = {
       return G.Makeup.targets(chara.artPose(), c).map(q => Object.assign(chara.fromArt(q), { r: Math.max(34, q.r * sc2) }));
     }
     function faceCenter() {
-      const f = G.Makeup.decoAt(chara.artPose(), 0.5, 0.2);
+      const f = G.Makeup.faceAt(chara.artPose(), 0.5, 0.2);
       if (f) return chara.fromArt(f);
       const r = chara.rect();
       return { x: r.cx, y: r.y + r.h * 0.42 };
@@ -112,7 +112,7 @@ G.Screens.makeup = {
       if (hand) { hand.remove(); hand = null; }
       if (!tool) return;
       let to = faceCenter();
-      if (tool.cat !== 'deco' && tool.cat !== 'cotton' && !isOn(tool)) {
+      if (tool.cat !== 'cotton' && !isOn(tool)) {
         const T = targetsOnStage(tool.cat);
         T.forEach(t => {
           const g = UI.el('div', 'mk-ring');
@@ -165,7 +165,7 @@ G.Screens.makeup = {
     }
 
     /* ---- こする ---- */
-    // ニャーちゃんの どこを さわっても ぬれる（シールは 顔の いちばん近い ところに はる）
+    // ニャーちゃんの どこを さわっても ぬれる
     const onFace = (p) => {
       const r = chara.rect();
       return p.x > r.x + r.w * 0.04 && p.x < r.x + r.w * 0.98 && p.y > r.y + r.h * 0.04 && p.y < r.y + r.h;
@@ -233,54 +233,10 @@ G.Screens.makeup = {
       busy = false;
     }
 
-    /* シールを はる（さわった ところへ。顔の外なら 顔のはしへ） */
-    async function placeDeco(p) {
-      if (busy || !tool || tool.cat !== 'deco') return;
-      const q = G.Makeup.decoSpot(chara.artPose(), chara.toArt(p));
-      if (!q || !Number.isFinite(q.u) || !Number.isFinite(q.v)) return;
-      busy = true;
-      if (hand) { hand.remove(); hand = null; }
-      guides.innerHTML = '';
-      const s = { id: tool.it.id, u: +q.u.toFixed(3), v: +q.v.toFixed(3), rot: +((Math.random() - 0.5) * 0.7).toFixed(2) };
-      G.Sound.play('popBubble');
-      const t0 = performance.now();
-      await new Promise(res => {
-        const step = (now) => {
-          if (!sc.alive) return res();
-          const k = Math.min(1, (now - t0) / 280);
-          chara.preview = { deco: s, p: k < 0.7 ? k / 0.7 * 1.25 : 1.25 - (k - 0.7) / 0.3 * 0.25 }; // ぽんっ
-          chara.redraw();
-          if (k < 1) requestAnimationFrame(step); else res();
-        };
-        requestAnimationFrame(step);
-      });
-      if (!sc.alive) return;
-      S.addDeco(s);
-      chara.preview = null;
-      chara.flash('face_happy', 2200);
-      chara.redraw();
-      chara.squish();
-      const at = G.Makeup.decoAt(chara.artPose(), s.u, s.v);
-      if (at) { const a = chara.fromArt(at); UI.sparkles(a.x, a.y, 6, 70); }
-      G.Sound.play('sparkle');
-      heartOnce();
-      if (decoN++ % 3 === 0) say(pick(L.decoDone));
-      sc.timeout(hideCursor, 250);
-      busy = false;
-    }
-
     /* おてつだい：えらんだ いろを もう一度 さわると、かわりに ぬってくれる（N-06 救済） */
     async function autoApply() {
       if (busy || auto || !tool) return;
       const t = tool;
-      if (t.cat === 'deco') {
-        const sp = DECO_SPOTS[decoN % DECO_SPOTS.length];
-        const at = G.Makeup.decoAt(chara.artPose(), sp[0], sp[1]);
-        const p = at ? chara.fromArt(at) : faceCenter();
-        showCursor(p);
-        placeDeco(p);
-        return;
-      }
       const done = () => tool !== t || busy || (t.cat === 'cotton' ? !S.hasMakeup() : isOn(t));
       if (done()) { mark(faceCenter()); return; }
       auto = true;
@@ -318,7 +274,6 @@ G.Screens.makeup = {
       e.preventDefault();
       if (hand) { hand.remove(); hand = null; }
       showCursor(p);
-      if (tool.cat === 'deco') { placeDeco(p); return; }
       rub = { id: e.pointerId, last: p, acc: 0, moved: 0 };
       try { scr.setPointerCapture(e.pointerId); } catch (_) { /* なし */ }
       mark(p);
@@ -329,7 +284,6 @@ G.Screens.makeup = {
       const dd = Math.hypot(p.x - rub.last.x, p.y - rub.last.y);
       rub.acc += dd; rub.moved += dd; rub.last = p;
       showCursor(p);
-      if (tool && tool.cat === 'deco') return;
       if (rub.acc > 38) { rub.acc = 0; if (onFace(p)) mark(p); }
     });
     const up = (e, ok) => {
@@ -340,7 +294,6 @@ G.Screens.makeup = {
       if (!ok || !tool) return;
       if (r.fromSwatch) {
         if (r.moved < 24) { if (r.wasSel) autoApply(); else afterSelect(r.el); return; }
-        if (tool.cat === 'deco' && onFace(p)) { showCursor(p); placeDeco(p); return; } // ドラッグして はる
         if (!isOn(tool) && progress < GOAL) showGuide(null);
       }
     };
