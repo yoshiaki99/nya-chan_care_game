@@ -164,6 +164,7 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .care-sleep { --lc: #d4a42c; }
 .care-dress { --lc: #a785dc; }
 .btn-bye { --lc: #8aa86b; }
+.btn-door { --lc: #4fae9c; }
 .btn-care.need { animation: need 1.5s ease-in-out infinite; box-shadow: 0 0 0 5px var(--gold), 0 0 30px 10px rgba(255, 220, 130, .85), 0 10px 0 4px rgba(90, 68, 72, .35); }
 
 /* ---- もどる（左上） ---- */
@@ -582,3 +583,82 @@ body.portrait #stage { visibility: hidden; }
 .nyu.pressed .ny-move { transform: scale(.96); }
 @keyframes nyWalk { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-12px) rotate(4deg); } }
 @keyframes nyBreath { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, .99); } }
+
+/* ---- おでかけ（js/screens/outing.js・js/art_outing.js） ---- */
+.out-head {
+  display: flex; align-items: center; gap: 6px; height: 100px; padding: 0 34px 0 12px; border-radius: 50px; z-index: 8;
+  background: #fffaf3; border: 5px solid #fff;
+  box-shadow: 0 0 0 4px var(--gold), 0 8px 0 4px rgba(90, 68, 72, .3), 0 12px 20px rgba(120, 60, 70, .15);
+}
+.out-head.pressed { transform: scale(.96); }
+.oh-icon { width: 80px; height: 80px; flex: none; pointer-events: none; }
+.oh-icon .art { width: 100%; height: 100%; }
+.oh-label { font-size: 40px; letter-spacing: .04em; color: var(--rose); white-space: nowrap; pointer-events: none; }
+.btn-check { gap: 10px; font-size: 54px; z-index: 6; background: linear-gradient(#d4ecdc, #a9d6b8); }
+.btn-check .ck-icon { width: 84px; height: 84px; flex: none; pointer-events: none; }
+.btn-check .ck-icon svg { width: 100%; height: 100%; display: block; }
+.btn-check span { pointer-events: none; }
+.btn-check.ready {
+  background: linear-gradient(#8fdcaa, #4fb87a); animation: breathe 2.2s ease-in-out infinite;
+  box-shadow: 0 0 0 5px var(--gold), 0 0 30px 10px rgba(255, 220, 130, .8), 0 12px 0 5px rgba(60, 130, 90, .45);
+  text-shadow: 0 3px 0 rgba(40, 110, 70, .35);
+}
+.btn-check.pressed { transform: scale(.92) !important; }
+.out-card .gc-art { left: 90px; top: 16px; width: 200px; height: 200px; }
+.out-card .gc-label { top: 218px; font-size: 38px; }
+.out-card.pressed { transform: scale(.92) !important; }
+.screen-outmenu .bubble-text { max-width: 400px; } /* ふきだしを カードに かさねない */
+
+.out-prop { transition: transform .12s; }
+.out-prop > * { position: absolute; }
+.out-prop > .op-art { inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.out-prop.pressed { transform: scale(.96); }
+.out-fly { z-index: 6; pointer-events: none; }
+.out-fly.art-svg svg, .out-fly > svg { width: 100%; height: 100%; display: block; }
+.out-keep { z-index: 3; animation: bagBob 2.4s ease-in-out infinite; transform-origin: 50% 0; }
+@keyframes bagBob { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+/* おまつり */
+.op-kingyo .kf { transform-box: fill-box; transform-origin: center; animation: kfSwim 7s ease-in-out infinite; }
+.op-kingyo .kf2 { animation-duration: 9s; animation-delay: -3s; }
+.op-kingyo .kf3 { animation-duration: 6s; animation-delay: -1.6s; }
+@keyframes kfSwim {
+  0% { transform: translateX(-34px) scaleX(1); } 46% { transform: translateX(34px) scaleX(1); }
+  50% { transform: translateX(34px) scaleX(-1); } 96% { transform: translateX(-34px) scaleX(-1); } 100% { transform: translateX(-34px) scaleX(1); }
+}
+.op-kingyo .kp-poi { transform-box: fill-box; transform-origin: center; }
+.op-kingyo.scoop .kp-poi { animation: poiScoop .9s ease-in-out; }
+@keyframes poiScoop { 0%, 100% { transform: none; } 40% { transform: translate(-100px, 34px) rotate(-30deg); } 62% { transform: translate(-90px, 20px) rotate(-8deg); } }
+.op-hanabi .star-tw { width: 44px; height: 44px; }
+.fw-trail { z-index: 1; border-radius: 50%; background: #fff6c9; box-shadow: 0 0 12px 6px rgba(255, 240, 180, .8); pointer-events: none; }
+.fw-burst { z-index: 1; pointer-events: none; }
+.fw-burst svg { width: 100%; height: 100%; display: block; }
+/* ハロウィン */
+.op-pumpkins .pk-glow { opacity: 0; transition: opacity .5s; }
+.op-pumpkins.lit .pk-glow { opacity: 1; animation: flicker 1.8s ease-in-out infinite; }
+.op-pumpkins .pk-face { transition: fill .35s; }
+.op-pumpkins.lit .pk-face { fill: #ffd25a; }
+.op-pumpkins .pk2 .pk-face { transition-delay: .2s; }
+.op-pumpkins .pk3 .pk-face { transition-delay: .4s; }
+@keyframes flicker { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
+.op-ghost .op-art { animation: ghostFloat 3.2s ease-in-out infinite; }
+.op-ghost.boo .op-art { animation: ghostBoo .45s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes ghostFloat { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-22px) rotate(3deg); } }
+@keyframes ghostBoo { from { transform: scale(1); } to { transform: scale(1.35) translateY(-10px); } }
+.op-ghost .gh-mouth { transform-box: fill-box; transform-origin: center; transition: transform .25s; }
+.op-ghost.boo .gh-mouth { transform: scale(2.2, 2.6); }
+/* クリスマス */
+.op-xtree .xt-bulb { opacity: .5; transition: opacity .4s; }
+.op-xtree.lit .xt-bulb { opacity: 1; }
+.op-xtree .xt-glow, .op-xtree .xt-sglow { opacity: 0; transition: opacity .5s; }
+.op-xtree.lit .xt-glow, .op-xtree.lit .xt-sglow { animation: twinkle2 1.4s ease-in-out infinite; }
+.op-xtree.lit .xg1 { animation-delay: -.45s; }
+.op-xtree.lit .xg2 { animation-delay: -.9s; }
+.op-xtree.lit .xt-sglow { animation-duration: 2.2s; }
+@keyframes twinkle2 { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+.op-present .pr-lid { transform-box: fill-box; transform-origin: 50% 100%; transition: transform .45s cubic-bezier(.3, 1.6, .5, 1); }
+.op-present.open .pr-lid { transform: translate(-24px, -64px) rotate(-24deg); }
+.out-snow { z-index: 7; pointer-events: none; filter: drop-shadow(0 0 3px rgba(110, 140, 190, .9)); }
+.out-snow svg { width: 100%; height: 100%; display: block; }
+/* ニューちゃんの いえ */
+.op-toybox .tb-lid { transform-box: fill-box; transform-origin: 0% 100%; transition: transform .35s ease; }
+.op-toybox.open .tb-lid { transform: rotate(-32deg) translate(-6px, -18px); }
