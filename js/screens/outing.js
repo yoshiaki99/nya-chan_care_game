@@ -3,7 +3,7 @@
  *   おへやの ドア → ① おでかけの じゅんび（ふくを えらんで チェック）→ ② どこに いく？（4つ）→ ③ その場所で あそぶ → おうちに かえる
  * ③ は 場所ごとに タッチできる もの（spot）が 4つ。ぜんぶ ためすと おしまい（ハート・たのしい メーター）。
  *   ふくが 場所に あっていると（おまつりに ゆかた など）ハートを もう1こ。
- *   ニューちゃんが 来ていたら いっしょに いく。ニューちゃんの いえ では いつも いる。
+ *   ニューちゃんは どこへでも いっしょに いく（ニューちゃんの いえ では まっている）。
  * 場所の 絵は js/art_outing.js、場所の 一覧（名前・背景・曲）は js/data.js の G.OUTINGS
  */
 window.G = window.G || {};
@@ -396,7 +396,7 @@ G.outingScreen = function (o) {
       if (P.nyuHere) { // ニューちゃんの いえ：いつも いる
         nyu = new G.NyuSprite(scr, P.nyu);
         sc.add(() => nyu.remove());
-      } else nyu = G.NyuVisit.joinPlay(scr, sc, Object.assign({ cheer: true }, P.nyu)); // 来ていたら いっしょに
+      } else nyu = G.NyuVisit.joinPlay(scr, sc, Object.assign({ cheer: true, always: true }, P.nyu)); // おでかけには いつも いっしょに いく
       const bubble = new UI.Bubble(scr);
       const nyuBubble = nyu ? new UI.Bubble(scr) : null;
       const placeBubble = () => {
