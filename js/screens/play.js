@@ -1,10 +1,9 @@
-/* あそぶ（5.6）：えらぶ画面・けいとだま・ピアノ・ちょうちょ（ほかの あそびは play_*.js） */
+/* あそぶ（5.6）：えらぶ画面・けいとだま・ネズミの おもちゃ（ほかの あそびは play_*.js） */
 window.G = window.G || {};
 G.Screens = G.Screens || {};
 
-/* あそび おわり：ほめて、メーターを変えて、おへやへ
-   opts.fed = あそびの中で たべた（ケーキ・おちゃかい）。おなかは へらさずに すこし ふやす */
-G.finishGame = async function (sc, chara, bubble, placeBubble, line, meter, opts = {}) {
+/* あそび おわり：ほめて、メーターを変えて、おへやへ */
+G.finishGame = async function (sc, chara, bubble, placeBubble, line, meter) {
   const UI = G.UI, S = G.State;
   const r = chara.rect();
   chara.setPose('face_happy');
@@ -16,7 +15,7 @@ G.finishGame = async function (sc, chara, bubble, placeBubble, line, meter, opts
   S.setMeter('fun', 5);
   if (meter) meter.update(true);
   // いっぱい あそぶと、おなかがすいて、ちょっと よごれて、つかれる
-  S.addMeter('hunger', opts.fed ? 1 : -0.7);
+  S.addMeter('hunger', -0.7);
   S.addMeter('clean', -0.7);
   S.addMeter('energy', -1);
   UI.giveHearts(2, r.cx, r.y + r.h * 0.3);
@@ -56,10 +55,12 @@ G.Screens.playmenu = {
     sc.timeout(() => { const p = chara.topSpot(0.5, 0.02); bubble.place(p.x, p.y, p.side); bubble.say(L.playIntro); }, 400); // あたまの上（カードに かさねない）
     G.petting(chara, sc);
 
-    // 3こずつ 3だん
+    // うえの だんに 3こ、したの だんに のこり（まんなかに よせる）
+    const PER = 3;
     G.GAMES.forEach((g, i) => {
       const c = UI.el('div', 'game-card');
-      UI.pos(c, 446 + (i % 3) * 300, 128 + Math.floor(i / 3) * 290, 276, 262);
+      const row = Math.floor(i / PER), n = Math.min(PER, G.GAMES.length - row * PER);
+      UI.pos(c, 446 + (PER - n) * 150 + (i % PER) * 300, 220 + row * 300, 276, 262);
       const art = G.Assets.node(g.art, 'gc-art');
       c.appendChild(art);
       c.appendChild(UI.el('div', 'gc-label', g.label.replace(' ', '<br>')));
@@ -174,191 +175,111 @@ G.Screens.yarn = {
   }
 };
 
-/* ================= ピアノで うたおう（F-51） ================= */
-G.Screens.piano = {
-  bg: 'bg_room', hud: true,
-  enter(scr, sc) {
-    const UI = G.UI, L = G.CHARACTER.lines, m = G.Sound.m;
-    UI.backButton(scr, () => G.go('playmenu'));
-    const meter = G.oneMeter(scr, 'fun');
-    // きらきらぼし（フランスの うた「Ah! vous dirai-je, maman」）
-    const SONG = [0, 0, 4, 4, 5, 5, 4, 3, 3, 2, 2, 1, 1, 0];
-    const BEATS = [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2];
-    const setProg = progressRow(scr, SONG.length, () => '<div class="pn">♪</div>');
-
-    const chara = new G.Chara(scr, { x: 610, y: 664, h: 380 }); // 鍵盤のすぐ上の床にすわる
-    chara.setMood('face_happy');
-    chara.setPose('face_happy', 0);
-    const bubble = new UI.Bubble(scr);
-    const placeBubble = () => { const p = chara.bubbleSpot(0.4); bubble.place(p.x, p.y, p.side); };
-
-    const NOTES = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'].map(m);
-    const GEMS = [
-      ['#f3889e', '<circle cx="32" cy="32" r="22"/>'],
-      ['#f6b26b', '<path d="M32 8l26 46H6z"/>'],
-      ['#f2cf5b', '<path d="M32 4C35 26 38 29 60 32 38 35 35 38 32 60 29 38 26 35 4 32 26 29 29 26 32 4z"/>'],
-      ['#8fd19e', '<path d="M32 6l26 26-26 26L6 32z"/>'],
-      ['#7cc3ea', `<path transform="translate(8 9) scale(1.5)" d="${G.Art.HEART_PATH}"/>`],
-      ['#a7a3ec', '<rect x="10" y="10" width="44" height="44" rx="8"/>'],
-      ['#e59ad8', '<g><circle cx="32" cy="18" r="11"/><circle cx="46" cy="30" r="11"/><circle cx="40" cy="46" r="11"/><circle cx="24" cy="46" r="11"/><circle cx="18" cy="30" r="11"/><circle cx="32" cy="32" r="8" fill="#fff8d0"/></g>'],
-      ['#f3889e', '<circle cx="32" cy="32" r="22"/><circle cx="32" cy="32" r="10" fill="#fff"/>']
-    ];
-    const kb = UI.el('div', 'keyboard');
-    UI.pos(kb, 131, 676, 1104, 320);
-    scr.appendChild(kb);
-    const KW = 134;
-    const keys = NOTES.map((n, i) => {
-      const k = UI.el('div', 'pkey', `<div class="gem">${G.Art.svg('0 0 64 64', `<g fill="${GEMS[i][0]}" stroke="#fff" stroke-width="3">${GEMS[i][1]}</g>`)}</div>`);
-      k.style.left = (16 + i * KW) + 'px';
-      kb.appendChild(k);
-      return k;
-    });
-    [0, 1, 3, 4, 5].forEach(i => {
-      const b = UI.el('div', 'bkey');
-      b.style.left = (16 + (i + 1) * KW - 27) + 'px';
-      kb.appendChild(b);
-    });
-    const arrow = UI.el('div', 'key-arrow', '▼');
-    scr.appendChild(arrow);
-
-    let idx = 0, done = false, sing = 0;
-    function showNext() {
-      keys.forEach(k => k.classList.remove('next'));
-      if (idx >= SONG.length) { arrow.style.display = 'none'; return; }
-      const k = keys[SONG[idx]];
-      k.classList.add('next');
-      const r = UI.rectOf(k);
-      arrow.style.left = (r.cx - 40) + 'px';
-      arrow.style.top = (r.y - 86) + 'px';
-    }
-    sc.timeout(() => { placeBubble(); bubble.say(L.pianoIntro); showNext(); }, 500);
-
-    keys.forEach((k, i) => {
-      sc.on(k, 'pointerdown', (e) => {
-        e.preventDefault();
-        k.classList.add('down');
-        sc.timeout(() => k.classList.remove('down'), 160);
-        if (done) { G.Sound.note(NOTES[i]); return; }
-        const ok = SONG[idx] === i;
-        G.Sound.note(NOTES[i], { sing: ok });
-        if (!ok) return; // まちがえても 音が鳴るだけ
-        bubble.hide();
-        sing++;
-        chara.flash(sing % 2 ? 'face_happy' : 'face_dreamy', 700);
-        chara.squish();
-        const mo = chara.mouth();
-        UI.notes(mo.x, mo.y - 20, 1);
-        idx++;
-        setProg(idx);
-        showNext();
-        if (idx >= SONG.length) finish();
-      });
-    });
-
-    async function finish() {
-      done = true;
-      await sc.wait(700);
-      // ごほうびに、ニャーちゃんが いっきょく うたう
-      const ms = G.Sound.melody(SONG.map((s, i) => [NOTES[s], BEATS[i]]), 120, { sing: true });
-      let t = 100;
-      SONG.forEach((s, i) => {
-        sc.timeout(() => {
-          keys.forEach(k => k.classList.remove('next'));
-          keys[s].classList.add('next');
-          const mo = chara.mouth();
-          UI.notes(mo.x, mo.y - 20, 1);
-        }, t);
-        t += BEATS[i] * 500;
-      });
-      chara.sway(Math.ceil((ms || 8000) / 1400));
-      await sc.wait(Math.max(ms || 0, t) + 300);
-      keys.forEach(k => k.classList.remove('next'));
-      G.finishGame(sc, chara, bubble, placeBubble, L.pianoDone, meter);
-    }
-  }
-};
-
-/* ================= ちょうちょ つかまえ（F-52） ================= */
-G.Screens.butterfly = {
+/* ================= ネズミの おもちゃ ================= */
+/* ゼンマイの ネズミが ゆかを はしりまわる。タッチすると ニャーちゃんが とびついて つかまえる。
+ * どこを さわっても ネズミに とびつく（救済） */
+G.Screens.mouse = {
   bg: 'bg_room', hud: true,
   enter(scr, sc) {
     const UI = G.UI, L = G.CHARACTER.lines;
-    const TOTAL = 6;
+    const pick = (a) => a[Math.floor(Math.random() * a.length)];
+    const TOTAL = 6, FLOOR = 900, W = 170, H = 120;
     UI.backButton(scr, () => G.go('playmenu'));
     const meter = G.oneMeter(scr, 'fun');
-    const setProg = progressRow(scr, TOTAL, () => G.Art.butterfly('#f6b3c4', '#c3a3ec'));
+    const setProg = progressRow(scr, TOTAL, () => G.Art.all.toy_mouse());
 
-    const chara = new G.Chara(scr, { x: 683, y: 900, h: 420 });
+    const chara = new G.Chara(scr, { x: 380, y: FLOOR, h: 420 });
     chara.setMood('face_happy');
     chara.setPose('face_happy', 0);
-    G.NyuVisit.joinPlay(scr, sc, { x: 1210, y: 940, h: 330 }); // ニューちゃんが 来ていたら いっしょに
+    const nyu = G.NyuVisit.joinPlay(scr, sc, { x: 1210, y: 940, h: 330 }); // ニューちゃんが 来ていたら いっしょに
     const bubble = new UI.Bubble(scr);
-    const placeBubble = () => { const p = chara.bubbleSpot(0.06, 420); bubble.place(p.x, p.y, p.side); }; // リボンの高さ（しっぽより上）
+    const placeBubble = () => { const p = chara.bubbleSpot(0.06, 420); bubble.place(p.x, p.y, p.side); };
 
-    const COLORS = [['#f6b3c4', '#c3a3ec'], ['#9fd0f2', '#f6d66b'], ['#f6d66b', '#f3a9c9']];
-    const flies = COLORS.map((c, i) => {
-      const e = UI.el('div', 'bfly', `<div class="bf-wing">${G.Art.butterfly(c[0], c[1])}</div>`);
-      scr.appendChild(e);
-      return { e, cx: 300 + i * 380, cy: 300 + (i % 2) * 120, tx: 300 + i * 380, ty: 300 + (i % 2) * 120, ph: i * 2.1, x: 0, y: 0, busy: false };
-    });
-    const newSpot = (f) => { f.tx = 200 + Math.random() * 970; f.ty = 220 + Math.random() * 300; };
+    // ネズミ（x, y = 足もとの まんなか）。絵は 右むき
+    const mouse = UI.el('div', 'mouse-toy');
+    const body = UI.el('div', 'mt-body');
+    body.appendChild(G.Assets.node('toy_mouse', 'mt-art'));
+    mouse.appendChild(body);
+    scr.appendChild(mouse);
+    const XMAX = nyu ? 1060 : 1240; // ニューちゃんが いるときは 手まえで まわる
+    const m = { x: 900, y: 930, tx: 900, ty: 930, dir: -1, wait: 0.6, run: false, stop: false };
+    const draw = () => {
+      mouse.style.transform = `translate(${m.x - W / 2}px,${m.y - H}px)`;
+      body.style.transform = `scaleX(${m.dir})`;
+      mouse.style.zIndex = m.y > chara.feet().y ? 4 : 1; // ニャーちゃんより てまえ／おく
+    };
+    const newSpot = () => {
+      let tx;
+      do { tx = 150 + Math.random() * (XMAX - 150); } while (Math.abs(tx - m.x) < 260);
+      m.tx = tx; m.ty = 870 + Math.random() * 90;
+      m.dir = tx > m.x ? 1 : -1;
+      m.run = true;
+    };
 
-    let raf = 0;
-    const t0 = performance.now();
+    let raf = 0, last = performance.now(), squeakAt = 0;
     const loop = (now) => {
       if (!sc.alive) return;
-      const t = (now - t0) / 1000;
-      flies.forEach(f => {
-        f.cx += (f.tx - f.cx) * 0.02; f.cy += (f.ty - f.cy) * 0.02;
-        if (!f.busy) {
-          f.x = f.cx + Math.sin(t * 0.9 + f.ph) * 120;
-          f.y = f.cy + Math.sin(t * 1.7 + f.ph * 2) * 50;
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (!m.stop) {
+        if (m.run) {
+          const dx = m.tx - m.x, dy = m.ty - m.y, d = Math.hypot(dx, dy), step = 330 * dt;
+          if (d <= step) { m.x = m.tx; m.y = m.ty; m.run = false; m.wait = 0.4 + Math.random() * 0.8; }
+          else { m.x += dx / d * step; m.y += dy / d * step; }
+          mouse.classList.add('running');
+          if (now > squeakAt) { squeakAt = now + 900 + Math.random() * 900; if (Math.random() < 0.5) G.Sound.play('squeak'); }
+        } else {
+          mouse.classList.remove('running');
+          m.wait -= dt;
+          if (m.wait <= 0) newSpot();
         }
-        f.e.style.transform = `translate(${f.x}px,${f.y}px)`;
-      });
+      }
+      draw();
       raf = requestAnimationFrame(loop);
     };
+    draw();
     raf = requestAnimationFrame(loop);
     sc.add(() => cancelAnimationFrame(raf));
-    sc.interval(() => { const f = flies[Math.floor(Math.random() * flies.length)]; if (!f.busy) newSpot(f); }, 2500);
 
-    let count = 0, busy = false;
-    sc.timeout(() => { placeBubble(); bubble.say(L.flyIntro); }, 500);
+    let count = 0, busy = false, hand = null;
+    sc.timeout(() => { placeBubble(); bubble.say(L.mouseIntro); hand = UI.hand(scr, { x: m.x, y: m.y - H / 2 }); }, 500);
 
-    async function chase(f) {
-      busy = true; f.busy = true;
+    async function pounce() {
+      if (busy) return;
+      busy = true; m.stop = true;
+      mouse.classList.remove('running');
+      if (hand) { hand.remove(); hand = null; }
       bubble.hide();
-      const dir = f.x > chara.feet().x ? 1 : -1;
+      // ニャーちゃんが はしって とびつく
+      const dir = m.x > chara.feet().x ? 1 : -1;
       chara.face(dir);
-      G.Sound.play('flutter');
-      await sc.guard(chara.moveTo(Math.min(1200, Math.max(170, f.x)), 900, 600));
+      G.Sound.play('pounce');
+      const half = chara.w / 2;
+      const cx = Math.min(1366 - half * 0.6, Math.max(half * 0.6, m.x - dir * chara.h * 0.12));
+      await sc.guard(chara.moveTo(cx, FLOOR, 520));
       chara.setPose('face_happy');
-      chara.hop(150, 700);
-      f.e.animate([{ transform: `translate(${f.x}px,${f.y}px) scale(1) rotate(0)` }, { transform: `translate(${f.x}px,${f.y - 60}px) scale(1.3) rotate(180deg)` }, { transform: `translate(${f.x}px,${f.y}px) scale(1) rotate(360deg)` }], { duration: 700 });
-      await sc.wait(330);
-      G.Sound.play('sparkle');
-      UI.sparkles(f.x, f.y, 8, 110);
-      UI.hearts(f.x, f.y, 2);
+      chara.hop(120, 560);
+      await sc.wait(420);
+      // つかまえた：ネズミが くるっと まわる
+      G.Sound.play('squeak');
+      body.animate([{ transform: `scaleX(${m.dir}) rotate(0)` }, { transform: `scaleX(${m.dir}) translateY(-40px) rotate(${m.dir * 200}deg)` }, { transform: `scaleX(${m.dir}) rotate(${m.dir * 360}deg)` }], { duration: 600, easing: 'ease-out' });
+      UI.sparkles(m.x, m.y - H / 2, 8, 110);
+      UI.hearts(m.x, m.y - H / 2, 2);
       count++;
       setProg(count);
-      await sc.wait(400);
-      newSpot(f);
-      f.busy = false;
-      if (count >= TOTAL) { chara.face(1); G.finishGame(sc, chara, bubble, placeBubble, L.flyDone, meter); return; }
+      await sc.wait(650);
+      if (count >= TOTAL) { chara.face(1); G.finishGame(sc, chara, bubble, placeBubble, L.mouseDone, meter); return; }
       placeBubble();
-      bubble.say(L.flyCheer[Math.floor(Math.random() * L.flyCheer.length)], { hold: 200 });
+      bubble.say(pick(L.mouseCheer), { hold: 200 });
+      // ゼンマイを まいて また にげる
+      m.stop = false; newSpot();
       await sc.wait(500);
       busy = false;
     }
 
     sc.on(scr, 'pointerdown', (e) => {
-      if (e.target.closest('.btn-back, .bubble')) return;
+      if (e.target.closest('.btn-back, .bubble, .nyu')) return;
       e.preventDefault();
-      if (busy) return;
-      const p = UI.toStage(e.clientX, e.clientY);
-      // いちばん ちかい ちょうちょ（どこをさわっても いい：救済）
-      const f = flies.slice().sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0];
-      chase(f);
+      pounce();
     });
   }
 };

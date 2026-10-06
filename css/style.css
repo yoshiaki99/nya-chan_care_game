@@ -233,41 +233,58 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .food-item .fi-art { width: 100%; height: 100%; transition: opacity .2s; }
 .fi-label {
   position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
-  font-size: 26px; background: #fff; padding: 4px 14px 2px; border-radius: 20px; border: 4px solid #f3c2cf; white-space: nowrap;
+  font-size: 24px; background: #fff; padding: 4px 12px 2px; border-radius: 20px; border: 4px solid #f3c2cf; white-space: nowrap;
 }
 .food-item.taken .fi-art { opacity: .2; }
 .food-ghost { z-index: 6; pointer-events: none; filter: drop-shadow(0 12px 10px rgba(80, 40, 50, .25)); }
 
 /* ---- おふろ ---- */
-.foam-layer { inset: 0; pointer-events: none; z-index: 3; }
+.tub { pointer-events: none; }
+.tub-back { z-index: 1; }
+.tub-front { z-index: 3; }
+.chara.out-tub { z-index: 4; }
+.b-art { width: 100%; height: 100%; pointer-events: none; }
+.bath-thing { z-index: 1; }
+.bath-thing.active { animation: need 1.6s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(255, 214, 120, .95)) drop-shadow(0 0 22px rgba(255, 225, 140, .8)); }
+.bath-thing.taken .b-art { opacity: .35; }
+.faucet { transform-origin: 30% 30%; }
+.faucet, .towel-hang { z-index: 3; } /* ニャーちゃんの 枠より まえ（タッチを とられない） */
+.hose { left: 0; top: 0; width: 1366px; height: 1024px; pointer-events: none; z-index: 4; }
+.hose svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.hose .h-out { fill: none; stroke: #3b3236; stroke-width: 15; stroke-linecap: round; }
+.hose .h-in { fill: none; stroke: #ecd08f; stroke-width: 8; stroke-linecap: round; }
+.shower { left: 0; top: 0; pointer-events: none; z-index: 6; }
+.bath-toy { z-index: 5; }
+.bath-toy .bt-in { width: 100%; height: 100%; transform-origin: 50% 80%; }
+.bath-toy.float:not(.playing) .b-art { animation: bob 2.4s ease-in-out infinite; }
+.bath-toy.active:not(.playing) { filter: drop-shadow(0 0 10px rgba(255, 214, 120, .95)) drop-shadow(0 0 22px rgba(255, 225, 140, .8)); }
+.bath-toy.active:not(.playing) .bt-in { animation: need 1.6s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(6px) rotate(3deg); } }
+.ripple { z-index: 4; pointer-events: none; border-radius: 50%; border: 4px solid rgba(255, 255, 255, .9); }
+.petal { z-index: 6; pointer-events: none; }
+.bath-steps { left: 170px; top: 24px; display: flex; gap: 12px; z-index: 8; pointer-events: none; }
+.bs-dot { position: relative; width: 84px; height: 84px; border-radius: 50%; padding: 10px; background: rgba(255, 255, 255, .82); border: 4px solid #fff; box-shadow: 0 4px 0 rgba(90, 68, 72, .2); opacity: .5; transition: opacity .3s; }
+.bs-dot.active { opacity: 1; box-shadow: 0 0 0 5px var(--gold), 0 0 24px 8px rgba(255, 225, 140, .8); animation: need 1.6s ease-in-out infinite; }
+.bs-dot.done { opacity: 1; }
+.bs-dot.done::after { content: '✓'; position: absolute; right: -8px; bottom: -8px; width: 36px; height: 36px; border-radius: 50%; background: #f37d9b; color: #fff; font-size: 24px; line-height: 36px; text-align: center; border: 3px solid #fff; }
+.foam-layer { inset: 0; pointer-events: none; z-index: 4; }
 .foam-layer > * { position: absolute; }
 .foam {
+  --fc: #f5fcff; --fe: #b0daf6;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff 0 22%, rgba(245, 252, 255, .96) 42%, rgba(214, 238, 252, .9) 72%, rgba(176, 218, 246, .92) 100%);
-  box-shadow: inset -4px -6px 10px rgba(150, 200, 235, .45), 0 2px 6px rgba(100, 150, 190, .25);
+  background: radial-gradient(circle at 35% 30%, #fff 0 24%, var(--fc) 50%, var(--fe) 100%);
+  box-shadow: inset -4px -6px 10px rgba(255, 255, 255, .5), 0 2px 6px rgba(120, 90, 140, .22);
 }
 .puff { border-radius: 50%; background: radial-gradient(circle, #fff 0 40%, rgba(255, 255, 255, 0) 70%); }
-.tool {
-  border-radius: 44px; background: rgba(255, 255, 255, .92); z-index: 4;
-  box-shadow: 0 0 0 4px #cfe8f2, 0 8px 0 4px rgba(120, 170, 200, .3);
-  transition: box-shadow .3s;
-}
-.tool:not(.active) .t-art, .tool:not(.active) .t-label { opacity: .45; filter: grayscale(.5); }
-.tool.active { animation: need 1.6s ease-in-out infinite; box-shadow: 0 0 0 5px var(--gold), 0 0 34px 12px rgba(255, 225, 140, .85), 0 8px 0 5px rgba(90, 68, 72, .35); }
-.tool.done { background: rgba(255, 255, 255, .8); }
-.tool .t-art { position: absolute; left: 22px; top: 10px; width: 136px; height: 136px; pointer-events: none; }
-.tool .t-label { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-size: 28px; pointer-events: none; }
 .rub-cursor { width: 150px; height: 150px; margin: -75px 0 0 -75px; pointer-events: none; z-index: 7; display: none; transform: rotate(-12deg); filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .18)); }
 .rub-cursor.on { display: block; }
 .rub-cursor .art { width: 100%; height: 100%; }
 .drop { border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: linear-gradient(#e2f5fe, #8fd0f2); opacity: .85; pointer-events: none; z-index: 5; }
-.shower-head { pointer-events: none; z-index: 6; }
-.shower-head .art { width: 100%; height: 100%; }
 
 /* ---- ねんね ---- */
-.cushion { z-index: 1; }
-.cushion .art { width: 100%; height: 100%; position: relative; z-index: 1; }
-.cushion.glow::before { content: ''; position: absolute; inset: -40px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255, 228, 150, .8), rgba(255, 228, 150, 0) 65%); animation: glow 1.8s ease-in-out infinite; }
+.bed { z-index: 1; }
+.bed .art { width: 100%; height: 100%; position: relative; z-index: 1; }
+.bed.glow::before { content: ''; position: absolute; inset: -40px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255, 228, 150, .8), rgba(255, 228, 150, 0) 65%); animation: glow 1.8s ease-in-out infinite; }
 @keyframes glow { 0%, 100% { opacity: .45; transform: scale(.95); } 50% { opacity: 1; transform: scale(1.05); } }
 .star-tw { animation: twinkle 3s ease-in-out infinite; pointer-events: none; }
 .star-tw svg { width: 100%; height: 100%; }
@@ -291,23 +308,10 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .progress .pn { font-size: 38px; line-height: 46px; text-align: center; color: #e47f9a; }
 .yarn-ball { width: 130px; height: 130px; z-index: 3; pointer-events: none; transition: opacity .2s; }
 .yarn-ball .art { width: 100%; height: 100%; }
-
-.keyboard { background: linear-gradient(#6b4d5e, #4f3846); border-radius: 30px; z-index: 3; box-shadow: 0 0 0 5px var(--gold), 0 14px 0 5px rgba(60, 30, 45, .4), 0 22px 30px rgba(60, 30, 45, .25); }
-.pkey {
-  position: absolute; top: 16px; width: 130px; height: 290px; border-radius: 0 0 24px 24px;
-  background: linear-gradient(#fffdf8, #f3ebe2); box-shadow: inset 0 -12px 0 rgba(0, 0, 0, .06);
-  transform-origin: 50% 0; transition: transform .08s, background .2s;
-}
-.pkey.down { transform: scaleY(.97); background: linear-gradient(#fff3d6, #f6e3c2); }
-.pkey.next { background: linear-gradient(#fffbe6, #ffe7a1); box-shadow: 0 0 34px 12px rgba(255, 220, 120, .8), inset 0 -12px 0 rgba(0, 0, 0, .06); z-index: 1; }
-.pkey .gem { position: absolute; left: 50%; bottom: 30px; width: 70px; height: 70px; transform: translateX(-50%); pointer-events: none; }
-.bkey { position: absolute; top: 16px; width: 54px; height: 120px; border-radius: 0 0 12px 12px; background: linear-gradient(#4a3644, #2e2230); pointer-events: none; z-index: 2; }
-.key-arrow { width: 80px; height: 80px; font-size: 62px; line-height: 80px; text-align: center; color: #e2a63a; z-index: 5; pointer-events: none; animation: need .9s ease-in-out infinite; text-shadow: 0 0 8px #fff, 0 0 4px #fff; }
-
-.bfly { left: 0; top: 0; width: 130px; height: 104px; margin: -52px 0 0 -65px; z-index: 3; pointer-events: none; }
-.bf-wing { width: 100%; height: 100%; animation: flap .32s ease-in-out infinite alternate; }
-.bf-wing svg { width: 100%; height: 100%; display: block; }
-@keyframes flap { from { transform: scaleX(1); } to { transform: scaleX(.38); } }
+.mouse-toy { left: 0; top: 0; width: 170px; height: 120px; pointer-events: none; filter: drop-shadow(0 6px 4px rgba(110, 60, 70, .18)); }
+.mouse-toy .mt-body, .mouse-toy .art { width: 100%; height: 100%; }
+.mouse-toy.running .mt-art { animation: mtRun .14s ease-in-out infinite alternate; }
+@keyframes mtRun { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-5px) rotate(2deg); } }
 
 /* ---- おしゃれ ---- */
 .spotlight { border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255, 240, 200, .8), rgba(255, 240, 200, 0) 70%); pointer-events: none; }
@@ -475,27 +479,6 @@ img.acc-art { object-fit: contain; }
 .teaser-wand .tz-feather { transform-origin: 86px 102px; animation: tzSway 1.3s ease-in-out infinite; }
 @keyframes tzSway { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
 
-/* ---- あそぶ：かくれんぼ ---- */
-.hide-spot { z-index: 4; transform-origin: 50% 100%; }
-.hide-spot.back { z-index: 3; }
-.hide-spot .art { width: 100%; height: 100%; pointer-events: none; }
-.chara.hide-out { z-index: 6; }
-.hide-curtain { inset: 0; z-index: 7; pointer-events: none; overflow: hidden; }
-.hc-l, .hc-r {
-  position: absolute; top: 0; bottom: 0; width: 52%; transition: transform .6s cubic-bezier(.5, 0, .3, 1);
-  background: repeating-linear-gradient(90deg, #f2b5c3 0 40px, #f7cbd6 40px 70px, #eaa2b4 70px 96px);
-  box-shadow: 0 0 40px rgba(120, 50, 70, .3);
-}
-.hc-l { left: 0; transform: translateX(-102%); border-right: 10px solid #e2c48a; }
-.hc-r { right: 0; transform: translateX(102%); border-left: 10px solid #e2c48a; }
-.hide-curtain.closed { pointer-events: auto; }
-.hide-curtain.closed .hc-l, .hide-curtain.closed .hc-r { transform: translateX(0); }
-.hc-text {
-  position: absolute; left: 0; right: 0; top: 430px; text-align: center; font-size: 96px; color: #fff; letter-spacing: .08em;
-  text-shadow: 0 6px 0 #d9799a, 0 0 30px rgba(160, 60, 90, .5); opacity: 0; transform: scale(.7); transition: opacity .3s .3s, transform .4s .3s;
-}
-.hide-curtain.closed .hc-text { opacity: 1; transform: scale(1); }
-
 /* ---- あそぶ：おえかき ---- */
 .draw-board {
   z-index: 3; border-radius: 26px; background: linear-gradient(#e9c98f, #d6ab67);
@@ -518,66 +501,6 @@ img.acc-art { object-fit: contain; }
 .dt-art svg { width: 100%; height: 100%; display: block; }
 .dt-name { position: absolute; left: 0; right: 0; bottom: 6px; text-align: center; font-size: 22px; pointer-events: none; white-space: nowrap; }
 .btn-drawdone { left: 1172px; top: 790px; width: 182px; height: 140px; font-size: 40px; letter-spacing: .04em; border-radius: 50px; z-index: 4; animation: breathe 2.4s ease-in-out infinite; }
-
-/* ---- あそぶ：ケーキ ---- */
-.cake-wrap { z-index: 2; pointer-events: none; }
-.cake-layer { position: absolute; inset: 0; }
-.cake-layer svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.cake-cream { opacity: 0; transition: opacity .3s; }
-.cake-deco { inset: 0; z-index: 3; pointer-events: none; }
-.cake-item { position: absolute; transform-origin: 50% 80%; }
-.cake-item svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.cake-item.topping { filter: drop-shadow(0 5px 3px rgba(110, 60, 70, .22)); }
-.cake-bar { inset: 0; z-index: 4; pointer-events: none; }
-.cake-bar > * { position: absolute; pointer-events: auto; }
-.cake-tool, .cake-top {
-  border-radius: 40px; background: rgba(255, 250, 244, .95); border: 5px solid #fff; touch-action: none;
-  box-shadow: 0 0 0 4px var(--gold), 0 10px 0 4px rgba(90, 68, 72, .3), 0 14px 24px rgba(120, 60, 70, .15); transition: transform .12s;
-}
-.cake-tool.sel { box-shadow: 0 0 0 6px #e98aa5, 0 0 30px 10px rgba(240, 150, 180, .55), 0 10px 0 4px rgba(90, 68, 72, .3); transform: translateY(-10px); }
-.ct-art { position: absolute; left: 50%; top: 8px; width: 120px; height: 150px; transform: translateX(-50%); pointer-events: none; }
-.candle-tool .ct-art { width: 50px; }
-.ct-art svg, .ctp-art svg { width: 100%; height: 100%; display: block; }
-.ct-label { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; font-size: 28px; pointer-events: none; }
-.cake-top { border-radius: 34px; }
-.ctp-art { position: absolute; left: 50%; top: 4px; width: 92px; height: 92px; transform: translateX(-50%); pointer-events: none; }
-.ctp-label { position: absolute; left: 50%; bottom: -26px; transform: translateX(-50%); white-space: nowrap; font-size: 22px; background: #fff; padding: 3px 12px 1px; border-radius: 18px; border: 3px solid #f3c2cf; pointer-events: none; }
-.cake-ghost { z-index: 8; pointer-events: none; filter: drop-shadow(0 12px 10px rgba(80, 40, 50, .25)); }
-.cake-ghost svg { width: 100%; height: 100%; display: block; }
-.cake-cursor { width: 120px; height: 160px; z-index: 8; pointer-events: none; display: none; transform: rotate(14deg); transform-origin: 60px 150px; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .15)); }
-.cake-cursor.on { display: block; }
-.cake-cursor svg { width: 100%; height: 100%; display: block; }
-.candle-flame {
-  position: absolute; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
-  background: radial-gradient(ellipse at 50% 70%, #fff8d0 0 25%, #ffd35a 45%, #ff9a3c 75%, rgba(255, 120, 60, 0) 100%);
-  box-shadow: 0 0 30px 12px rgba(255, 210, 110, .6); transform-origin: 50% 90%; animation: flicker .25s ease-in-out infinite alternate;
-}
-@keyframes flicker { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(.92, 1.08) rotate(3deg); } }
-.candle-smoke { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(200, 190, 200, .8), rgba(200, 190, 200, 0) 70%); }
-.blow-puff { z-index: 8; pointer-events: none; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .95), rgba(220, 240, 255, 0) 70%); }
-
-/* ---- あそぶ：おちゃかい ---- */
-.tea-table { z-index: 2; pointer-events: none; }
-.tea-table .art { width: 100%; height: 100%; }
-.tea-mark { z-index: 3; pointer-events: none; border-radius: 50%; border: 5px dashed #f0b7c6; background: rgba(255, 236, 170, .35); animation: glow 1.6s ease-in-out infinite; }
-.teacup { pointer-events: none; transform-origin: 50% 100%; }
-.teacup svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.teacup .tea-liquid { opacity: 0; transition: opacity 1.1s ease .2s; }
-.teacup.filled .tea-liquid { opacity: 1; }
-.teacup.filled::before, .teacup.filled::after {
-  content: ''; position: absolute; left: 60px; top: -54px; width: 14px; height: 50px; border-radius: 50%;
-  border-left: 5px solid rgba(255, 255, 255, .85); animation: steam 2.2s ease-in-out infinite; opacity: 0;
-}
-.teacup.filled::after { left: 84px; animation-delay: 1.1s; }
-@keyframes steam { 0% { transform: translateY(14px) scaleY(.6); opacity: 0; } 40% { opacity: .9; } 100% { transform: translateY(-30px) scaleY(1.1); opacity: 0; } }
-.teapot { z-index: 7; pointer-events: none; filter: drop-shadow(0 10px 8px rgba(110, 60, 70, .2)); }
-.teapot svg { width: 100%; height: 100%; display: block; }
-.tea-stream { z-index: 6; pointer-events: none; border-radius: 6px; background: linear-gradient(90deg, #b8692c, #e2a060, #b8692c); transform-origin: 50% 0; opacity: .9; }
-.sugar-cube { z-index: 7; pointer-events: none; }
-.sugar-cube svg { width: 100%; height: 100%; display: block; }
-.tea-ripple { z-index: 6; pointer-events: none; border-radius: 50%; border: 3px solid rgba(255, 240, 220, .9); }
-.tea-sweet { z-index: 5; }
-.tea-sweet-on { z-index: 4; pointer-events: none; }
 
 /* ---- あそぶ：しゃしん ---- */
 .photo-finder { z-index: 1; pointer-events: none; }
