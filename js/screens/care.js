@@ -32,7 +32,7 @@ G.Screens.food = {
     });
 
     let busy = false, drag = null, hand = null;
-    sc.timeout(() => { placeBubble(); bubble.say(L.foodIntro); }, 500);
+    sc.timeout(() => { if (busy || drag) return; placeBubble(); bubble.say(L.foodIntro); }, 500);
     const showHand = () => {
       if (busy || drag) return;
       const r = UI.rectOf(items[0].card);
@@ -209,6 +209,8 @@ G.Screens.bath = {
     const STEP_LINES = [L.bathIntro, L.bathShower, L.bathToy, L.bathTowel];
     const GOAL = { 0: 26, 3: 20 };
     const TOY_GOAL = 3;
+    const stepLine = () => (step === 1 && showering ? L.bathRinse : STEP_LINES[step]);
+    const sayStep = () => { if (step >= 0 && step <= 3 && !(step === 0 && busy)) { placeBubble(); bubble.say(stepLine()); } };
     const targets = () => [soaps.map(o => o.e), [faucet], toys.map(o => o.e), [towel]][step] || [];
 
     function setStep(n) {
@@ -340,6 +342,7 @@ G.Screens.bath = {
       const r = chara.rect();
       for (let k = 0; k < 7; k++) addFoam(r.x + r.w * (0.36 + k * 0.045), r.y + r.h * (0.08 + (k % 2) * 0.04), 46 + Math.random() * 26);
       for (let k = 0; k < 5; k++) sc.timeout(() => petal(r.x + r.w * (0.3 + Math.random() * 0.4), r.y + r.h * 0.2), k * 120);
+      chara.clearFlash(); // おもちゃで わらった ときの「すこし あとで もどす」を けす
       chara.setPose('face_happy');
       G.Sound.play('sparkle');
       chara.wiggle();
@@ -358,6 +361,7 @@ G.Screens.bath = {
       faucet.classList.remove('active');
       faucet.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-14deg)' }, { transform: 'rotate(0)' }], { duration: 420 });
       bubble.hide();
+      chara.clearFlash(); // わらった 顔に もどされて シャワーが 宙に うかないように
       chara.setPose('act_wave', 200);
       await sc.wait(260);
       // ホルダーから ニャーちゃんの 手へ
@@ -407,6 +411,7 @@ G.Screens.bath = {
       G.Sound.shower(false);
       // シャワーを ホルダーに もどす
       const from = { ...sh }, t0 = performance.now();
+      chara.clearFlash();
       chara.setPose('face_happy', 300);
       await new Promise(res => {
         const back = (now) => {
@@ -418,6 +423,7 @@ G.Screens.bath = {
         };
         requestAnimationFrame(back);
       });
+      if (!sc.alive) return;
       showering = false;
       chara.wiggle();
       G.Sound.play('sparkle');
@@ -548,13 +554,16 @@ G.Screens.bath = {
       const done = PLAY[o.t.id](o);
       if (step === 2 && toyPlays < TOY_GOAL) { placeBubble(); bubble.say(pick(L.bathToyCheer), { hold: 200 }); }
       await done;
+      if (!sc.alive) return;
       o.e.classList.remove('playing');
       o.busy = false;
       if (step === 2 && toyPlays >= TOY_GOAL && !busy) toyDone();
     }
     async function toyDone() {
+      if (!sc.alive) return;
       busy = true; step = -1;
       toys.forEach(o => o.e.classList.remove('active'));
+      chara.clearFlash();
       chara.setPose('face_happy');
       G.Sound.play('chime');
       const r = chara.rect();
@@ -582,9 +591,10 @@ G.Screens.bath = {
       towel.classList.remove('active');
       towel.classList.remove('taken');
       dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
+      chara.clearFlash();
       chara.setPose('act_fluffy', 400);
       G.Sound.play('sparkle');
-      setTimeout(() => G.Sound.play('chime'), 300);
+      sc.timeout(() => G.Sound.play('chime'), 300);
       const r = chara.rect();
       for (let k = 0; k < 4; k++) sc.timeout(() => UI.sparkles(r.x + Math.random() * r.w, r.y + Math.random() * r.h * 0.8, 5, 90), k * 250);
       chara.hop(46);
@@ -606,7 +616,8 @@ G.Screens.bath = {
       const soapEl = e.target.closest('.soap');
       if (soapEl) {
         G.Sound.play('press');
-        if (step !== 0 || busy) { if (step >= 0 && step <= 3) { placeBubble(); bubble.say(STEP_LINES[step]); } return; }
+        if (step !== 0 || busy) { sayStep(); return; }
+        if (rub && rub.id !== e.pointerId) return; // ほかの ゆびで こすっている さいちゅう
         chooseSoap(soaps.find(x => x.e === soapEl));
         rub = { id: e.pointerId, last: p, acc: 0, moved: 0, fromTool: true };
         showCursor(p);
@@ -615,13 +626,14 @@ G.Screens.bath = {
       }
       if (e.target.closest('.faucet')) {
         G.Sound.play('press');
-        if (step === 1) startShower();
-        else if (step >= 0 && step <= 3) { placeBubble(); bubble.say(STEP_LINES[step]); }
+        if (step === 1 && !showering) startShower();
+        else sayStep();
         return;
       }
       if (e.target.closest('.towel-hang')) {
         G.Sound.play('press');
-        if (step !== 3 || busy) { if (step >= 0 && step <= 3) { placeBubble(); bubble.say(STEP_LINES[step]); } return; }
+        if (step !== 3 || busy) { sayStep(); return; }
+        if (rub && rub.id !== e.pointerId) return;
         towel.classList.add('taken');
         rub = { id: e.pointerId, last: p, acc: 0, moved: 0, fromTool: true };
         showCursor(p);
@@ -632,6 +644,7 @@ G.Screens.bath = {
       if (step === 0 && !soap) { placeBubble(); bubble.say(L.bathIntro); hint(); return; } // さきに せっけんを えらぶ
       if (step === 1 && !showering) { placeBubble(); bubble.say(L.bathShower); hint(); return; }
       if (step !== 0 && step !== 1 && step !== 3) return;
+      if (rub && rub.id !== e.pointerId) return; // ほかの ゆびで こすっている さいちゅう
       rub = { id: e.pointerId, last: p, acc: 0, moved: 0, fromTool: false };
       if (hand) { hand.remove(); hand = null; }
       if (inZone(p)) { if (step !== 1) showCursor(p); addMark(p, 3); }
@@ -682,6 +695,7 @@ G.Screens.sleep = {
 
     let started = false, hand = null;
     sc.timeout(() => {
+      if (started) return;
       placeBubble();
       bubble.say(L.sleepIntro);
       const r = UI.rectOf(bed);

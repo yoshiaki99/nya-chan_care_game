@@ -186,7 +186,7 @@ G.Screens.mouse = {
     const TOTAL = 6, FLOOR = 900, W = 170, H = 120;
     UI.backButton(scr, () => G.go('playmenu'));
     const meter = G.oneMeter(scr, 'fun');
-    const setProg = progressRow(scr, TOTAL, () => G.Art.all.toy_mouse());
+    const setProg = progressRow(scr, TOTAL, () => G.Assets.node('toy_mouse').outerHTML);
 
     const chara = new G.Chara(scr, { x: 380, y: FLOOR, h: 420 });
     chara.setMood('face_happy');
@@ -201,12 +201,14 @@ G.Screens.mouse = {
     body.appendChild(G.Assets.node('toy_mouse', 'mt-art'));
     mouse.appendChild(body);
     scr.appendChild(mouse);
-    const XMAX = nyu ? 1060 : 1240; // ニューちゃんが いるときは 手まえで まわる
+    const XMAX = nyu ? 950 : 1240; // ニューちゃんが いるときは その ひだりで まわる（ニューちゃんの 枠に タッチを とられない）
     const m = { x: 900, y: 930, tx: 900, ty: 930, dir: -1, wait: 0.6, run: false, stop: false };
+    let count = 0, busy = false, hand = null;
     const draw = () => {
       mouse.style.transform = `translate(${m.x - W / 2}px,${m.y - H}px)`;
       body.style.transform = `scaleX(${m.dir})`;
-      mouse.style.zIndex = m.y > chara.feet().y ? 4 : 1; // ニャーちゃんより てまえ／おく
+      mouse.style.zIndex = (m.stop || m.y > chara.feet().y) ? 4 : 1; // ニャーちゃんより てまえ／おく（つかまえた ときは てまえ）
+      if (hand) UI.pos(hand.el, m.x - 40, m.y - H / 2 - 10); // ゆびの ヒントは ネズミに ついていく
     };
     const newSpot = () => {
       let tx;
@@ -240,8 +242,7 @@ G.Screens.mouse = {
     raf = requestAnimationFrame(loop);
     sc.add(() => cancelAnimationFrame(raf));
 
-    let count = 0, busy = false, hand = null;
-    sc.timeout(() => { placeBubble(); bubble.say(L.mouseIntro); hand = UI.hand(scr, { x: m.x, y: m.y - H / 2 }); }, 500);
+    sc.timeout(() => { if (busy || count) return; placeBubble(); bubble.say(L.mouseIntro); hand = UI.hand(scr, { x: m.x, y: m.y - H / 2 }); }, 500);
 
     async function pounce() {
       if (busy) return;

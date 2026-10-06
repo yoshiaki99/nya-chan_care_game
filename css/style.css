@@ -256,6 +256,7 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .shower { left: 0; top: 0; pointer-events: none; z-index: 6; }
 .bath-toy { z-index: 5; }
 .bath-toy .bt-in { width: 100%; height: 100%; transform-origin: 50% 80%; }
+.bath-toy.playing .bt-in { pointer-events: none; } /* うごいている おもちゃは タッチを とおす（じゃぐちの 上に きても さわれる） */
 .bath-toy.float:not(.playing) .b-art { animation: bob 2.4s ease-in-out infinite; }
 .bath-toy.active:not(.playing) { filter: drop-shadow(0 0 10px rgba(255, 214, 120, .95)) drop-shadow(0 0 22px rgba(255, 225, 140, .8)); }
 .bath-toy.active:not(.playing) .bt-in { animation: need 1.6s ease-in-out infinite; }
@@ -307,9 +308,9 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 }
 .progress .pd { width: 46px; height: 46px; opacity: .3; filter: grayscale(1); transition: opacity .3s, filter .3s; }
 .progress .pd.on { opacity: 1; filter: none; }
-.progress .pn { font-size: 38px; line-height: 46px; text-align: center; color: #e47f9a; }
 .yarn-ball { width: 130px; height: 130px; z-index: 3; pointer-events: none; transition: opacity .2s; }
 .yarn-ball .art { width: 100%; height: 100%; }
+.screen-playmenu .bubble-text { max-width: 400px; } /* ふきだしを カードに かさねない */
 .mouse-toy { left: 0; top: 0; width: 170px; height: 120px; pointer-events: none; filter: drop-shadow(0 6px 4px rgba(110, 60, 70, .18)); }
 .mouse-toy .mt-body, .mouse-toy .art { width: 100%; height: 100%; }
 .mouse-toy.running .mt-art { animation: mtRun .14s ease-in-out infinite alternate; }

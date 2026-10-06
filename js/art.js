@@ -780,7 +780,6 @@ G.Art = (function () {
       <circle cx="35" cy="61" r="15" fill="#f59cc2"/><circle cx="60" cy="61" r="15" fill="#b597ec"/><circle cx="85" cy="61" r="15" fill="#86c3f0"/>
       <g fill="#fff" opacity=".5"><ellipse cx="30" cy="55" rx="5" ry="3"/><ellipse cx="55" cy="55" rx="5" ry="3"/><ellipse cx="80" cy="55" rx="5" ry="3"/></g>`);
   }
-  // シール（ゲームの中で顔にはるものと 同じ形）
   // シールの 形（おえかきの スタンプ）。it = { shape: 'heart' | 'star' | 'flower', color }
   function stickerSvg(it) {
     const c = it.color;

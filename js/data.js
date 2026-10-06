@@ -160,7 +160,7 @@ G.CRAYONS = [
   { id: 'brown',  label: 'ちゃいろ', color: '#9a6b4f' },
   { id: 'black',  label: 'くろ',     color: '#4a3f46' }
 ];
-// おえかきの スタンプ（メイクの シールと 同じ形）
+// おえかきの スタンプ（絵は G.Art.sticker）
 G.DRAW_STAMPS = [
   { id: 'heart',  label: 'ハート', shape: 'heart',  color: '#f8679a' },
   { id: 'star',   label: 'ほし',   shape: 'star',   color: '#ffd24d' },
@@ -189,6 +189,8 @@ G.ART_FILES = {
   item_towel:    'assets/items/item_towel.png',
   item_soap_lavender: 'assets/items/item_soap_lavender.png',
   item_soap_sakura:   'assets/items/item_soap_sakura.png',
+  petal_lavender: 'assets/items/petal_lavender.png',
+  petal_sakura:   'assets/items/petal_sakura.png',
   bath_tub_back:  'assets/items/bath_tub_back.png',
   bath_tub_front: 'assets/items/bath_tub_front.png',
   bath_faucet:    'assets/items/bath_faucet.png',
