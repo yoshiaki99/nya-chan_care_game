@@ -18,16 +18,31 @@ G.CARES = [
   { id: 'dress', label: 'おしゃれ', icon: 'icon_dress', meter: null }
 ];
 
-// ごはん（5.4）。テーブルに 4こずつ 2だんで ならぶ（はじめの 4こが おくの だん）
+// ごはん（5.4）。テーブルに 2だんで ならぶ（はじめの 5こが おくの だん、のこり 4こが てまえの だん）
+// 名前の ふだが となりと かさならないように、ながい 名前どうしは となりに しない
 G.FOODS = [
-  { id: 'fish',      label: 'おさかな',     art: 'item_fish' },
-  { id: 'milk',      label: 'ミルク',       art: 'item_milk' },
-  { id: 'cream',     label: 'クリーム',     art: 'item_cream' },
-  { id: 'croissant', label: 'クロワッサン', art: 'item_croissant' },
-  { id: 'cheese',    label: 'チーズ',       art: 'item_cheese' },
-  { id: 'macaron',   label: 'マカロン',     art: 'item_macaron' },
-  { id: 'pudding',   label: 'プリン',       art: 'item_pudding' },
-  { id: 'shrimp',    label: 'エビ',         art: 'item_shrimp' }
+  { id: 'fish',       label: 'おさかな',       art: 'item_fish' },
+  { id: 'water',      label: 'おみず',         art: 'item_water' },
+  { id: 'croissant',  label: 'クロワッサン',   art: 'item_croissant' },
+  { id: 'parfait',    label: 'パフェ',         art: 'item_parfait' },
+  { id: 'macaron',    label: 'マカロン',       art: 'item_macaron' },
+  { id: 'catfood',    label: 'キャットフード', art: 'item_catfood' },
+  { id: 'pudding',    label: 'プリン',         art: 'item_pudding' },
+  { id: 'softcream',  label: 'ソフトクリーム', art: 'item_softcream' },
+  { id: 'shrimp',     label: 'エビ',           art: 'item_shrimp' }
+];
+
+// おふろの せっけん（5.5）。foam = あわの 色、edge = あわの ふちの 色、petal = こすると 舞う 花びら
+G.SOAPS = [
+  { id: 'lavender', label: 'ラベンダー', art: 'item_soap_lavender', petal: 'petal_lavender', foam: '#f1e8fc', edge: '#bba0e8' },
+  { id: 'sakura',   label: 'さくら',     art: 'item_soap_sakura',   petal: 'petal_sakura',   foam: '#fdecf1', edge: '#f0a3bd' }
+];
+// おふろの おもちゃ（いつでも あそべる）
+G.BATH_TOYS = [
+  { id: 'duck', label: 'アヒルちゃん', art: 'toy_duck' },
+  { id: 'boat', label: 'おふね',       art: 'toy_boat' },
+  { id: 'can',  label: 'じょうろ',     art: 'toy_can' },
+  { id: 'fish', label: 'おさかな',     art: 'toy_fish' }
 ];
 
 // リボン（5.8）。unlock = あつめたハートの数で ふえる
@@ -45,7 +60,7 @@ G.RIBBONS = [
 ];
 
 // メイク（おしゃれ）。unlock = あつめたハートの数で ふえる（リボンと同じ）
-// color: ぬる色 shape: ほっぺ・シールの形 glitter: きらきら
+// color: ぬる色 shape: ほっぺの形 glitter: きらきら
 G.MAKEUP = [
   { id: 'cheek', label: 'ほっぺ', hint: 'cheekHint', items: [
     { id: 'pink',   label: 'ピンク', unlock: 0,  color: '#f98bb0' },
@@ -64,15 +79,8 @@ G.MAKEUP = [
     { id: 'purple', label: 'むらさき', unlock: 0,  color: '#b597ec' },
     { id: 'blue',   label: 'みずいろ', unlock: 0,  color: '#86c3f0' },
     { id: 'gold',   label: 'きんいろ', unlock: 50, color: '#f0c45a', glitter: true }
-  ] },
-  { id: 'deco', label: 'シール', hint: 'decoHint', items: [
-    { id: 'star',   label: 'ほし',   unlock: 0,  color: '#ffd24d', shape: 'star' },
-    { id: 'heart',  label: 'ハート', unlock: 0,  color: '#f8679a', shape: 'heart' },
-    { id: 'flower', label: 'おはな', unlock: 0,  color: '#f7a8c8', shape: 'flower' },
-    { id: 'gem',    label: 'ダイヤ', unlock: 70, color: '#8fd3f5', shape: 'gem' }
   ] }
 ];
-G.MAKEUP_DECO_MAX = 5; // シールは 5まいまで（ふえると いちばん古いのが はがれる）
 
 // アクセサリー（おしゃれ）。slot = つける場所（1か所に 1つ）。絵は js/accessory.js
 // unlock = あつめたハートの数で ふえる（リボン・メイクと かさならない数にしてある）
@@ -108,8 +116,10 @@ G.CLOTHES = [
   { id: 'overall',  label: 'オーバーオール',    unlock: 0 },
   { id: 'pajama',   label: 'パジャマ',          unlock: 8 },
   { id: 'raincoat', label: 'レインコート',      unlock: 12 },
-  { id: 'sailor',   label: 'セーラーふく',      unlock: 28 },
+  { id: 'jumper',   label: 'ジャンパー',        unlock: 28, colors: ['#8fc9ef', '#f6b26b', '#a9dfc0'] },
+  { id: 'sweater',  label: 'セーター',          unlock: 38, colors: ['#f6a8c8', '#f6d860', '#c9b3ee'] },
   { id: 'yukata',   label: 'ゆかた',            unlock: 48 },
+  { id: 'cardigan', label: 'カーディガン',      unlock: 58, colors: ['#fff1c9', '#f9c1d1', '#b9dcf2'] },
   { id: 'tutu',     label: 'バレエの ふく',      unlock: 68 },
   { id: 'gown',     label: 'ドレス',            unlock: 85, colors: ['#c9a8ec', '#f6a8c8', '#9fd0f0'] },
   { id: 'cape',     label: 'おばけの マント',    season: { month: 10, name: 'ハロウィン', when: 'じゅうがつ' } },
@@ -129,17 +139,13 @@ G.STICKERS = [
   { e: '🫖', label: 'ティーポット' }, { e: '☀️', label: 'おひさま' }
 ];
 
-// あそぶ（5.6）。えらぶ画面に 3こずつ 3だんで ならぶ
+// あそぶ（5.6）。えらぶ画面に 3こ・2こで ならぶ
 G.GAMES = [
-  { id: 'yarn',      label: 'けいとだま ころころ',   art: 'item_yarn' },
-  { id: 'piano',     label: 'ピアノで うたおう',     art: 'icon_piano' },
-  { id: 'butterfly', label: 'ちょうちょ つかまえ',   art: 'icon_butterfly' },
-  { id: 'teaser',    label: 'ねこじゃらし ふりふり', art: 'icon_teaser' },
-  { id: 'hide',      label: 'かくれんぼ',           art: 'icon_hide' },
-  { id: 'drawing',   label: 'おえかき',             art: 'icon_drawing' },
-  { id: 'cake',      label: 'ケーキ デコレーション', art: 'icon_cake' },
-  { id: 'tea',       label: 'おちゃかい ごっこ',     art: 'icon_tea' },
-  { id: 'photo',     label: 'しゃしん とろう',       art: 'icon_photo' }
+  { id: 'yarn',    label: 'けいとだま ころころ',   art: 'item_yarn' },
+  { id: 'teaser',  label: 'ねこじゃらし ふりふり', art: 'icon_teaser' },
+  { id: 'mouse',   label: 'ネズミの おもちゃ',     art: 'icon_mouse' },
+  { id: 'drawing', label: 'おえかき',             art: 'icon_drawing' },
+  { id: 'photo',   label: 'しゃしん とろう',       art: 'icon_photo' }
 ];
 
 // おえかきの クレヨン
@@ -154,30 +160,12 @@ G.CRAYONS = [
   { id: 'brown',  label: 'ちゃいろ', color: '#9a6b4f' },
   { id: 'black',  label: 'くろ',     color: '#4a3f46' }
 ];
-// おえかきの スタンプ（メイクの シールと 同じ形）
+// おえかきの スタンプ（絵は G.Art.sticker）
 G.DRAW_STAMPS = [
   { id: 'heart',  label: 'ハート', shape: 'heart',  color: '#f8679a' },
   { id: 'star',   label: 'ほし',   shape: 'star',   color: '#ffd24d' },
   { id: 'flower', label: 'おはな', shape: 'flower', color: '#f7a8c8' }
 ];
-
-// ケーキ デコレーションの クリームと のせるもの
-G.CREAMS = [
-  { id: 'vanilla',    label: 'バニラ', color: '#fff8ec', edge: '#e6d3b8' },
-  { id: 'strawberry', label: 'いちご', color: '#f9c3d2', edge: '#e595ac' },
-  { id: 'chocolate',  label: 'チョコ', color: '#a8745a', edge: '#7a4f39' }
-];
-G.TOPPINGS = [
-  { id: 'strawberry', label: 'いちご' },
-  { id: 'cherry',     label: 'さくらんぼ' },
-  { id: 'macaron',    label: 'マカロン' },
-  { id: 'heart',      label: 'チョコ' },
-  { id: 'star',       label: 'クッキー' },
-  { id: 'candy',      label: 'キャンディ' }
-];
-
-// おちゃかいの おかし（ごはんの 絵を つかう）
-G.TEA_SWEETS = ['macaron', 'croissant', 'pudding'];
 
 // しゃしんの アルバム（あたらしい ものから これだけ のこす）
 G.PHOTO_MAX = 30;
@@ -189,18 +177,30 @@ G.ART_FILES = {
   bg_room_night: 'assets/backgrounds/bg_room_night.png',
 
   item_fish:     'assets/items/item_fish.png',
-  item_milk:     'assets/items/item_milk.png',
-  item_cream:    'assets/items/item_cream.png',
+  item_water:    'assets/items/item_water.png',
   item_croissant: 'assets/items/item_croissant.png',
-  item_cheese:   'assets/items/item_cheese.png',
+  item_parfait:  'assets/items/item_parfait.png',
   item_macaron:  'assets/items/item_macaron.png',
   item_pudding:  'assets/items/item_pudding.png',
   item_shrimp:   'assets/items/item_shrimp.png',
-  item_sponge:   'assets/items/item_sponge.png',
+  item_catfood:  'assets/items/item_catfood.png',
+  item_softcream: 'assets/items/item_softcream.png',
   item_shower:   'assets/items/item_shower.png',
   item_towel:    'assets/items/item_towel.png',
+  item_soap_lavender: 'assets/items/item_soap_lavender.png',
+  item_soap_sakura:   'assets/items/item_soap_sakura.png',
+  petal_lavender: 'assets/items/petal_lavender.png',
+  petal_sakura:   'assets/items/petal_sakura.png',
+  bath_tub_back:  'assets/items/bath_tub_back.png',
+  bath_tub_front: 'assets/items/bath_tub_front.png',
+  bath_faucet:    'assets/items/bath_faucet.png',
+  toy_duck:      'assets/items/toy_duck.png',
+  toy_boat:      'assets/items/toy_boat.png',
+  toy_can:       'assets/items/toy_can.png',
+  toy_fish:      'assets/items/toy_fish.png',
+  toy_mouse:     'assets/items/toy_mouse.png',
   item_yarn:     'assets/items/item_yarn.png',
-  item_cushion:  'assets/items/item_cushion.png',
+  item_bed:      'assets/items/item_bed.png',
 
   ribbon_pink:   'assets/dressup/ribbon_pink.png',
   ribbon_blue:   'assets/dressup/ribbon_blue.png',

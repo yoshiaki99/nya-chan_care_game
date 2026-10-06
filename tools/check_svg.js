@@ -29,7 +29,7 @@ function check(name, svg) {
 Object.entries(G.Art.all).forEach(([k, f]) => { try { check('art.' + k, f()); } catch (e) { /* 引数が いる 絵は とばす */ } });
 Object.entries(G.PlayArt || {}).forEach(([k, f]) => { if (typeof f !== 'function') return; try { const v = f(); if (typeof v === 'string') check('play.' + k, v); } catch (e) { /* 引数が いる 絵は とばす */ } });
 G.ClothesArt.ids().forEach(id => [{}, { noL: true }].forEach(o => check('clothes.' + id, G.ClothesArt.markup(id, '#f47c7c', o))));
-const acc = G.ACCESSORIES.map(a => a.id).concat(['neckbow']);
+const acc = G.ACCESSORIES.map(a => a.id).concat(['earbow']);
 G.RIBBONS.forEach(rb => acc.forEach(id => {
   try {
     const url = G.Accessory.swatchSvg ? G.Accessory.swatchSvg(id, rb.id) : null;

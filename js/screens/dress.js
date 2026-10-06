@@ -76,8 +76,47 @@ G.Screens.dress = {
         UI.pos(dots, 0, 598, 540, 30);
         panel.appendChild(dots);
       }
+      renderSides();
+    }
+
+    /* ---- どっちの みみに つける？（画面で 見て ひだり・みぎ）。パネルの 下の だんの 左右 ---- */
+    const SIDES = [{ id: 'left', label: 'ひだりの みみ', x: 22 }, { id: 'right', label: 'みぎの みみ', x: 368 }];
+    // ネコの あたまに、えらんでいる リボン（なしの ときは ピンク）を つけた 小さな 絵
+    function sideIcon(side) {
+      const r = G.RIBBONS.find(x => x.id === S.ribbon() && x.swatch !== 'none') || G.RIBBONS.find(x => x.id === 'pink');
+      const fill = r.swatch === 'rainbow' ? '#f6b3c4' : r.swatch;
+      const left = side === 'left';
+      const ex = left ? 34 : 106, rot = left ? -24 : 24;
+      return `<svg viewBox="0 0 140 110"><g stroke="#3b3236" stroke-width="5" stroke-linejoin="round">
+        <path d="M24 52 30 10 58 34z M116 52 110 10 82 34z" fill="#fff"/>
+        <ellipse cx="70" cy="64" rx="54" ry="38" fill="#fff"/></g>
+        <path d="M33 40 35 22 48 34z M107 40 105 22 92 34z" fill="#f6b3c4"/>
+        <circle cx="52" cy="62" r="5" fill="#3b3236"/><circle cx="88" cy="62" r="5" fill="#3b3236"/>
+        <g transform="translate(${ex} 30) rotate(${rot}) scale(.42)" stroke="#3b3236" stroke-width="9" stroke-linejoin="round" fill="${fill}">
+          <path d="M0 0C-20-28-54-34-56-10-58 12-26 20 0 0Z"/><path d="M0 0C20-28 54-34 56-10 58 12 26 20 0 0Z"/><ellipse rx="13" ry="14"/></g></svg>`;
+    }
+    function renderSides() {
+      panel.querySelectorAll('.side-btn').forEach(b => b.remove());
+      SIDES.forEach((sd) => {
+        const b = UI.el('div', 'side-btn' + (S.ribbonSide() === sd.id ? ' sel' : ''), `<div class="sd-art">${sideIcon(sd.id)}</div>`);
+        UI.pos(b, sd.x, 462, 150, 132);
+        panel.appendChild(b);
+        UI.tap(b, () => chooseSide(sd), { sound: 'tap', say: sd.label });
+      });
     }
     render();
+    function chooseSide(sd) {
+      if (S.ribbonSide() === sd.id) { chara.flash('face_happy', 1200); chara.squish(); return; }
+      S.setRibbonSide(sd.id);
+      renderSides();
+      chara.redraw();
+      chara.flash('face_happy', 2000);
+      chara.squish();
+      if (S.ribbon() === 'none') { placeBubble(); bubble.say(L.dressIntro); return; }
+      G.Sound.play('sparkle');
+      const e = chara.point(sd.id === 'left' ? 0.28 : 0.72, 0.1);
+      UI.sparkles(e.x, e.y, 6, 80);
+    }
 
     async function choose(r, sw) {
       if (!S.isUnlocked(r)) {
@@ -89,11 +128,12 @@ G.Screens.dress = {
       }
       if (S.ribbon() === r.id) { chara.flash('face_happy', 1500); chara.squish(); return; }
       S.setRibbon(r.id);
+      renderSides(); // みみの 絵の リボンの 色も かえる
       chara.redraw();
       chara.flash('face_happy', 2600);
       chara.hop(30);
       G.Sound.play('sparkle');
-      const h = chara.point(0.45, 0.1), n = chara.point(0.7, 0.6);
+      const h = chara.point(S.ribbonSide() === 'left' ? 0.28 : 0.72, 0.1), n = chara.point(0.5, 0.3);
       UI.sparkles(h.x, h.y, 8, 110);
       UI.sparkles(n.x, n.y, 5, 80);
       render();
