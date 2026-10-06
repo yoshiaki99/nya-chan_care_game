@@ -393,13 +393,15 @@ G.Art = (function () {
       <path d="M20 72A360 55 0 0 0 740 72" fill="none" stroke="#3b3236" stroke-width="5"/>
       <g fill="none" stroke="#fff" stroke-width="3.5">
       <path d="M130 90q14-7 28 0q14 7 28 0"/>
-      <path d="M340 102q20-8 40 0q20 8 40 0"/>
+      <path d="M282.3 76.4A104 13 0 0 0 477.7 76.4"/>
+      <path d="M246.9 77.9A140 19 0 0 0 293.8 87M466.2 87A140 19 0 0 0 513.1 77.9" stroke-width="3"/>
       <path d="M560 94q14-7 28 0q14 7 28 0"/>
       <path d="M90 110.6A360 55 0 0 0 170 122.7" stroke-width="3.5"/>
       </g>
       </g>`),
     bath_faucet: () => svg('0 0 150 130', `
       <g stroke-linejoin="round" stroke-linecap="round">
+      <rect x="16" y="92" width="24" height="16" rx="5" fill="#ecd08f" stroke="#3b3236" stroke-width="3.5"/>
       <circle cx="28" cy="76" r="21" fill="#ecd08f" stroke="#3b3236" stroke-width="4"/>
       <circle cx="28" cy="76" r="11" fill="#f6e2b0" stroke="#3b3236" stroke-width="3"/>
       <path d="M18 64q6-5 13-5" fill="none" stroke="#fff" stroke-width="3.5"/>
@@ -445,7 +447,7 @@ G.Art = (function () {
       <g stroke="#3b3236" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5">
       <g fill="#ffe27a" stroke-width="7"><path d="M12 48C22 58 36 62 50 62H92C118 60 124 82 114 96C106 106 88 108 64 108C40 108 22 102 16 88C12 78 10 62 12 48Z"/><circle cx="80" cy="40" r="26"/></g>
       <g fill="#ffe27a" stroke="none"><path d="M12 48C22 58 36 62 50 62H92C118 60 124 82 114 96C106 106 88 108 64 108C40 108 22 102 16 88C12 78 10 62 12 48Z"/><circle cx="80" cy="40" r="26"/></g>
-      <path d="M77 15C76 9 79 5 84 4M83 15C84 10 88 8 92 9" fill="none" stroke-width="3"/>
+      <path d="M77 13C76 9 79 5 84 4M83 13C84 10 88 8 92 9" fill="none" stroke-width="3"/>
       <path d="M100 34C108 29 119 32 124 39C119 45 108 46 100 44Z" fill="#f6a24a"/>
       <path d="M105 40H118" fill="none" stroke-width="2.5"/>
       <ellipse cx="110" cy="35" rx="3" ry="1.5" fill="#fff" stroke="none"/>
@@ -453,16 +455,16 @@ G.Art = (function () {
       <circle cx="89.5" cy="29" r="1.5" fill="#fff" stroke="none"/>
       <ellipse cx="88" cy="47" rx="6" ry="3.5" fill="#f9a7b8" stroke="none"/>
       <path d="M34 75C50 70 74 70 82 80C88 90 78 98 62 98C50 98 41 90 34 75Z" fill="#ffd45c" stroke-width="3"/><path d="M52 87C60 89 67 89 73 87" fill="none" stroke-width="2.5"/>
-      <path d="M63 31C65 24 70 19 76 17.5M24 86C28 94 36 99 46 101" fill="none" stroke="#fff" stroke-width="4"/>
+      <path d="M63 32C65 26 69 22 74 20M24 86C28 94 36 99 46 101" fill="none" stroke="#fff" stroke-width="4"/>
       </g>`),
     toy_boat: () => svg('0 0 150 140', `
       <g stroke="#3b3236" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5">
       <path d="M62 13L40 20L62 27Z" fill="#f7a8c4" stroke-width="3"/>
       <rect x="59" y="10" width="6" height="82" rx="3" fill="#f3cf8f" stroke-width="3"/>
       <circle cx="62" cy="9" r="4.5" fill="#ffe27a" stroke-width="3"/>
-      <path d="M66 20C94 38 116 60 122 78H66Z" fill="#fff"/>
-      <path d="M86 70C72 61 73 49 80 49C83 49 85 51 86 54C87 51 89 49 92 49C99 49 100 61 86 70Z" fill="#f78fb3" stroke-width="3"/>
-      <rect x="60" y="78" width="66" height="6" rx="3" fill="#f3cf8f" stroke-width="3"/>
+      <path d="M66 20C94 38 116 58 122 73H66Z" fill="#fff"/>
+      <path d="M86 66C72 57 73 45 80 45C83 45 85 47 86 50C87 47 89 45 92 45C99 45 100 57 86 66Z" fill="#f78fb3" stroke-width="3"/>
+      <rect x="60" y="73" width="66" height="6" rx="3" fill="#f3cf8f" stroke-width="3"/>
       <path d="M10 88H124C132 88 138 84 142 80C138 104 122 125 100 125H46C28 125 16 108 10 88Z" fill="#a9e0c4"/>
       <path d="M20 97H128" fill="none" stroke="#fff" stroke-width="4"/>
       <g fill="#fff" stroke-width="3"><circle cx="50" cy="110" r="5.5"/><circle cx="74" cy="110" r="5.5"/><circle cx="98" cy="110" r="5.5"/></g>
@@ -471,11 +473,11 @@ G.Art = (function () {
       <g stroke="#3b3236" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5">
       <path d="M50 72C12 60 4 114 46 104" fill="none" stroke-width="13"/>
       <path d="M50 72C12 60 4 114 46 104" fill="none" stroke="#9fd0f2" stroke-width="6.5"/>
-      <g transform="translate(149 31) rotate(-45)">
-      <path d="M-72 -7.5L-16 -4.5V4.5L-72 7.5Z" fill="#9fd0f2"/>
-      <path d="M-18 -5L-3 -10.5V10.5L-18 5Z" fill="#9fd0f2"/>
-      <ellipse cx="-1" cy="0" rx="5.5" ry="11" fill="#d6eefc"/>
-      <g fill="#3b3236" stroke="none"><circle cx="-1" cy="0" r="1.3"/><circle cx="-1" cy="-6" r="1.3"/><circle cx="-1" cy="6" r="1.3"/><circle cx="1.5" cy="-3" r="1.3"/><circle cx="1.5" cy="3" r="1.3"/><circle cx="-3.5" cy="-3" r="1.3"/><circle cx="-3.5" cy="3" r="1.3"/></g>
+      <g transform="translate(147 33) rotate(-45)">
+      <path d="M-69 -7.5L-17 -4.5V4.5L-69 7.5Z" fill="#9fd0f2"/>
+      <path d="M-19 -5L-3.5 -11.5V11.5L-19 5Z" fill="#9fd0f2" stroke-width="3"/>
+      <ellipse cx="-1.5" cy="0" rx="6" ry="12.5" fill="#d6eefc" stroke-width="3"/>
+      <g fill="#3b3236" stroke="none"><circle cx="-1.5" cy="0" r="1.5"/><circle cx="-1.5" cy="-6.8" r="1.5"/><circle cx="-1.5" cy="6.8" r="1.5"/><circle cx="0.9" cy="-3.4" r="1.5"/><circle cx="0.9" cy="3.4" r="1.5"/><circle cx="-3.9" cy="-3.4" r="1.5"/><circle cx="-3.9" cy="3.4" r="1.5"/></g>
       </g>
       <path d="M40 62L36 114Q36 125 47 125H99Q110 125 110 114L106 62Z" fill="#9fd0f2"/>
       <ellipse cx="73" cy="62" rx="33" ry="8" fill="#6fb3e3"/>
@@ -486,9 +488,9 @@ G.Art = (function () {
     toy_fish: () => svg('0 0 150 110', `
       <g stroke="#3b3236" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5">
       <path d="M48 58C30 38 14 20 7 30C2 40 10 52 16 58C10 64 2 76 7 86C14 96 30 78 48 58Z" fill="#f2868a"/>
-      <path d="M52 36C48 8 92 -2 112 30" fill="#f2868a"/>
+      <path d="M52 36C48 8 90 -2 109 32" fill="#f2868a"/>
       <path d="M62 86C58 102 80 106 92 90" fill="#f2868a"/>
-      <path d="M18 38L32 52M18 78L32 64M70 18L74 27M90 14L90 25" fill="none" stroke="#fff" stroke-width="3"/>
+      <path d="M18 38L32 52M18 78L32 64M70 18L74 27M87 17.5L85.5 26" fill="none" stroke="#fff" stroke-width="3"/>
       <ellipse cx="84" cy="59" rx="46" ry="34" fill="#f8a39a"/>
       <path d="M95 60C86 60 70 63 65 73C62 81 72 87 79 83C88 77 93 68 95 60Z" fill="#f2868a" stroke-width="3"/>
       <path d="M88 64L72 72M89 67L78 79" fill="none" stroke="#fff" stroke-width="2.5"/>
@@ -523,7 +525,7 @@ G.Art = (function () {
       <path d="M372 202C364 184 366 164 376 148C414 136 466 134 502 146C512 164 512 186 504 202C466 210 410 210 372 202Z" fill="#fffefa" stroke="#3b3236" stroke-width="4"/>
       <path d="M382 194C420 201 460 201 496 194" stroke="#ece4f6" stroke-width="7" fill="none"/>
       <path d="M398 152C426 145 456 144 480 147" stroke="#ece4f6" stroke-width="4" fill="none"/>
-      <path d="M386 158q9 6 7 15M492 156q-9 6-7 15" stroke="#3b3236" stroke-width="3" fill="none" opacity=".35"/>
+      <path d="M386 160q8 5 6 13M492 158q-8 5-6 13" stroke="#d6c8ec" stroke-width="3.5" fill="none"/>
       </g>`)
   };
 

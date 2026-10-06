@@ -147,7 +147,7 @@ G.Screens.bath = {
     /* ---- かべの もの：じゃぐち・シャワー・せっけん・タオル ---- */
     const FAUCET = { x: 200, y: 540, w: 150, h: 130 };
     const faucet = put('bath-thing faucet', 'bath_faucet', FAUCET.x, FAUCET.y, FAUCET.w, FAUCET.h);
-    const HOSE_FROM = { x: FAUCET.x + 34, y: FAUCET.y + 40 }; // じゃぐちの 根もと（ホースが つく ところ）
+    const HOSE_FROM = { x: FAUCET.x + 28, y: FAUCET.y + 104 }; // じゃぐちの 下の ホースの 口
     // シャワーの 絵の 中の 点：hose = ホースが つく はし、hold = 手で もつ ところ、face = あなの 面の まんなか（水は 右下へ 出る）
     const SH = { w: 150, h: 150, hose: { x: 21, y: 129 }, hold: { x: 52, y: 98 }, face: { x: 112, y: 56 } };
     const SH_REST = { x: 40, y: 455, rot: 0 }; // かべの ホルダー
@@ -703,6 +703,7 @@ G.Screens.sleep = {
       chara.setPose('act_sleep', 500);
       G.setBg('bg_room_night');
       chara.setNight(true);
+      bed.classList.add('night'); // ベッドも 夜の 色に
       G.Sound.play('lightsOff');
       G.Sound.playBgm('lullaby');
       const stars = [];
@@ -739,6 +740,7 @@ G.Screens.sleep = {
       G.setBg('bg_room');
       G.Sound.playBgm('room');
       chara.setNight(false);
+      bed.classList.remove('night');
       G.Sound.play('wake');
       chara.setPose('face_happy', 400);
       chara.hop(50);
