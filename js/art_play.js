@@ -110,6 +110,6 @@ G.PlayArt = (function () {
 
   return {
     TEASER_TIP, crayon,
-    stamp: (s) => G.Art.makeupSwatch('deco', s), feathers
+    stamp: (s) => G.Art.sticker(s), feathers
   };
 })();

@@ -781,6 +781,7 @@ G.Art = (function () {
       <g fill="#fff" opacity=".5"><ellipse cx="30" cy="55" rx="5" ry="3"/><ellipse cx="55" cy="55" rx="5" ry="3"/><ellipse cx="80" cy="55" rx="5" ry="3"/></g>`);
   }
   // シール（ゲームの中で顔にはるものと 同じ形）
+  // シールの 形（おえかきの スタンプ）。it = { shape: 'heart' | 'star' | 'flower', color }
   function stickerSvg(it) {
     const c = it.color;
     const shape = (fill, extra) => {
@@ -800,8 +801,7 @@ G.Art = (function () {
   function makeupSwatch(cat, it) {
     if (cat === 'cheek') return compact(it.color, it.shape === 'heart');
     if (cat === 'lip') return lipstick(it.color, it.glitter);
-    if (cat === 'eye') return shadowPan(it.color, it.glitter);
-    return stickerSvg(it);
+    return shadowPan(it.color, it.glitter);
   }
   // 手に もつ道具。左上（14, 14）が 先っぽ
   function makeupTool(cat, it) {
@@ -821,21 +821,23 @@ G.Art = (function () {
       <rect x="26" y="-5" width="100" height="10" rx="5" fill="#ecd08f" stroke="#b8913f" stroke-width="2.5"/>
       <ellipse cx="16" cy="0" rx="19" ry="11" fill="${c}" stroke="${shade(c, 0.78)}" stroke-width="2.5"/>
       <ellipse cx="10" cy="-4" rx="7" ry="3" fill="#fff" opacity=".5"/></g>`);
-    if (cat === 'cotton') return cotton();
-    return stickerSvg(it);
+    return cotton();
   }
+  // メイクを おとす ハートの コットン
   function cotton() {
     return svg('0 0 120 120', `
-      <circle cx="60" cy="62" r="44" fill="#ffffff" stroke="#d9dfe8" stroke-width="3"/>
-      <circle cx="60" cy="62" r="33" fill="none" stroke="#e6ebf2" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>
-      <g fill="#e6ebf2"><circle cx="48" cy="52" r="3"/><circle cx="70" cy="50" r="3"/><circle cx="60" cy="66" r="3"/><circle cx="46" cy="76" r="3"/><circle cx="74" cy="74" r="3"/></g>
-      <ellipse cx="44" cy="40" rx="12" ry="6" fill="#f3f7fb" transform="rotate(-30 44 40)"/>`);
+      <path d="M60 106.5 C27 80.2 10.5 60.4 10.5 42.2 10.5 27.4 22.1 17.5 35.3 17.5 45.1 17.5 53.4 23.1 60 32.3 66.6 23.1 74.8 17.5 84.8 17.5 97.9 17.5 109.5 27.4 109.5 42.2 109.5 60.4 93 80.2 60 106.5Z" fill="#fdeef4" stroke="#d6b9c7" stroke-width="3.4" stroke-linejoin="round"/>
+      <path d="M58.6 101.6 C28.1 77.2 12.9 58.9 12.9 42.1 12.9 28.4 23.5 19.2 35.7 19.2 44.9 19.2 52.5 24.4 58.6 33 64.7 24.4 72.3 19.2 81.5 19.2 93.7 19.2 104.3 28.4 104.3 42.1 104.3 58.9 89.1 77.2 58.6 101.6Z" fill="#fff7fa"/>
+      <path d="M60 98.7 C33.2 77.2 19.8 61.2 19.8 46.4 19.8 34.4 29.2 26.3 39.9 26.3 47.9 26.3 54.6 30.9 60 38.4 65.4 30.9 72.1 26.3 80.1 26.3 90.8 26.3 100.2 34.4 100.2 46.4 100.2 61.2 86.8 77.2 60 98.7Z" fill="none" stroke="#ead3dd" stroke-width="2.4" stroke-dasharray="1.5 6.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#f2dfe7"><circle cx="44" cy="54" r="2.6"/><circle cx="62" cy="50" r="2.4"/><circle cx="78" cy="45" r="2.6"/><circle cx="54" cy="68" r="2.6"/><circle cx="74" cy="64" r="2.4"/><circle cx="62" cy="83" r="2.4"/><circle cx="88" cy="52" r="2.2"/></g>
+      <ellipse cx="33" cy="37" rx="10" ry="5" fill="#ffffff" transform="rotate(-35 33 37)"/>
+      <circle cx="45" cy="30" r="2.6" fill="#ffffff"/>`);
   }
+
   function makeupCat(cat) {
     if (cat === 'cheek') return compact('#f98bb0');
     if (cat === 'lip') return lipstick('#e0263f');
     if (cat === 'eye') return palette();
-    if (cat === 'deco') return stickerSvg({ shape: 'star', color: '#ffd24d' });
     return cotton();
   }
 
@@ -857,5 +859,5 @@ G.Art = (function () {
     icon_makeup: () => lipstick('#f2588f')
   });
 
-  return { svg, heart, heartEmpty, sparkle, meterIcons, bow, rotateHint, all, HEART_PATH, makeupSwatch, makeupTool, makeupCat };
+  return { svg, heart, heartEmpty, sparkle, meterIcons, bow, rotateHint, all, HEART_PATH, makeupSwatch, makeupTool, makeupCat, sticker: stickerSvg };
 })();

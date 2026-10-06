@@ -332,6 +332,11 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .swatch.sel { box-shadow: 0 0 0 7px var(--gold), 0 0 30px 10px rgba(255, 220, 130, .85); }
 .swatch.locked { background: #f7f0ec; }
 .swatch.locked .sw-art { opacity: .22; filter: grayscale(1); }
+.side-btn { border-radius: 34px; background: #fff; box-shadow: 0 0 0 4px #f3d9df, 0 6px 0 4px rgba(201, 95, 127, .15); transition: transform .12s; }
+.side-btn.sel { box-shadow: 0 0 0 7px var(--gold), 0 0 26px 8px rgba(255, 220, 130, .85); }
+.side-btn.pressed { transform: scale(.92); }
+.side-btn .sd-art { position: absolute; left: 8px; top: 6px; width: 134px; height: 120px; pointer-events: none; }
+.side-btn .sd-art svg { width: 100%; height: 100%; display: block; }
 .sw-lock { position: absolute; left: 0; right: 0; bottom: -46px; display: flex; align-items: center; justify-content: center; gap: 4px; pointer-events: none; }
 .sl-heart { width: 36px; height: 34px; }
 .sl-num { font-size: 30px; color: var(--rose); }
@@ -400,7 +405,6 @@ body.on-home .hc-book { display: block; animation: need 2.6s ease-in-out infinit
 .mk-cot-label { font-size: 36px; color: #6f8fb0; letter-spacing: .08em; pointer-events: none; }
 .mk-cursor { width: 150px; height: 150px; margin: -18px 0 0 -18px; pointer-events: none; z-index: 7; display: none; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .18)); }
 .mk-cursor.on { display: block; }
-.mk-cursor.deco { width: 90px; height: 90px; margin: -45px 0 0 -45px; }
 .mk-cursor.cotton { width: 130px; height: 130px; margin: -65px 0 0 -65px; }
 .mk-guides { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
 .mk-guides > * { position: absolute; }

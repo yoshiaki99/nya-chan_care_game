@@ -1,5 +1,5 @@
 /*
- * メイク（おしゃれ）：ニャーちゃんの絵に ほっぺ・くちべに・アイシャドウ・シールを描く。
+ * メイク（おしゃれ）：ニャーちゃんの絵に ほっぺ・くちべに・アイシャドウを描く。
  * 絵ごとの顔の場所は G.CHARACTER.face。顔のまわりだけを描きなおした小さな canvas をつくり、
  * G.Chara が もとの絵の上に かさねる。
  */
@@ -7,7 +7,6 @@ window.G = window.G || {};
 
 G.Makeup = (function () {
   const CATS = ['cheek', 'lip', 'eye'];
-  const DECO = 0.12;   // シールの大きさ（目と目の あいだ に対する わりあい）
   const LIMIT = 20;    // 作った絵を とっておく数
   const cache = new Map();
 
@@ -47,7 +46,7 @@ G.Makeup = (function () {
 
   /* セーブしてあるメイクと、ぬっている とちゅう（pv）を あわせる。a = こさ（0〜1） */
   function look(st, pv) {
-    const out = { cheek: [], lip: [], eye: [], deco: [], live: !!pv };
+    const out = { cheek: [], lip: [], eye: [], live: !!pv };
     const keep = pv && pv.remove ? 1 - pv.p : 1;
     const add = (list, e) => { if (e.a > 0.01) list.push(e); };
     CATS.forEach(c => {
@@ -58,22 +57,12 @@ G.Makeup = (function () {
         if (nx) add(out[c], { it: nx, a: cur === nx ? 1 : pv.p });
       } else if (cur) add(out[c], { it: cur, a: keep });
     });
-    st.deco.forEach(s => {
-      if (!s || !Number.isFinite(s.u) || !Number.isFinite(s.v)) return; // こわれた シールは かかない
-      const it = itemOf('deco', s.id);
-      if (it) add(out.deco, { it, u: s.u, v: s.v, rot: +s.rot || 0, a: keep, sc: 1 });
-    });
-    if (pv && pv.deco) {
-      const it = itemOf('deco', pv.deco.id);
-      if (it) add(out.deco, { it, u: pv.deco.u, v: pv.deco.v, rot: pv.deco.rot, a: 1, sc: pv.p });
-    }
-    return CATS.some(c => out[c].length) || out.deco.length ? out : null;
+    return CATS.some(c => out[c].length) ? out : null;
   }
 
   function sig(lk) {
     const n = (x, k = 2) => (+x || 0).toFixed(k);
-    return CATS.map(c => lk[c].map(e => e.it.id + '@' + n(e.a)).join(',')).join('|') + '|' +
-      lk.deco.map(e => [e.it.id, n(e.u, 3), n(e.v, 3), n(e.rot), n(e.a), n(e.sc)].join(':')).join(',');
+    return CATS.map(c => lk[c].map(e => e.it.id + '@' + n(e.a)).join(',')).join('|');
   }
 
   /* 顔のまわりを描きなおした絵 { c, x, y }。メイクが無い・顔の場所が わからない絵は null */
@@ -115,7 +104,6 @@ G.Makeup = (function () {
     if (lk.eye.length) f.eyes.forEach(e => grow(e.lid, e.r * 1.6));
     const M = f.mouth, lipPad = Math.max(2, f.d * 0.014) + 2;
     if (lk.lip.length) grow(M.p, Math.max(M.rx, M.ry) + lipPad);
-    lk.deco.forEach(s => grow(f.at(s.u, s.v), f.d * DECO * 1.6));
     const bx = Math.max(0, Math.floor(x0)), by = Math.max(0, Math.floor(y0));
     const bw = Math.min(base.width, Math.ceil(x1)) - bx, bh = Math.min(base.height, Math.ceil(y1)) - by;
     if (!(bw > 0 && bh > 0)) return null; // NaN のときも ここで やめる
@@ -127,7 +115,6 @@ G.Makeup = (function () {
       ctx.drawImage(base, -bx, -by);
       if (lk.cheek.length || lk.eye.length) tint(ctx, f, lk, bx, by, bw, bh);
       if (lk.lip.length) lip(ctx, f, lk.lip, bx, by, bw, bh);
-      lk.deco.forEach(s => sticker(ctx, f, s, bx, by));
     } catch (e) { G.freeCanvas(c); throw e; }
     return { c, x: bx, y: by };
   }
@@ -281,7 +268,7 @@ G.Makeup = (function () {
     ctx.globalAlpha = 1;
   }
 
-  /* ---- シール ---- */
+  /* ---- ハートの ほっぺ の 形 ---- */
   function heartPath(c, R) {
     // R = おおきさ（まんなかから はしまで）
     c.beginPath();
@@ -292,83 +279,6 @@ G.Makeup = (function () {
     c.bezierCurveTo(R * 1.05, R * 0.18, R * 0.35, R * 0.62, 0, R * 0.9);
     c.closePath();
   }
-  function starPath(c, R) {
-    c.beginPath();
-    for (let k = 0; k < 10; k++) {
-      const t = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? R * 0.5 : R;
-      if (k) c.lineTo(Math.cos(t) * rr, Math.sin(t) * rr); else c.moveTo(Math.cos(t) * rr, Math.sin(t) * rr);
-    }
-    c.closePath();
-  }
-  function gemPath(c, R) {
-    c.beginPath();
-    c.moveTo(-R * 0.5, -R * 0.72); c.lineTo(R * 0.5, -R * 0.72); c.lineTo(R * 0.95, -R * 0.2);
-    c.lineTo(0, R * 0.95); c.lineTo(-R * 0.95, -R * 0.2);
-    c.closePath();
-  }
-  function flowerPetals(c, R, fn) {
-    for (let k = 0; k < 5; k++) {
-      const t = -Math.PI / 2 + k * Math.PI * 2 / 5;
-      c.beginPath(); c.arc(Math.cos(t) * R * 0.5, Math.sin(t) * R * 0.5, R * 0.46, 0, Math.PI * 2);
-      fn();
-    }
-  }
-  /* (c の上で) まんなか 0,0・大きさ R の シールを描く */
-  function drawSticker(c, it, R) {
-    c.lineJoin = 'round';
-    c.strokeStyle = '#ffffff';
-    c.lineWidth = R * 0.3;
-    c.shadowColor = 'rgba(120, 60, 80, .32)';
-    c.shadowBlur = R * 0.3;
-    c.shadowOffsetY = R * 0.1;
-    const shape = it.shape;
-    if (shape === 'flower') {
-      flowerPetals(c, R, () => c.stroke());
-      c.shadowColor = 'transparent';
-      c.fillStyle = it.color;
-      flowerPetals(c, R, () => c.fill());
-      c.beginPath(); c.arc(0, 0, R * 0.3, 0, Math.PI * 2);
-      c.fillStyle = '#ffd96a'; c.fill();
-      c.beginPath(); c.arc(-R * 0.08, -R * 0.1, R * 0.1, 0, Math.PI * 2);
-      c.fillStyle = 'rgba(255,255,255,.7)'; c.fill();
-      return;
-    }
-    const path = shape === 'star' ? starPath : shape === 'gem' ? gemPath : heartPath;
-    path(c, R);
-    c.stroke();
-    c.shadowColor = 'transparent';
-    if (shape === 'gem') {
-      const g = c.createLinearGradient(-R, -R, R, R);
-      g.addColorStop(0, '#e6f7ff'); g.addColorStop(0.5, it.color); g.addColorStop(1, '#5fb4e6');
-      c.fillStyle = g;
-    } else c.fillStyle = it.color;
-    c.fill();
-    c.strokeStyle = shape === 'gem' ? 'rgba(255,255,255,.75)' : 'rgba(255,255,255,.0)';
-    if (shape === 'gem') {
-      c.lineWidth = R * 0.07;
-      c.beginPath();
-      c.moveTo(-R * 0.95, -R * 0.2); c.lineTo(R * 0.95, -R * 0.2);
-      c.moveTo(-R * 0.22, -R * 0.72); c.lineTo(-R * 0.4, -R * 0.2); c.lineTo(0, R * 0.95);
-      c.moveTo(R * 0.22, -R * 0.72); c.lineTo(R * 0.4, -R * 0.2); c.lineTo(0, R * 0.95);
-      c.stroke();
-    }
-    c.beginPath();
-    c.ellipse(-R * 0.32, -R * 0.3, R * 0.2, R * 0.12, -0.6, 0, Math.PI * 2);
-    c.fillStyle = 'rgba(255,255,255,.6)';
-    c.fill();
-  }
-  function sticker(ctx, f, s, bx, by) {
-    const p = f.at(s.u, s.v);
-    const R = f.d * DECO * s.sc;
-    if (R < 0.5) return;
-    ctx.save();
-    ctx.globalAlpha = s.a;
-    ctx.translate(p.x - bx, p.y - by);
-    ctx.rotate(f.ang + s.rot);
-    drawSticker(ctx, s.it, R);
-    ctx.restore();
-  }
-
   /* きらっと ひかる 星 */
   function spark(c, x, y, R, a = 1) {
     c.save();
@@ -394,19 +304,9 @@ G.Makeup = (function () {
     return [];
   }
 
-  /* シールを はれる場所に おさめる（顔の外を さわったら、いちばん近い 顔のはしへ） */
-  function decoSpot(key, art) {
-    const f = frame(key);
-    if (!f) return null;
-    const q = f.local(art), E = G.CHARACTER.decoArea;
-    const du = (q.u - E.u) / E.ru, dv = (q.v - E.v) / E.rv;
-    const e = Math.hypot(du, dv);
-    if (e <= 1) return { u: q.u, v: q.v };
-    return { u: E.u + du / e * E.ru, v: E.v + dv / e * E.rv };
-  }
-  /* シールの 顔の中の位置 → canvas の座標 */
-  function decoAt(key, u, v) { const f = frame(key); return f ? f.at(u, v) : null; }
+  /* 顔の中の位置（目と目を むすぶ線を 1 とした u, v）→ canvas の座標 */
+  function faceAt(key, u, v) { const f = frame(key); return f ? f.at(u, v) : null; }
   function hasFace(key) { return !!frame(key); }
 
-  return { look, overlay, reset, targets, decoSpot, decoAt, hasFace, drawSticker, heartPath, itemOf, catOf };
+  return { look, overlay, reset, targets, faceAt, hasFace, itemOf, catOf };
 })();

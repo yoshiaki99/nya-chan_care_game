@@ -60,7 +60,7 @@ G.RIBBONS = [
 ];
 
 // メイク（おしゃれ）。unlock = あつめたハートの数で ふえる（リボンと同じ）
-// color: ぬる色 shape: ほっぺ・シールの形 glitter: きらきら
+// color: ぬる色 shape: ほっぺの形 glitter: きらきら
 G.MAKEUP = [
   { id: 'cheek', label: 'ほっぺ', hint: 'cheekHint', items: [
     { id: 'pink',   label: 'ピンク', unlock: 0,  color: '#f98bb0' },
@@ -79,15 +79,8 @@ G.MAKEUP = [
     { id: 'purple', label: 'むらさき', unlock: 0,  color: '#b597ec' },
     { id: 'blue',   label: 'みずいろ', unlock: 0,  color: '#86c3f0' },
     { id: 'gold',   label: 'きんいろ', unlock: 50, color: '#f0c45a', glitter: true }
-  ] },
-  { id: 'deco', label: 'シール', hint: 'decoHint', items: [
-    { id: 'star',   label: 'ほし',   unlock: 0,  color: '#ffd24d', shape: 'star' },
-    { id: 'heart',  label: 'ハート', unlock: 0,  color: '#f8679a', shape: 'heart' },
-    { id: 'flower', label: 'おはな', unlock: 0,  color: '#f7a8c8', shape: 'flower' },
-    { id: 'gem',    label: 'ダイヤ', unlock: 70, color: '#8fd3f5', shape: 'gem' }
   ] }
 ];
-G.MAKEUP_DECO_MAX = 5; // シールは 5まいまで（ふえると いちばん古いのが はがれる）
 
 // アクセサリー（おしゃれ）。slot = つける場所（1か所に 1つ）。絵は js/accessory.js
 // unlock = あつめたハートの数で ふえる（リボン・メイクと かさならない数にしてある）
@@ -123,8 +116,10 @@ G.CLOTHES = [
   { id: 'overall',  label: 'オーバーオール',    unlock: 0 },
   { id: 'pajama',   label: 'パジャマ',          unlock: 8 },
   { id: 'raincoat', label: 'レインコート',      unlock: 12 },
-  { id: 'sailor',   label: 'セーラーふく',      unlock: 28 },
+  { id: 'jumper',   label: 'ジャンパー',        unlock: 28, colors: ['#8fc9ef', '#f6b26b', '#a9dfc0'] },
+  { id: 'sweater',  label: 'セーター',          unlock: 38, colors: ['#f6a8c8', '#f6d860', '#c9b3ee'] },
   { id: 'yukata',   label: 'ゆかた',            unlock: 48 },
+  { id: 'cardigan', label: 'カーディガン',      unlock: 58, colors: ['#fff1c9', '#f9c1d1', '#b9dcf2'] },
   { id: 'tutu',     label: 'バレエの ふく',      unlock: 68 },
   { id: 'gown',     label: 'ドレス',            unlock: 85, colors: ['#c9a8ec', '#f6a8c8', '#9fd0f0'] },
   { id: 'cape',     label: 'おばけの マント',    season: { month: 10, name: 'ハロウィン', when: 'じゅうがつ' } },

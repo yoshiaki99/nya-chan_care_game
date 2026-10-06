@@ -75,19 +75,22 @@ G.CHARACTER = {
     };
   })(),
 
-  // シールを はれる顔のはんい（目と目を むすぶ線を 1 としたときの、だ円）
-  decoArea: { u: 0.55, v: 0.05, ru: 0.95, rv: 0.62 },
-
-  // アクセサリーを つける場所。アクセサリー・ふく・くびのリボンの絵は、基準画の 座標で描いてある（js/accessory.js・js/clothes.js）。
+  // アクセサリーを つける場所。アクセサリー・ふく・みみの リボンの絵は、基準画の 座標で描いてある（js/accessory.js・js/clothes.js）。
   //   pivot = 絵の上の 目じるし（あたま=おでこの上、かお=目と目のあいだ、くび=くびの まんなか、しっぽ=しっぽの まんなか、
-  //           せなか=せなか、body=からだ、bow=くびのリボンの 結び目）
+  //           せなか=せなか、body=からだ、bow=みみの リボンの 結び目）
+  //   bowL・bowR = みみの リボンの 場所（画面で 見て ひだりの みみ・みぎの みみ。G.State.ribbonSide で えらぶ）
   //   poses = 絵ごとに、目じるしが来る場所 [x, y, 回転(度), 大きさ, オプション]。ほかの絵の名前を書くと その絵と同じ
   // ここに無い絵（おふろの あわ など）・書いていない場所には つけない。絵を差し替えたら、ここも合わせる
   accessory: (function () {
+    // みみの リボンの 結び目（基準画の 座標）と かたむき（度）。ひだり = 画面で 見て ひだりの みみ
+    const EAR_L = [400, 222, -24], EAR_R = [856, 198, 22];
     const pivot = { head: [615, 200], face: [612, 330], neck: [617, 604], tail: [930, 1045], back: [615, 760], body: [615, 880], bow: [0, 0] };
     const base = {};
-    Object.keys(pivot).forEach(k => { base[k] = pivot[k].concat([0, 1]); });
-    base.bow = [617, 604, 0, 1];
+    Object.keys(pivot).forEach(k => { if (k !== 'bow') base[k] = pivot[k].concat([0, 1]); });
+    base.bowL = [EAR_L[0], EAR_L[1], EAR_L[2], 1];
+    base.bowR = [EAR_R[0], EAR_R[1], EAR_R[2], 1];
+    // ねる 絵は 基準画を 右に 90° まわした 座標（x' = 1227 − y、y' = x + 165）
+    const lie = (e) => [1227 - e[1], e[0] + 165, e[2] + 90, 1];
     return {
       pivot,
       poses: {
@@ -96,8 +99,8 @@ G.CHARACTER = {
         act_eat: 'base', act_yarn: 'base', act_fluffy: 'base',
         // 手を あげている 絵：左の そでは 描かない
         act_wave: Object.assign({}, base, { body: [615, 880, 0, 1, { noL: true }] }),
-        // ねる 絵（右に 90° まわした 絵）：もうふの 中は つけない（ぼうしだけ。メガネも はずす）
-        act_sleep: { head: [1027, 780, 90, 1] }
+        // ねる 絵（右に 90° まわした 絵）：もうふの 中は つけない（ぼうしと みみの リボンだけ。メガネも はずす）
+        act_sleep: { head: [1027, 780, 90, 1], bowL: lie(EAR_L), bowR: lie(EAR_R) }
       }
     };
   })(),
@@ -189,9 +192,7 @@ G.CHARACTER = {
     cheekHint:     'ほっぺを ポンポン して ニャー',
     lipHint:       'おくちに ぬりぬり して ニャー',
     eyeHint:       'めの うえを なでなで して ニャー',
-    decoHint:      'かおの すきな ところに はって ニャー',
     makeupDone:    ['すてき！ かわいく なった ニャー？', 'わあ、 おひめさまみたい ニャー！', 'ありがとう！ うれしい ニャー！'],
-    decoDone:      ['キラキラ！ かわいい ニャー！', 'すてきな シール ニャー！', 'うふふ、 にあう ニャー？'],
     makeupAgain:   'もう ついてる。 ほかの いろも ためしてみる ニャー？',
     makeupRemove:  'コットンで ふきふき して ニャー',
     makeupRemoved: 'さっぱり した ニャー！',
