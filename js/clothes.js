@@ -89,6 +89,7 @@ G.ClothesArt = (function () {
       <path d="M690 990 L770 990 L770 1060 L690 1060 Z" fill="#f0c22c" ${line(8)}/>`,
 
     // ジャンパー（前を ファスナーで しめる）
+    // ジャンパー（前を ファスナーで しめる）
     jumper: (c, o) => `<path d="M430 600 L802 600 Q818 700 812 800 L784 906 Q842 966 792 1028 Q615 1044 438 1028 Q388 966 446 906 L418 800 Q412 700 430 600 Z" fill="${c}" ${line()}/>
       <path d="M470 700 Q472 652 504 640 M440 1004 Q432 982 444 960" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="12" stroke-linecap="round"/>
       <path d="M494 922 L516 914 L548 990 L526 998 Z M736 922 L714 914 L682 990 L704 998 Z" fill="#1d1a1c" fill-opacity=".14" ${line(7)}/>
@@ -99,10 +100,10 @@ G.ClothesArt = (function () {
       <path d="M867 853 L893 868 Q886 922 845 956 L819 941 Q852 902 867 853 Z" fill="${c}" ${line(9)}/><path d="M867 853 L893 868 Q886 922 845 956 L819 941 Q852 902 867 853 Z" fill="#1d1a1c" fill-opacity=".13"/>
       <path d="M865 877 L880 886 M856 895 L872 904 M847 913 L862 922 M835 930 L851 939" ${line(5)} stroke-opacity=".45" fill="none"/>
       <path d="M838 822 Q826 808 810 806" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="10" stroke-linecap="round"/>
-      <path d="M494 594 Q615 622 736 594 L758 652 Q615 688 472 652 Z" fill="${c}" ${line(9)}/><path d="M494 594 Q615 622 736 594 L758 652 Q615 688 472 652 Z" fill="#1d1a1c" fill-opacity=".13"/>
-      <path d="M515 607 L515 652 M540 612 L540 656 M565 615 L565 659 M590 616 L590 660 M640 616 L640 660 M665 615 L665 659 M690 612 L690 656 M715 607 L715 652" ${line(5)} stroke-opacity=".45" fill="none"/>
-      <path d="M615 612 L615 1072" fill="none" ${line(6)}/>
-      <path d="M605 690 L625 690 M605 710 L625 710 M605 730 L625 730 M605 750 L625 750 M605 770 L625 770 M605 790 L625 790 M605 810 L625 810 M605 830 L625 830 M605 850 L625 850 M605 870 L625 870 M605 890 L625 890 M605 910 L625 910 M605 930 L625 930 M605 950 L625 950 M605 970 L625 970 M605 990 L625 990 M605 1010 L625 1010 M605 1030 L625 1030 M605 1050 L625 1050" fill="none" ${line(4)}/>
+      <path d="M494 600 Q615 604 736 600 L758 652 Q615 688 472 652 Z" fill="${c}" ${line(9)}/><path d="M494 600 Q615 604 736 600 L758 652 Q615 688 472 652 Z" fill="#1d1a1c" fill-opacity=".13"/>
+      <path d="M515 611 L515 652 M540 611 L540 656 M565 612 L565 659 M590 612 L590 660 M640 612 L640 660 M665 612 L665 659 M690 611 L690 656 M715 611 L715 652" ${line(5)} stroke-opacity=".45" fill="none"/>
+      <path d="M615 612 L615 1072" fill="none" ${line(7)}/>
+      <path d="M604 692 L626 692 M604 714 L626 714 M604 736 L626 736 M604 758 L626 758 M604 780 L626 780 M604 802 L626 802 M604 824 L626 824 M604 846 L626 846 M604 868 L626 868 M604 890 L626 890 M604 912 L626 912 M604 934 L626 934 M604 956 L626 956 M604 978 L626 978 M604 1000 L626 1000 M604 1022 L626 1022 M604 1044 L626 1044" fill="none" ${line(5)}/>
       <rect x="601" y="606" width="28" height="24" rx="8" fill="#f6d860" ${line(7)}/>
       <path d="M604 628 L626 628 L631 676 Q615 688 599 676 Z" fill="#f6d860" ${line(7)}/>
       <circle cx="615" cy="664" r="5" fill="#1d1a1c"/>
@@ -111,8 +112,8 @@ G.ClothesArt = (function () {
 
     // セーター（あたまから かぶる ニット）
     sweater: (c, o) => `${torso(c, 1040)}
-      ${[[510, 640, 8], [615, 690, 7], [720, 640, 8]].map(([x, y, n]) => '<path d="M' + x + ' ' + y + [...Array(n)].map((_, i) => ' q' + (i % 2 ? -34 : 34) + ' 22 0 44').join('') + ' M' + x + ' ' + y + [...Array(n)].map((_, i) => ' q' + (i % 2 ? 34 : -34) + ' 22 0 44').join('') + '" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="10" stroke-linecap="round"/>' +
-        '<path d="M' + (x - 34) + ' ' + (y + 6) + ' L' + (x - 34) + ' ' + (y + n * 44 - 6) + ' M' + (x + 34) + ' ' + (y + 6) + ' L' + (x + 34) + ' ' + (y + n * 44 - 6) + '" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="6" stroke-linecap="round"/>').join('')}
+      ${[[510, 642, 7], [615, 690, 6], [720, 642, 7]].map(([x, y, n]) => '<path d="M' + x + ' ' + y + [...Array(n)].map((_, i) => ' q' + (i % 2 ? -32 : 32) + ' 25 0 50').join('') + ' M' + x + ' ' + y + [...Array(n)].map((_, i) => ' q' + (i % 2 ? 32 : -32) + ' 25 0 50').join('') + '" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="11" stroke-linecap="round"/>').join('')}
+      <path d="M562 664 L562 988 M668 664 L668 988" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="6" stroke-linecap="round"/>
       ${['M540 600 Q615 664 690 600 L718 600 Q615 716 512 600 Z', 'M444 1004 Q615 1022 788 1004 L792 1040 Q615 1058 438 1040 Z'].map(d => '<path d="' + d + '" fill="' + c + '" ' + line(9) + '/><path d="' + d + '" fill="' + INK + '" fill-opacity=".12"/>').join('')}
       <path d="M552 610L529 618M565 618L546 632M578 624L564 644M590 628L581 652M603 631L598 656M615 632L615 658M628 631L632 656M640 628L649 652M653 624L667 644M665 618L684 632M678 610L701 618 M462 1009L462 1039M484 1011L484 1041M506 1012L506 1043M528 1014L528 1044M550 1015L550 1045M572 1015L572 1045M594 1016L594 1046M616 1016L616 1046M638 1016L638 1046M660 1015L660 1045M682 1015L682 1045M704 1014L704 1044M726 1012L726 1042M748 1011L748 1041M770 1009L770 1039" fill="none" stroke="${INK}" stroke-opacity=".3" stroke-width="5" stroke-linecap="round"/>
       ${sleeves(c, o, true)}
@@ -132,10 +133,11 @@ G.ClothesArt = (function () {
       <path d="${[...Array(15)].map((_, i) => 462 + i * 22).map(x => [x, 36 * ((x - 441) / 351) * (1 - (x - 441) / 351)]).map(([x, d]) => 'M' + x + ' ' + (1029 + d).toFixed(0) + ' L' + x + ' ' + (1053 + d).toFixed(0)).join(' ')}" fill="none" stroke="${INK}" stroke-opacity=".3" stroke-width="5" stroke-linecap="round"/>
       ${[[482, 560], [670, 748]].map(([a, b]) => '<path d="M' + a + ' 936 L' + b + ' 936 L' + (b - 2) + ' 998 Q' + (a + b) / 2 + ' 1012 ' + (a + 2) + ' 998 Z" fill="' + c + '" ' + line(8) + '/>' +
         '<path d="M' + (a + 4) + ' 940 L' + (b - 4) + ' 940 L' + (b - 4) + ' 956 L' + (a + 4) + ' 956 Z" fill="' + INK + '" fill-opacity=".12"/>' +
-        '<path d="M' + (a + 2) + ' 958 L' + (b - 2) + ' 958" fill="none" ' + line(6) + '/>').join('')}
+        '<path d="M' + (a + 2) + ' 958 L' + (b - 2) + ' 958" fill="none" ' + line(7) + '/>').join('')}
       ${[0, 1].map(k => '<path d="M506 600 L540 600 L615 790 L690 600 L724 600 L635 826 L635 1069 L595 1069 L595 826 Z" ' + (k ? 'fill="' + INK + '" fill-opacity=".12"' : 'fill="' + c + '" ' + line(8)) + '/>').join('')}
       <path d="M615 790 L615 1069" fill="none" ${line(7)}/>
-      ${(bc => [834, 890, 946, 1002].map(y => '<circle cx="615" cy="' + y + '" r="19" fill="' + bc + '" ' + line(7) + '/><circle cx="608" cy="' + y + '" r="3.6" fill="' + INK + '"/><circle cx="622" cy="' + y + '" r="3.6" fill="' + INK + '"/>').join(''))(((r, g, b) => r - g > 30 && b > g ? '#6f9fdc' : '#e9789c')(parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)))}
+      ${(bc => [830, 884, 938, 992].map(y => '<circle cx="615" cy="' + y + '" r="17" fill="' + bc + '" ' + line(7) + '/><circle cx="609" cy="' + y + '" r="3.4" fill="' + INK + '"/><circle cx="621" cy="' + y + '" r="3.4" fill="' + INK + '"/>').join(''))(((r, g, b) => r - g > 30 && b > g ? '#6f9fdc' : '#e9789c')(parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)))}
+      <path d="M462 724 Q460 668 486 648" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="12" stroke-linecap="round"/>
       ${sleeves(c, o, true)}
       ${[false, true].filter(rt => rt || !o.noL).map(rt => {
         const X = x => rt ? 1230 - x : x;
