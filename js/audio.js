@@ -164,7 +164,18 @@ G.Sound = (function () {
     stamp: () => { tone({ f: 260, f2: 180, dur: 0.08, vol: 0.14 }); tone({ f: 1200, f2: 1600, dur: 0.1, vol: 0.05, at: 0.05 }); },
     pour: () => { noiseHit({ f: 900, f2: 1700, q: 1.6, dur: 1.4, vol: 0.09, attack: 0.15 }); noiseHit({ ftype: 'lowpass', f: 500, dur: 1.4, vol: 0.06, attack: 0.2 }); },
     plop: () => { tone({ f: 900, f2: 300, dur: 0.12, vol: 0.12 }); tone({ f: 1500, f2: 2400, dur: 0.08, vol: 0.05, at: 0.08 }); },
-    shutter: () => { noiseHit({ f: 3000, q: 0.8, dur: 0.05, vol: 0.22 }); noiseHit({ at: 0.09, f: 2200, q: 0.8, dur: 0.06, vol: 0.18 }); tone({ f: 1800, f2: 1200, dur: 0.06, vol: 0.05 }); }
+    shutter: () => { noiseHit({ f: 3000, q: 0.8, dur: 0.05, vol: 0.22 }); noiseHit({ at: 0.09, f: 2200, q: 0.8, dur: 0.06, vol: 0.18 }); tone({ f: 1800, f2: 1200, dur: 0.06, vol: 0.05 }); },
+    // おでかけ（ドア・はなび・たいこ・すず・おばけ）
+    door: () => { tone({ type: 'triangle', f: 330, f2: 300, dur: 0.1, vol: 0.12 }); [m('E5'), m('G5'), m('C6')].forEach((n, i) => musicBox(n, ctx.currentTime + 0.12 + i * 0.09, 0.9, 0.14)); },
+    whistle: () => tone({ f: 500, f2: 1500, dur: 0.6, vol: 0.04, attack: 0.08 }),
+    boom: () => {
+      noiseHit({ ftype: 'lowpass', f: 420, dur: 0.7, vol: 0.32, attack: 0.008 });
+      tone({ f: 96, f2: 48, dur: 0.5, vol: 0.14 });
+      for (let i = 0; i < 7; i++) noiseHit({ at: 0.18 + Math.random() * 0.6, f: 3200 + Math.random() * 2400, q: 2, dur: 0.04, vol: 0.05 });
+    },
+    don: () => { tone({ f: 120, f2: 66, dur: 0.4, vol: 0.34, attack: 0.004 }); noiseHit({ ftype: 'lowpass', f: 260, dur: 0.14, vol: 0.22 }); },
+    jingle: () => [0, 0.09, 0.18, 0.27, 0.4, 0.49].forEach((at, i) => { tone({ f: [2349, 2637, 2794][i % 3], dur: 0.3, vol: 0.035, at }); noiseHit({ at, f: 7000, q: 3, dur: 0.05, vol: 0.03 }); }),
+    boo: () => { tone({ type: 'triangle', f: 520, f2: 300, dur: 0.7, vol: 0.12, attack: 0.06 }); tone({ type: 'sine', f: 780, f2: 450, dur: 0.6, vol: 0.04, attack: 0.08, at: 0.05 }); }
   };
 
   function play(name) {
@@ -237,7 +248,74 @@ G.Sound = (function () {
     ev.sort((a, c) => a.b - c.b);
     return { ev, len: 64, bpm: 84 };
   }
-  const SONGS = { room: hop, lullaby };
+
+  /* ---- おでかけの 曲（どれも この ゲームの ための メロディ） ---- */
+  // ふしを ならべて ev に たす。k = 音の ながさの わりあい（みじかいと はずむ）、up = 半音 いくつ 上で ならすか。かえすもの：ぜんぶの 拍
+  function melody(ev, notes, v, inst, k = 0.75, up = 0) {
+    let b = 0;
+    notes.forEach(([n, d]) => { ev.push({ b, d: d * k, n: m(n) + up, v, i: inst }); b += d; });
+    return b;
+  }
+  /* おまつり：にぎやかな ヨナぬきの ふし ＋ たいこの ような ベース */
+  function matsuri() {
+    const mel = [
+      ['A4', .5], ['B4', .5], ['D5', 1], ['B4', .5], ['A4', .5], ['G4', 1],
+      ['A4', .5], ['B4', .5], ['A4', .5], ['G4', .5], ['E4', 2],
+      ['G4', .5], ['A4', .5], ['B4', 1], ['D5', .5], ['E5', .5], ['D5', 1],
+      ['B4', .5], ['A4', .5], ['G4', .5], ['A4', .5], ['B4', 2],
+      ['D5', .5], ['E5', .5], ['D5', .5], ['B4', .5], ['A4', 1], ['B4', 1],
+      ['G4', .5], ['A4', .5], ['B4', .5], ['A4', .5], ['G4', 1], ['E4', 1],
+      ['G4', .5], ['A4', .5], ['B4', .5], ['D5', .5], ['B4', .5], ['A4', .5], ['G4', 1],
+      ['A4', 1], ['G4', .5], ['E4', .5], ['D4', 2]
+    ];
+    const ev = [];
+    const len = melody(ev, mel, 0.15, 'p', 0.7);
+    melody(ev, mel, 0.035, 'm', 0.5, 12); // ふえの ように 上で かさねる
+    ['D3', 'E3', 'G2', 'D3', 'G2', 'E3', 'G2', 'D3'].forEach((n, bar) => {
+      [0, 2].forEach(k => ev.push({ b: bar * 4 + k, d: 0.5, n: m(n), v: 0.15, i: 'b' }));
+      ev.push({ b: bar * 4 + 3.5, d: 0.25, n: m(n), v: 0.08, i: 'b' }); // どん・どん・どどん
+    });
+    ev.sort((a, c) => a.b - c.b);
+    return { ev, len, bpm: 124 };
+  }
+  /* ハロウィン：ちょっと ふしぎで かわいい、ぽつぽつ みじかい ふし ＋ ずんちゃ の ベース */
+  function halloween() {
+    const mel = [
+      ['A4', .5], ['C5', .5], ['E5', .5], ['F5', .5], ['E5', 1], ['C5', 1],
+      ['D5', .5], ['F5', .5], ['A5', .5], ['F5', .5], ['E5', 2],
+      ['C5', .5], ['E5', .5], ['G5', .5], ['E5', .5], ['D5', 1], ['B4', 1],
+      ['C5', .5], ['B4', .5], ['A4', .5], ['G#4', .5], ['A4', 2],
+      ['A4', .5], ['C5', .5], ['E5', .5], ['F5', .5], ['E5', 1], ['C5', 1],
+      ['D5', .5], ['F5', .5], ['A5', .5], ['G5', .5], ['F5', 1], ['E5', 1],
+      ['D5', .5], ['C5', .5], ['B4', .5], ['C5', .5], ['D5', .5], ['E5', .5], ['G#4', 1],
+      ['A4', 1], ['E4', 1], ['A4', 2]
+    ];
+    const ev = [];
+    const len = melody(ev, mel, 0.14, 'p', 0.45);
+    ['A2', 'D3', 'C3', 'E2', 'A2', 'D3', 'E2', 'A2'].forEach((n, bar) =>
+      [0, 1, 2, 3].forEach(k => ev.push({ b: bar * 4 + k, d: 0.35, n: m(n) + (k % 2 ? 7 : 0), v: k % 2 ? 0.07 : 0.12, i: 'b' })));
+    ev.sort((a, c) => a.b - c.b);
+    return { ev, len, bpm: 112 };
+  }
+  /* クリスマス：オルゴールの ワルツ（3びょうし） */
+  function xmas() {
+    const mel = [
+      ['E5', 1], ['G5', 1], ['E5', 1], ['D5', 2], ['C5', 1], ['D5', 1], ['E5', 1], ['G5', 1], ['A5', 3],
+      ['G5', 1], ['A5', 1], ['G5', 1], ['E5', 2], ['C5', 1], ['D5', 1], ['E5', 1], ['D5', 1], ['G4', 3],
+      ['E5', 1], ['G5', 1], ['E5', 1], ['D5', 2], ['C5', 1], ['D5', 1], ['E5', 1], ['A5', 1], ['G5', 3],
+      ['A5', 1], ['G5', 1], ['E5', 1], ['F5', 2], ['D5', 1], ['E5', 1], ['D5', 1], ['B4', 1], ['C5', 3]
+    ];
+    const ev = [];
+    const len = melody(ev, mel, 0.2, 'm', 1);
+    ['C', 'G7', 'C', 'F', 'C', 'Am', 'G7', 'G7', 'C', 'G7', 'Dm', 'C', 'Am', 'Dm', 'G7', 'C'].forEach((c, bar) => {
+      const [bass, tri] = CH[c];
+      ev.push({ b: bar * 3, d: 1.6, n: bass, v: 0.1, i: 'b' });
+      [1, 2].forEach(k => tri.forEach(n => ev.push({ b: bar * 3 + k, d: 0.4, n, v: 0.028, i: 'p' })));
+    });
+    ev.sort((a, c) => a.b - c.b);
+    return { ev, len, bpm: 138 };
+  }
+  const SONGS = { room: hop, lullaby, matsuri, halloween, xmas };
 
   let bgm = null;
   function playBgm(name) {

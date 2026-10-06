@@ -148,6 +148,15 @@ G.GAMES = [
   { id: 'photo',   label: 'しゃしん とろう',       art: 'icon_photo' }
 ];
 
+// おでかけ（要件定義書 5.10）。おへやの ドア → おでかけの じゅんび（ふくを えらぶ）→ ここから えらぶ → その場所で あそぶ
+// icon = えらぶ画面の 絵、bg = 背景、bgm = 曲（js/audio.js）。場所ごとの あそびは js/screens/outing.js
+G.OUTINGS = [
+  { id: 'festival',  label: 'おまつり',             icon: 'icon_out_festival',  bg: 'bg_festival',  bgm: 'matsuri' },
+  { id: 'halloween', label: 'ハロウィン パーティー', icon: 'icon_out_halloween', bg: 'bg_halloween', bgm: 'halloween' },
+  { id: 'christmas', label: 'クリスマス パーティー', icon: 'icon_out_christmas', bg: 'bg_christmas', bgm: 'xmas' },
+  { id: 'nyuhome',   label: 'ニューちゃんの いえ',   icon: 'icon_out_nyuhome',   bg: 'bg_nyuhome',   bgm: 'room' }
+];
+
 // おえかきの クレヨン
 G.CRAYONS = [
   { id: 'red',    label: 'あか',     color: '#e8504f' },
@@ -175,6 +184,10 @@ G.ART_FILES = {
   bg_room:       'assets/backgrounds/bg_room_day.png',
   bg_bath:       'assets/backgrounds/bg_bath.png',
   bg_room_night: 'assets/backgrounds/bg_room_night.png',
+  bg_festival:   'assets/backgrounds/bg_festival.png',
+  bg_halloween:  'assets/backgrounds/bg_halloween.png',
+  bg_christmas:  'assets/backgrounds/bg_christmas.png',
+  bg_nyuhome:    'assets/backgrounds/bg_nyuhome.png',
 
   item_fish:     'assets/items/item_fish.png',
   item_water:    'assets/items/item_water.png',
@@ -211,5 +224,6 @@ G.ART_FILES = {
   icon_play:     'assets/icons/icon_play.png',
   icon_sleep:    'assets/icons/icon_sleep.png',
   icon_dress:    'assets/icons/icon_dress.png',
-  icon_bye:      'assets/icons/icon_bye.png'
+  icon_bye:      'assets/icons/icon_bye.png',
+  icon_door:     'assets/icons/icon_door.png'
 };
