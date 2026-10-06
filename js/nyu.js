@@ -222,9 +222,9 @@ G.NyuVisit = (function () {
       if (Math.random() < 0.035) chat();
     },
 
-    /* あそびの 画面で いっしょに はしゃぐ（F-94）。来ていなければ なにも しない。かえすもの：ニューちゃん（または null） */
-    joinPlay(scr, sc, { x, y, h, cheer = true }) {
-      if (!V.active) return null;
+    /* あそびの 画面で いっしょに はしゃぐ（F-94）。来ていなければ なにも しない（always = いつも いっしょ：おでかけ）。かえすもの：ニューちゃん（または null） */
+    joinPlay(scr, sc, { x, y, h, cheer = true, always = false }) {
+      if (!V.active && !always) return null;
       const UI = G.UI;
       const s = new G.NyuSprite(scr, { x, y, h });
       sc.add(() => s.remove());
