@@ -151,7 +151,7 @@ def collect():
             ('g_clothes_next', 'つぎの ふく'), ('g_clothes_prev', 'まえの ふく')]
     for var, pre in (('CARES', 'care'), ('FOODS', 'food'), ('SOAPS', 'soap'), ('BATH_TOYS', 'bathtoy'), ('GAMES', 'game'),
                      ('CRAYONS', 'crayon'), ('DRAW_STAMPS', 'stamp'), ('RIBBONS', 'ribbon'), ('ACCESSORY_SLOTS', 'acc_slot'),
-                     ('ACCESSORIES', 'acc'), ('CLOTHES', 'clothes')):
+                     ('ACCESSORIES', 'acc'), ('CLOTHES', 'clothes'), ('OUTINGS', 'outing')):
         out += [(f'g_{pre}_{x["id"]}', x['label']) for x in G.get(var, [])]
     stickers = G.get('STICKERS', [])
     out += [(f'g_sticker_{i + 1:02d}', s['label']) for i, s in enumerate(stickers)]

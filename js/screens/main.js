@@ -97,17 +97,23 @@ G.Screens.home = {
       UI.tap(art, () => { if (!busy && !G.isRewarding()) say(L.drawWall, 'face_happy'); }, { sound: 'sparkle' });
     }
 
-    /* お世話ボタン */
+    /* お世話ボタン（5つ）・おでかけの ドア・またね */
     const btns = {};
     G.CARES.forEach((c, i) => {
       const b = UI.el('div', 'btn-care care-' + c.id);
-      UI.pos(b, 150 + i * 176, 838);
+      UI.pos(b, 84 + i * 176, 838);
       b.appendChild(G.Assets.node(c.icon, 'bc-icon'));
       b.appendChild(UI.el('div', 'bc-label', c.label));
       scr.appendChild(b);
       btns[c.id] = b;
       UI.tap(b, () => onCare(c, b));
     });
+    const door = UI.el('div', 'btn-care btn-door');
+    UI.pos(door, 84 + G.CARES.length * 176, 838);
+    door.appendChild(G.Assets.node('icon_door', 'bc-icon'));
+    door.appendChild(UI.el('div', 'bc-label', 'おでかけ'));
+    scr.appendChild(door);
+    UI.tap(door, () => { if (!G.isRewarding()) G.go('outfit'); }, { say: 'おでかけ', sound: 'door' });
     const bye = UI.el('div', 'btn-care btn-bye');
     UI.pos(bye, 1180, 838);
     bye.appendChild(G.Assets.node('icon_bye', 'bc-icon'));
@@ -190,6 +196,9 @@ G.Screens.home = {
         } else {
           await sc.guard(say(pick(L.greetAgain), 'face_happy', 3000));
         }
+      } else if (params.from === 'outing') { // おでかけから かえってきた
+        chara.hop(36);
+        await sc.guard(say(L.outingHome, 'face_happy', 3000));
       }
       await sc.guard(G.checkRewards());
       await sc.wait(300);
