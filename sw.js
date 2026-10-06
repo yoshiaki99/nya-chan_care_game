@@ -4,7 +4,7 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = '0b4962a2eb';
+const VERSION = '67653fbe34';
 const FILES = [
   ["index.html", "10450c3dc3"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
@@ -83,6 +83,10 @@ const FILES = [
   ["assets/voice/m_fullBath.m4a", "f3194a6449"],
   ["assets/voice/m_fullFood.m4a", "b3915ef61b"],
   ["assets/voice/m_fullSleep.m4a", "8acadd921f"],
+  ["assets/voice/m_get_ribbon_gold.m4a", "bbebd5e641"],
+  ["assets/voice/m_get_ribbon_mint.m4a", "2257aad24c"],
+  ["assets/voice/m_get_ribbon_polka.m4a", "d6094eb33d"],
+  ["assets/voice/m_get_ribbon_purple.m4a", "00508b90c7"],
   ["assets/voice/m_get_sticker_01.m4a", "22632a6144"],
   ["assets/voice/m_get_sticker_02.m4a", "15f045fa88"],
   ["assets/voice/m_get_sticker_03.m4a", "a88c802312"],
@@ -99,6 +103,10 @@ const FILES = [
   ["assets/voice/m_get_sticker_14.m4a", "2f1ee1637b"],
   ["assets/voice/m_get_sticker_15.m4a", "9bd9516fdb"],
   ["assets/voice/m_get_sticker_16.m4a", "4ceee75aed"],
+  ["assets/voice/m_get_sticker_17.m4a", "6e8e25a516"],
+  ["assets/voice/m_get_sticker_18.m4a", "e8f5a1bd2f"],
+  ["assets/voice/m_get_sticker_19.m4a", "5881856ffb"],
+  ["assets/voice/m_get_sticker_20.m4a", "e398ed3b58"],
   ["assets/voice/m_greetAgain_1.m4a", "969cf01010"],
   ["assets/voice/m_greetAgain_2.m4a", "9d4100320f"],
   ["assets/voice/m_greetDaily.m4a", "0184bc1e9b"],
@@ -126,6 +134,7 @@ const FILES = [
   ["assets/voice/m_nyuReply_3.m4a", "883aea86e9"],
   ["assets/voice/m_nyuShy.m4a", "c55040181b"],
   ["assets/voice/m_nyuThanks.m4a", "3828a5c2fc"],
+  ["assets/voice/m_nyuWelcome.m4a", "232155d693"],
   ["assets/voice/m_pet_1.m4a", "72514bb987"],
   ["assets/voice/m_pet_2.m4a", "718be50255"],
   ["assets/voice/m_pet_3.m4a", "7b2de7ce54"],
@@ -139,6 +148,7 @@ const FILES = [
   ["assets/voice/m_photoSnap_2.m4a", "f75dbc83f5"],
   ["assets/voice/m_photoSnap_3.m4a", "03901fb877"],
   ["assets/voice/m_playIntro.m4a", "c923d5f916"],
+  ["assets/voice/m_sleepGo.m4a", "4844b0e65d"],
   ["assets/voice/m_sleepIntro.m4a", "eb9135d6b2"],
   ["assets/voice/m_sleepNight.m4a", "6f611adf5f"],
   ["assets/voice/m_sleepWake.m4a", "a48f5f503b"],
@@ -178,7 +188,7 @@ const FILES = [
   ["js/accessory.js", "c46238ffec"],
   ["js/art.js", "142c4f87e9"],
   ["js/art_play.js", "7136fc5da4"],
-  ["js/asset_list.js", "deabaee934"],
+  ["js/asset_list.js", "232e8d2c33"],
   ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "aa3c0b86e6"],
   ["js/chara.js", "47379dcf34"],
@@ -202,7 +212,7 @@ const FILES = [
   ["js/state.js", "ddc1f7358d"],
   ["js/ui.js", "7b01161cdc"],
   ["js/voice.js", "eafb619e48"],
-  ["js/voice_clips.js", "7cacdbcc82"],
+  ["js/voice_clips.js", "f3811f4f0b"],
   ["manifest.webmanifest", "f1f4bae15a"]
 ];
 /* @@FILES-END */

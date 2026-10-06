@@ -70,6 +70,7 @@ G.VOICE_CLIPS = {
   "しゃしんが いっぱい！ アルバムに しまった ニャー": 'assets/voice/m_photoDone.m4a',
   "まだ しゃしんが ない ニャー": 'assets/voice/m_albumEmpty.m4a',
   "ベッドを タッチして ニャー": 'assets/voice/m_sleepIntro.m4a',
+  "おやすみなさい ニャー…": 'assets/voice/m_sleepGo.m4a',
   "おはよう！ げんき いっぱい ニャー！": 'assets/voice/m_sleepWake.m4a',
   "もう おやすみの じかん。 また あした ニャー": 'assets/voice/m_sleepNight.m4a',
   "どの リボンに しようかな ニャー？": 'assets/voice/m_dressIntro.m4a',
@@ -101,6 +102,7 @@ G.VOICE_CLIPS = {
   "ハートを あつめると つかえる ニャー": 'assets/voice/m_makeupLocked.m4a',
   "また あそびに きてね ニャー！": 'assets/voice/m_bye.m4a',
   "きょうは ここまで。 また あした ニャー": 'assets/voice/m_limit.m4a',
+  "ニューちゃん、 いらっしゃい ニャー！": 'assets/voice/m_nyuWelcome.m4a',
   "わたしの いもうとの ニューちゃん ニャー！": 'assets/voice/m_nyuIntro.m4a',
   "いいよ ニャー！": 'assets/voice/m_nyuReply_1.m4a',
   "うふふ ニャー": 'assets/voice/m_nyuReply_2.m4a',
@@ -149,5 +151,13 @@ G.VOICE_CLIPS = {
   "シールを もらったよ！ にじ": 'assets/voice/m_get_sticker_13.m4a',
   "シールを もらったよ！ おはな": 'assets/voice/m_get_sticker_14.m4a',
   "シールを もらったよ！ あしあと": 'assets/voice/m_get_sticker_15.m4a',
-  "シールを もらったよ！ おんぷ": 'assets/voice/m_get_sticker_16.m4a'
+  "シールを もらったよ！ おんぷ": 'assets/voice/m_get_sticker_16.m4a',
+  "シールを もらったよ！ ほうせき": 'assets/voice/m_get_sticker_17.m4a',
+  "シールを もらったよ！ いちご": 'assets/voice/m_get_sticker_18.m4a',
+  "シールを もらったよ！ ティーポット": 'assets/voice/m_get_sticker_19.m4a',
+  "シールを もらったよ！ おひさま": 'assets/voice/m_get_sticker_20.m4a',
+  "あたらしい リボンが ふえたよ！ むらさき": 'assets/voice/m_get_ribbon_purple.m4a',
+  "あたらしい リボンが ふえたよ！ みどり": 'assets/voice/m_get_ribbon_mint.m4a',
+  "あたらしい リボンが ふえたよ！ みずたま": 'assets/voice/m_get_ribbon_polka.m4a',
+  "あたらしい リボンが ふえたよ！ きんいろ": 'assets/voice/m_get_ribbon_gold.m4a'
 };
