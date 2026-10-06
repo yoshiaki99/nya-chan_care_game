@@ -4,7 +4,7 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = 'b5e81b19aa';
+const VERSION = 'bd1fc29e23';
 const FILES = [
   ["index.html", "77a1a9a885"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
@@ -24,6 +24,14 @@ const FILES = [
   ["assets/characters/nyu_base.png", "123b0e4a49"],
   ["assets/characters/nyu_face_dreamy.png", "ef8f9b193a"],
   ["assets/characters/nyu_face_happy.png", "0d77fd75bc"],
+  ["assets/voice/g_album.m4a", "40a0fa3c1d"],
+  ["assets/voice/g_album_close.m4a", "87f49e4e69"],
+  ["assets/voice/g_cake_candle.m4a", "4e582bf1b3"],
+  ["assets/voice/g_draw_clear.m4a", "4d1f9a18cc"],
+  ["assets/voice/g_draw_done.m4a", "7d8330fca4"],
+  ["assets/voice/g_draw_eraser.m4a", "2236fbd0b4"],
+  ["assets/voice/g_ribbon_prev.m4a", "a9ae4f1a33"],
+  ["assets/voice/g_stickers_all.m4a", "df11e0df00"],
   ["assets/voice/m_bathDone.m4a", "a1ba234311"],
   ["assets/voice/m_bathFoam.m4a", "5561f4952b"],
   ["assets/voice/m_bathIntro.m4a", "1677c02e57"],
@@ -61,11 +69,13 @@ const FILES = [
   ["assets/voice/m_hideMiss_1.m4a", "6d05672f51"],
   ["assets/voice/m_hideMiss_2.m4a", "98fa9489fe"],
   ["assets/voice/m_hideReady.m4a", "a75242dd9a"],
+  ["assets/voice/m_hungry.m4a", "d026fcbf06"],
   ["assets/voice/m_pet_2.m4a", "718be50255"],
   ["assets/voice/m_pet_3.m4a", "7b2de7ce54"],
   ["assets/voice/m_pianoDone.m4a", "304980e16d"],
   ["assets/voice/m_pianoIntro.m4a", "275c75958b"],
   ["assets/voice/m_playIntro.m4a", "c923d5f916"],
+  ["assets/voice/m_sleepy.m4a", "c454b63da1"],
   ["assets/voice/m_teaserCheer_1.m4a", "656f2b538e"],
   ["assets/voice/m_teaserDone.m4a", "46c9ae67d5"],
   ["assets/voice/m_teaserIntro.m4a", "729200531d"],
@@ -99,7 +109,7 @@ const FILES = [
   ["js/accessory.js", "3e3518f9d9"],
   ["js/art.js", "370aad79f8"],
   ["js/art_play.js", "cead13697d"],
-  ["js/asset_list.js", "826e6b4642"],
+  ["js/asset_list.js", "5f8a5f01b8"],
   ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "cb8e63ec45"],
   ["js/chara.js", "47379dcf34"],
@@ -126,7 +136,7 @@ const FILES = [
   ["js/state.js", "8f16b74f39"],
   ["js/ui.js", "7b01161cdc"],
   ["js/voice.js", "eafb619e48"],
-  ["js/voice_clips.js", "6b7ce6af04"],
+  ["js/voice_clips.js", "33f34b28bc"],
   ["manifest.webmanifest", "f1f4bae15a"]
 ];
 /* @@FILES-END */

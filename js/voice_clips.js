@@ -7,8 +7,10 @@ G.VOICE_CLIPS = {
   "にゃっほー！ きょうも あそびに きてくれた ニャー！": 'assets/voice/m_greetDaily.m4a',
   "おかえり！ また あえて うれしい ニャー": 'assets/voice/m_greetAgain_1.m4a',
   "にゃっほー！ いっしょに あそぼ ニャー": 'assets/voice/m_greetAgain_2.m4a',
+  "おなか ぺこぺこ ニャー…": 'assets/voice/m_hungry.m4a',
   "からだを きれいに したい ニャー": 'assets/voice/m_dirty.m4a',
   "ねえねえ、 いっしょに あそぼ ニャー？": 'assets/voice/m_bored.m4a',
+  "ふぁ〜あ、 ねむく なっちゃった ニャー": 'assets/voice/m_sleepy.m4a',
   "おひさま ぽかぽか ニャー": 'assets/voice/m_content_1.m4a',
   "きょうも いい きもち ニャー！": 'assets/voice/m_content_2.m4a',
   "わたし、 おさかなが だいすき ニャー": 'assets/voice/m_content_3.m4a',
@@ -70,5 +72,13 @@ G.VOICE_CLIPS = {
   "nyu:おねえちゃんと おそろい ニャー！": 'assets/voice/n_osoroi.m4a',
   "nyu:おかえり ニャー！": 'assets/voice/n_welcome.m4a',
   "nyu:そろそろ かえる。 また くる ニャー！": 'assets/voice/n_leave.m4a',
-  "nyu:またね ニャー！": 'assets/voice/n_bye.m4a'
+  "nyu:またね ニャー！": 'assets/voice/n_bye.m4a',
+  "まえの リボン": 'assets/voice/g_ribbon_prev.m4a',
+  "ぜんぶ あつめたよ！": 'assets/voice/g_stickers_all.m4a',
+  "けしゴム": 'assets/voice/g_draw_eraser.m4a',
+  "ぜんぶ けす": 'assets/voice/g_draw_clear.m4a',
+  "できた": 'assets/voice/g_draw_done.m4a',
+  "ろうそく": 'assets/voice/g_cake_candle.m4a',
+  "アルバム": 'assets/voice/g_album.m4a',
+  "とじる": 'assets/voice/g_album_close.m4a'
 };
