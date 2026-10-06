@@ -113,22 +113,33 @@ G.Screens.outmenu = {
  *           instant(X, s, p) = いそがしい ときでも すぐ うごく ぶん（はなび）、nyu = ニューちゃん じしん
  * X = 場所で つかう 道具（say・sayNyu・eat・fly・pop など。下の outingScreen の 中）
  */
+/* おまつりの やたい：タッチすると その たべものを たべる。x = 左はし（やたいの 下は じめんに そろえる） */
+G.festivalStall = function (id, art, item, x, line) {
+  return {
+    id, art, x, y: 346, w: 270, h: 373, z: 1, hint: [0.62, 0.45],
+    async act(X, s) {
+      const c = X.center(s.el, 0.62, 0.45);
+      G.Sound.play('swish');
+      await X.eat(item, c);
+      await X.say(line(X.L), 'face_happy');
+    }
+  };
+};
+
 G.OUTING_PLACES = {
   festival: {
-    chara: { x: 610, y: 905, h: 470 }, nyu: { x: 830, y: 905, h: 360 },
+    chara: { x: 650, y: 910, h: 470 }, nyu: { x: 880, y: 1000, h: 330 }, // ニューちゃんは てまえ（やたいに かさねない）
     hello: (X) => X.say(X.L.festivalHello, 'face_happy', 3000),
     match: (S) => S.clothes() === 'yukata',
     matchLine: (L) => L.festivalYukata,
     bye: (X) => X.say(X.L.festivalDone, 'face_happy', 3000),
     spots: [
-      { id: 'watame', art: 'prop_watame', x: 24, y: 300, w: 340, h: 470, z: 1, hint: [0.72, 0.44],
-        async act(X, s) {
-          const c = X.center(s.el, 0.72, 0.42);
-          G.Sound.play('swish');
-          await X.eat('item_watame', c);
-          await X.say(X.L.festivalWatame, 'face_happy');
-        } },
-      { id: 'kingyo', art: 'prop_kingyo', x: 930, y: 790, w: 380, h: 200, z: 3, hint: [0.45, 0.5],
+      // おくに やたいが 4つ（どれも たべられる。おなかが すこし ふえる）
+      G.festivalStall('watame', 'prop_watame', 'item_watame', 10, (L) => L.festivalWatame),
+      G.festivalStall('takoyaki', 'prop_takoyaki', 'item_takoyaki', 280, (L) => L.festivalTakoyaki),
+      G.festivalStall('potato', 'prop_potato', 'item_potato', 815, (L) => L.festivalPotato),
+      G.festivalStall('ringo', 'prop_ringo', 'item_ringo', 1086, (L) => L.festivalRingo),
+      { id: 'kingyo', art: 'prop_kingyo', x: 975, y: 800, w: 380, h: 200, z: 3, hint: [0.45, 0.5],
         async act(X, s, first) {
           X.restart(s.el, 'scoop');
           await X.wait(420);
@@ -146,7 +157,7 @@ G.OUTING_PLACES = {
           X.chara.hop(30);
           await X.say(X.L.festivalKingyo, 'face_happy');
         } },
-      { id: 'taiko', art: 'prop_taiko', x: 70, y: 740, w: 260, h: 230, z: 3, hint: [0.5, 0.45],
+      { id: 'taiko', art: 'prop_taiko', x: 60, y: 770, w: 260, h: 230, z: 3, hint: [0.5, 0.45],
         async act(X, s) {
           for (let i = 0; i < 4; i++) {
             G.Sound.play('don');
@@ -163,7 +174,7 @@ G.OUTING_PLACES = {
           X.UI.notes(h.x, h.y, 3);
           await X.say(X.L.festivalTaiko, 'face_happy');
         } },
-      { id: 'hanabi', x: 380, y: 120, w: 600, h: 300, z: 1, hint: [0.5, 0.55], sound: false, sky: true,
+      { id: 'hanabi', x: 300, y: 112, w: 766, h: 218, z: 1, hint: [0.5, 0.55], sound: false, sky: true,
         instant(X, s, p) { X.firework(p || X.center(s.el)); },
         async act(X, s, first) {
           X.chara.flash('face_happy', 2600);
@@ -377,7 +388,7 @@ G.outingScreen = function (o) {
       const setProg = G.progressRow(scr, P.spots.length, () => G.Art.all[o.icon]());
 
       /* ニャーちゃん・ニューちゃん */
-      const chara = new G.Chara(scr, P.chara);
+      const chara = new G.Chara(scr, Object.assign({ wide: 0.8 }, P.chara)); // なでる はんいを 体の はばに（まわりの 道具を タッチできるように）
       chara.setMood('face_happy');
       chara.setPose('face_happy', 0);
       G.petting(chara, sc);

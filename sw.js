@@ -4,7 +4,7 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = '491c918133';
+const VERSION = '1c09247515';
 const FILES = [
   ["index.html", "92b6ca1a54"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
@@ -31,13 +31,13 @@ const FILES = [
   ["icons/og-image.png", "0d7edd464c"],
   ["js/accessory.js", "c46238ffec"],
   ["js/art.js", "ec809a8638"],
-  ["js/art_outing.js", "a3e2251046"],
+  ["js/art_outing.js", "a906c70f17"],
   ["js/art_play.js", "7136fc5da4"],
   ["js/asset_list.js", "d42ae4a261"],
   ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "6d3adc7d02"],
   ["js/chara.js", "47379dcf34"],
-  ["js/character.js", "a1da0bf82b"],
+  ["js/character.js", "b01811413a"],
   ["js/character_nyu.js", "8a781a22f0"],
   ["js/clothes.js", "390de31321"],
   ["js/data.js", "8e794afbe9"],
@@ -50,7 +50,7 @@ const FILES = [
   ["js/screens/dress.js", "6a3586f264"],
   ["js/screens/main.js", "f5debc12cc"],
   ["js/screens/makeup.js", "6f805b7eb4"],
-  ["js/screens/outing.js", "97a4f8bfbb"],
+  ["js/screens/outing.js", "b3b7440ad8"],
   ["js/screens/play.js", "276240b224"],
   ["js/screens/play_drawing.js", "60410be85a"],
   ["js/screens/play_photo.js", "90acb56418"],

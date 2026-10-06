@@ -148,16 +148,6 @@ G.OutingArt = (function () {
       <rect y="700" width="1366" height="324" fill="#f2d9b2"/>
       <path d="M0 700H1366" ${ink(4)}/>
       ${stones}
-      <!-- おくの やたい（りんごあめ） -->
-      <g transform="translate(1012 330)">
-        <rect x="14" y="80" width="14" height="300" fill="#c79a6e" ${ink(4)}/><rect x="292" y="80" width="14" height="300" fill="#c79a6e" ${ink(4)}/>
-        <path d="M0 20 20 0h280l20 20v62H0z" fill="#9fd0f0" ${ink(4)}/>
-        <path d="M0 82q20 22 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0" fill="#fff8ef" ${ink(4)}/>
-        <path d="M40 20v62M80 20v62M120 20v62M160 20v62M200 20v62M240 20v62M280 20v62" stroke="#fff8ef" stroke-width="16"/>
-        <rect x="6" y="250" width="308" height="130" rx="8" fill="#f3c08f" ${ink(4)}/>
-        <path d="M6 290h308M6 330h308" stroke="#e2a870" stroke-width="4"/>
-        ${[50, 100, 150, 200, 250].map((x, i) => `<path d="M${x} 250v-50" ${ink(4, '#c79a6e')}/><circle cx="${x}" cy="${190 - (i % 2) * 12}" r="22" fill="#e8505f" ${ink(4)}/><ellipse cx="${x - 7}" cy="${182 - (i % 2) * 12}" rx="6" ry="8" fill="#fff" opacity=".6"/>`).join('')}
-      </g>
       <!-- ちょうちんの ひも -->
       <path d="M-20 150Q683 370 1386 150" fill="none" ${ink(4)}/>
       ${lanterns.join('')}
@@ -309,19 +299,30 @@ G.OutingArt = (function () {
 
   /* ================= その場所で タッチする 道具 ================= */
   /* --- おまつり --- */
-  // わたあめの やたい（340×470）
-  function propWatame() {
-    const stripes = [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<rect x="${6 + i * 41}" y="22" width="41" height="74" fill="${i % 2 ? '#fff8ef' : '#f47c7c'}"/>`).join('');
-    const scallop = [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<path d="M${6 + i * 41} 96a20.5 20.5 0 0 0 41 0z" fill="${i % 2 ? '#fff8ef' : '#f47c7c'}" ${ink(4)}/>`).join('');
+  // やたい（340×470）。roof = やねの しまの 色、cloth = だいの ぬのの 色、sign = かんばんの 絵、goods = だいの 上の もの
+  function stall(roof, cloth, sign, goods) {
+    const stripes = [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<rect x="${6 + i * 41}" y="22" width="41" height="74" fill="${i % 2 ? '#fff8ef' : roof}"/>`).join('');
+    const scallop = [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<path d="M${6 + i * 41} 96a20.5 20.5 0 0 0 41 0z" fill="${i % 2 ? '#fff8ef' : roof}" ${ink(4)}/>`).join('');
     return svg('0 0 340 470', `
       <rect x="20" y="96" width="16" height="366" fill="#c79a6e" ${ink(4)}/><rect x="304" y="96" width="16" height="366" fill="#c79a6e" ${ink(4)}/>
       ${stripes}
       <rect x="6" y="22" width="328" height="74" fill="none" ${ink(4)}/>
       ${scallop}
-      <path d="M0 24 22 2h296l22 22z" fill="#f47c7c" ${ink(4)}/>
+      <path d="M0 24 22 2h296l22 22z" fill="${roof}" ${ink(4)}/>
       <rect x="116" y="124" width="108" height="78" rx="12" fill="#fff1b8" ${ink(4)}/>
+      ${sign}
+      ${goods}
+      <!-- だい -->
+      <rect x="6" y="298" width="328" height="166" rx="10" fill="#f3c08f" ${ink(4)}/>
+      <rect x="26" y="326" width="288" height="118" rx="8" fill="${cloth}" ${ink(4)}/>
+      ${[[70, 360], [130, 400], [190, 360], [250, 400], [110, 430], [230, 432], [290, 366], [56, 420]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7" fill="#fff" opacity=".85"/>`).join('')}
+    `);
+  }
+  // わたあめの やたい
+  function propWatame() {
+    return stall('#f47c7c', '#f6a8c8', `
       <path d="M170 196v-22" ${ink(4, '#c79a6e')}/>
-      ${puff([[156, 160, 14], [172, 150, 16], [186, 162, 13], [170, 170, 12]], '#f9c6d6', 3)}
+      ${puff([[156, 160, 14], [172, 150, 16], [186, 162, 13], [170, 170, 12]], '#f9c6d6', 3)}`, `
       <!-- わたあめを つくる きかい -->
       <path d="M48 300 60 244h120l12 56z" fill="#dfe8ee" ${ink(4)}/>
       <ellipse cx="120" cy="244" rx="62" ry="16" fill="#f6fafc" ${ink(4)}/>
@@ -330,13 +331,52 @@ G.OutingArt = (function () {
       <rect x="216" y="262" width="96" height="40" rx="8" fill="#9fd0f0" ${ink(4)}/>
       <path d="M240 262v-56M286 262v-46" ${ink(5, '#c79a6e')}/>
       ${puff([[226, 196, 18], [244, 184, 22], [260, 200, 18], [242, 206, 16]], '#f9c6d6')}
-      ${puff([[274, 208, 16], [290, 196, 20], [304, 210, 15], [288, 216, 14]], '#cbe6fb')}
-      <!-- だい -->
-      <rect x="6" y="298" width="328" height="166" rx="10" fill="#f3c08f" ${ink(4)}/>
-      <rect x="26" y="326" width="288" height="118" rx="8" fill="#f6a8c8" ${ink(4)}/>
-      ${[[70, 360], [130, 400], [190, 360], [250, 400], [110, 430], [230, 432], [290, 366], [56, 420]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7" fill="#fff" opacity=".85"/>`).join('')}
-    `);
+      ${puff([[274, 208, 16], [290, 196, 20], [304, 210, 15], [288, 216, 14]], '#cbe6fb')}`);
   }
+  // りんごあめ（もとの点 = りんごの まんなか）
+  const apple = (x, y, r = 22) => `<path d="M${x} ${y + r}v${r * 2.2}" ${ink(5, '#c79a6e')}/>
+    <circle cx="${x}" cy="${y}" r="${r}" fill="#e8505f" ${ink(4)}/><ellipse cx="${x - r * 0.32}" cy="${y - r * 0.36}" rx="${r * 0.27}" ry="${r * 0.36}" fill="#fff" opacity=".65"/>
+    <path d="M${x} ${y - r}q2-10 10-12" fill="none" ${ink(3)}/>`;
+  function propRingo() {
+    return stall('#9fd0f0', '#cbe6fb', apple(170, 158, 20), `
+      <rect x="40" y="262" width="260" height="40" rx="8" fill="#f6a8c8" ${ink(4)}/>
+      ${[70, 120, 170, 220, 270].map((x, i) => apple(x, 200 - (i % 2) * 14)).join('')}`);
+  }
+  function itemRingo() {
+    return svg('0 0 140 140', `${apple(70, 52, 38).replace('v83.6', 'v80')}`);
+  }
+  // ポテト（あかい カップの フライドポテト）
+  function fries(x, y, s) {
+    return `<g transform="translate(${x} ${y}) scale(${s})">
+      ${[[-26, -10, -8], [-12, -24, -3], [2, -30, 2], [16, -20, 6], [28, -8, 10], [-4, -14, 0]].map(([dx, dy, r]) => `<rect x="${dx - 6}" y="${dy - 40}" width="12" height="60" rx="3" transform="rotate(${r} ${dx} ${dy})" fill="#f6d66b" ${ink(3)}/>`).join('')}
+      <path d="M-40-8h80l-10 56h-60z" fill="#f47c7c" ${ink(4)}/>
+      <path transform="translate(0 20) scale(.6) translate(-16 -14.5)" d="${HEART}" fill="#fff"/></g>`;
+  }
+  function propPotato() {
+    return stall('#f6b26b', '#fff1b8', fries(170, 172, 0.45), `
+      <rect x="40" y="250" width="150" height="52" rx="8" fill="#c9d4dc" ${ink(4)}/>
+      <rect x="52" y="240" width="126" height="16" rx="5" fill="#f6d66b" ${ink(3)}/>
+      <path d="M190 262h30" ${ink(6)}/>
+      ${fries(250, 262, 0.62)}${fries(296, 270, 0.5)}`);
+  }
+  function itemPotato() { return svg('0 0 140 140', fries(70, 80, 1.15)); }
+  // たこやき（ふねに 6こ。ソース・あおのり・つまようじ）
+  function takoyaki(x, y, s) {
+    const balls = [[-28, 0], [0, -4], [28, 0], [-14, -22], [14, -24]];
+    return `<g transform="translate(${x} ${y}) scale(${s})">
+      ${balls.map(([dx, dy]) => `<circle cx="${dx}" cy="${dy}" r="17" fill="#e2a05a" ${ink(3)}/><path d="M${dx - 10} ${dy - 4}q10-8 20 0" fill="none" stroke="#7a4a2e" stroke-width="5" stroke-linecap="round"/><circle cx="${dx + 4}" cy="${dy - 9}" r="2" fill="#6fb07e"/>`).join('')}
+      <path d="M-50 4h100l-12 22h-76z" fill="#f3c08f" ${ink(4)}/>
+      <path d="M24-34 40-64" ${ink(3, '#c79a6e')}/></g>`;
+  }
+  function propTakoyaki() {
+    const holes = [];
+    for (let r = 0; r < 2; r++) for (let c = 0; c < 5; c++) holes.push(`<circle cx="${68 + c * 34}" cy="${266 + r * 22}" r="13" fill="#e2a05a" ${ink(3)}/>`);
+    return stall('#a9dfc0', '#f9c6d6', takoyaki(170, 170, 0.6), `
+      <rect x="44" y="246" width="186" height="58" rx="8" fill="#4a3f46" ${ink(4)}/>
+      ${holes.join('')}
+      ${takoyaki(280, 268, 0.62)}`);
+  }
+  function itemTakoyaki() { return svg('0 0 140 140', takoyaki(70, 82, 1.2)); }
   // わたあめ（たべる とき。140×140）
   function itemWatame() {
     return svg('0 0 140 140', `
@@ -580,7 +620,8 @@ G.OutingArt = (function () {
     icon_door: door, icon_check: check,
     icon_out_festival: iconFestival, icon_out_halloween: iconHalloween, icon_out_christmas: iconChristmas, icon_out_nyuhome: iconNyuHome,
     bg_festival: bgFestival, bg_halloween: bgHalloween, bg_christmas: bgChristmas, bg_nyuhome: bgNyuHome,
-    prop_watame: propWatame, prop_kingyo: propKingyo, prop_taiko: propTaiko, item_watame: itemWatame, item_kingyo_bag: itemKingyoBag,
+    prop_watame: propWatame, prop_ringo: propRingo, prop_potato: propPotato, prop_takoyaki: propTakoyaki,
+    item_ringo: itemRingo, item_potato: itemPotato, item_takoyaki: itemTakoyaki, prop_kingyo: propKingyo, prop_taiko: propTaiko, item_watame: itemWatame, item_kingyo_bag: itemKingyoBag,
     prop_pumpkins: propPumpkins, prop_ghost: propGhost, prop_candy: propCandy, prop_broom: propBroom, item_candy: () => candy(),
     prop_xtree: propXtree, prop_present: propPresent, prop_cake: propCake, prop_snowwin: propSnowWin, item_cakeslice: itemCakeSlice,
     prop_snack: propSnack, prop_toybox: propToybox, prop_ball: propBall, item_cookie: itemCookie, toy_block: toyBlock, toy_star: toyStar,
