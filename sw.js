@@ -4,7 +4,7 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = '61886190e1';
+const VERSION = 'b19307c43d';
 const FILES = [
   ["index.html", "c2dbe9b5c4"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
@@ -58,6 +58,8 @@ const FILES = [
   ["assets/voice/g_book_06.m4a", "c07d78e120"],
   ["assets/voice/g_book_07.m4a", "5e4db119d8"],
   ["assets/voice/g_book_08.m4a", "bd3fcbfecf"],
+  ["assets/voice/g_book_09.m4a", "7d614fc5b5"],
+  ["assets/voice/g_book_10.m4a", "a890041e16"],
   ["assets/voice/g_bye.m4a", "174a7de6b1"],
   ["assets/voice/g_care_bath.m4a", "4da95c97ba"],
   ["assets/voice/g_care_dress.m4a", "04d1ac177f"],
@@ -121,12 +123,14 @@ const FILES = [
   ["assets/voice/g_page_next.m4a", "8151858f7f"],
   ["assets/voice/g_page_prev.m4a", "45f527ef37"],
   ["assets/voice/g_ribbon_gold.m4a", "3019e93554"],
+  ["assets/voice/g_ribbon_next.m4a", "cfa4155156"],
   ["assets/voice/g_ribbon_none.m4a", "8d85d9ca44"],
   ["assets/voice/g_ribbon_polka.m4a", "7f91446cf1"],
   ["assets/voice/g_ribbon_prev.m4a", "a9ae4f1a33"],
   ["assets/voice/g_ribbon_rainbow.m4a", "b451e17bc8"],
   ["assets/voice/g_say_182ee8f6.m4a", "b16209ba4d"],
   ["assets/voice/g_say_a2f6c39e.m4a", "3c03fecfa9"],
+  ["assets/voice/g_say_c72639f2.m4a", "019ade7997"],
   ["assets/voice/g_soap_lavender.m4a", "4bb2c74cd3"],
   ["assets/voice/g_soap_sakura.m4a", "e20d5b58b8"],
   ["assets/voice/g_stamp_flower.m4a", "fac87094b7"],
@@ -190,6 +194,8 @@ const FILES = [
   ["assets/voice/m_content_3.m4a", "c82540c5ee"],
   ["assets/voice/m_content_4.m4a", "f36faf2d32"],
   ["assets/voice/m_content_5.m4a", "aea892d98b"],
+  ["assets/voice/m_cookGo.m4a", "958d1c6d10"],
+  ["assets/voice/m_cookOffline.m4a", "fb3ae82710"],
   ["assets/voice/m_dailyHeart.m4a", "e3131c40d5"],
   ["assets/voice/m_dirty.m4a", "3b3509fd90"],
   ["assets/voice/m_drawCheer_1.m4a", "cae8b6d934"],
@@ -390,7 +396,7 @@ const FILES = [
   ["js/art.js", "df614ef7ad"],
   ["js/art_outing.js", "a906c70f17"],
   ["js/art_play.js", "7136fc5da4"],
-  ["js/asset_list.js", "0a27aea999"],
+  ["js/asset_list.js", "ae4ef0545d"],
   ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "6d3adc7d02"],
   ["js/chara.js", "47379dcf34"],
@@ -416,7 +422,7 @@ const FILES = [
   ["js/state.js", "f2be78b7de"],
   ["js/ui.js", "7b01161cdc"],
   ["js/voice.js", "eafb619e48"],
-  ["js/voice_clips.js", "e2c771aa3f"],
+  ["js/voice_clips.js", "b22c0fff0a"],
   ["manifest.webmanifest", "f1f4bae15a"]
 ];
 /* @@FILES-END */
