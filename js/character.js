@@ -238,6 +238,11 @@ G.CHARACTER = {
     nyuHomeBye:       'ニューちゃん、 また くる ニャー！',
 
     bye:         'また あそびに きてね ニャー！',
+
+    // おりょうりゲーム（js/link.js）
+    cookGo:      'キッチンで おりょうり して くる ニャー！',
+    cookOffline: 'インターネットに つながって いるときに いこう ニャー',
+    cookTogether: 'ニューちゃんと いっしょに たべて、 おなか いっぱい ニャー！',
     limit:       'きょうは ここまで。 また あした ニャー',
 
     // ニューちゃんが 遊びに来たとき（js/character_nyu.js・js/nyu.js）

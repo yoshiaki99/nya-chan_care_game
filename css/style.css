@@ -662,3 +662,4 @@ body.portrait #stage { visibility: hidden; }
 /* ニューちゃんの いえ */
 .op-toybox .tb-lid { transform-box: fill-box; transform-origin: 0% 100%; transition: transform .35s ease; }
 .op-toybox.open .tb-lid { transform: rotate(-32deg) translate(-6px, -18px); }
+.btn-cook .bc-label { font-size: 26px; letter-spacing: 0; } /* おりょうりゲームへ（ボタンが 8つ ならぶので 小さめ） */
