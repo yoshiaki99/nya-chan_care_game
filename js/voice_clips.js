@@ -137,6 +137,8 @@ G.VOICE_CLIPS = {
   "とった！ ナイス パス ニャー！": 'assets/voice/m_nyuHomeBall.m4a',
   "ニューちゃん、 また くる ニャー！": 'assets/voice/m_nyuHomeBye.m4a',
   "また あそびに きてね ニャー！": 'assets/voice/m_bye.m4a',
+  "キッチンで おりょうり して くる ニャー！": 'assets/voice/m_cookGo.m4a',
+  "インターネットに つながって いるときに いこう ニャー": 'assets/voice/m_cookOffline.m4a',
   "きょうは ここまで。 また あした ニャー": 'assets/voice/m_limit.m4a',
   "ニューちゃん、 いらっしゃい ニャー！": 'assets/voice/m_nyuWelcome.m4a',
   "わたしの いもうとの ニューちゃん ニャー！": 'assets/voice/m_nyuIntro.m4a',
@@ -178,6 +180,7 @@ G.VOICE_CLIPS = {
   "おやすみなさい": 'assets/voice/g_goodnight.m4a',
   "はじめる": 'assets/voice/g_start.m4a',
   "ニャーちゃん おせわゲーム": 'assets/voice/g_title.m4a',
+  "つぎの リボン": 'assets/voice/g_ribbon_next.m4a',
   "まえの リボン": 'assets/voice/g_ribbon_prev.m4a',
   "ぜんぶ あつめたよ！": 'assets/voice/g_stickers_all.m4a',
   "けしゴム": 'assets/voice/g_draw_eraser.m4a',
@@ -298,6 +301,8 @@ G.VOICE_CLIPS = {
   "シールちょう。 つぎの シールまで ハート あと 6こ": 'assets/voice/g_book_06.m4a',
   "シールちょう。 つぎの シールまで ハート あと 7こ": 'assets/voice/g_book_07.m4a',
   "シールちょう。 つぎの シールまで ハート あと 8こ": 'assets/voice/g_book_08.m4a',
+  "シールちょう。 つぎの シールまで ハート あと 9こ": 'assets/voice/g_book_09.m4a',
+  "シールちょう。 つぎの シールまで ハート あと 10こ": 'assets/voice/g_book_10.m4a',
   "シールを もらったよ！ クロワッサン": 'assets/voice/m_get_sticker_01.m4a',
   "シールを もらったよ！ リボン": 'assets/voice/m_get_sticker_02.m4a',
   "シールを もらったよ！ おさかな": 'assets/voice/m_get_sticker_03.m4a',
@@ -359,6 +364,7 @@ G.VOICE_CLIPS = {
   "あたらしい アクセサリーが ふえた ニャー！ ドレス": 'assets/voice/m_get_acc_gown.m4a',
   "プレゼントが とどいた ニャー！ ハロウィンの おばけの マント": 'assets/voice/m_gift_acc_cape.m4a',
   "プレゼントが とどいた ニャー！ クリスマスの サンタの ふく": 'assets/voice/m_gift_acc_santasuit.m4a',
+  "ふく": 'assets/voice/g_say_c72639f2.m4a',
   "おでかけ": 'assets/voice/g_say_a2f6c39e.m4a',
   "おでかけの じゅんび": 'assets/voice/g_say_182ee8f6.m4a'
 };
