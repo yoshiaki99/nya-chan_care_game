@@ -97,11 +97,12 @@ G.Screens.home = {
       UI.tap(art, () => { if (!busy && !G.isRewarding()) say(L.drawWall, 'face_happy'); }, { sound: 'sparkle' });
     }
 
-    /* お世話ボタン（5つ）・おでかけの ドア・またね */
+    /* お世話ボタン（5つ）・おでかけの ドア・おりょうり・またね */
+    const STEP = 164, X0 = 30; // ボタンの ならび（7つと またね）
     const btns = {};
     G.CARES.forEach((c, i) => {
       const b = UI.el('div', 'btn-care care-' + c.id);
-      UI.pos(b, 84 + i * 176, 838);
+      UI.pos(b, X0 + i * STEP, 838);
       b.appendChild(G.Assets.node(c.icon, 'bc-icon'));
       b.appendChild(UI.el('div', 'bc-label', c.label));
       scr.appendChild(b);
@@ -109,11 +110,42 @@ G.Screens.home = {
       UI.tap(b, () => onCare(c, b));
     });
     const door = UI.el('div', 'btn-care btn-door');
-    UI.pos(door, 84 + G.CARES.length * 176, 838);
+    UI.pos(door, X0 + G.CARES.length * STEP, 838);
     door.appendChild(G.Assets.node('icon_door', 'bc-icon'));
     door.appendChild(UI.el('div', 'bc-label', 'おでかけ'));
     scr.appendChild(door);
     UI.tap(door, () => { if (!G.isRewarding()) G.go('outfit'); }, { say: 'おでかけ', sound: 'door' });
+    // おりょうりゲームへ（キッチンで おりょうり して くる）
+    const cook = UI.el('div', 'btn-care btn-cook');
+    UI.pos(cook, X0 + (G.CARES.length + 1) * STEP, 838);
+    cook.appendChild(G.Assets.node('icon_cook', 'bc-icon'));
+    cook.appendChild(UI.el('div', 'bc-label', 'おりょうり'));
+    scr.appendChild(cook);
+    UI.tap(cook, async () => {
+      if (busy || G.isRewarding()) return;
+      busy = true;
+      if (!(await G.Link.cookingReachable())) { await say(L.cookOffline, 'face_prim'); busy = false; return; }
+      chara.hop(36);
+      await say(L.cookGo, 'face_happy');
+      G.Link.goCooking();
+    }, { say: 'おりょうり', sound: 'door' });
+
+    /* おりょうりゲームから とどいた ハートを 受けとる */
+    async function receiveCooking() {
+      const got = G.Link.receive();
+      if (!got.hearts && !got.together) return;
+      chara.hop(40);
+      const p = chara.point(0.5, 0.3);
+      if (got.hearts) {
+        UI.giveHearts(got.hearts, p.x, p.y);
+        await sc.guard(say('ただいま！ ハートを ' + got.hearts + 'こ もってかえった ニャー！', 'face_happy', 3200));
+      }
+      if (got.together) { // ニューちゃんと いっしょに たべてきた ぶん、おなかが ふえる
+        S.addMeter('hunger', Math.min(5, got.together * 1.5));
+        bars.forEach(b => b.update(true));
+        await sc.guard(say(L.cookTogether, 'face_happy', 3000));
+      }
+    }
     const bye = UI.el('div', 'btn-care btn-bye');
     UI.pos(bye, 1180, 838);
     bye.appendChild(G.Assets.node('icon_bye', 'bc-icon'));
@@ -196,10 +228,11 @@ G.Screens.home = {
         } else {
           await sc.guard(say(pick(L.greetAgain), 'face_happy', 3000));
         }
-      } else if (params.from === 'outing') { // おでかけから かえってきた
+      } else if (params.from === 'outing' || params.from === 'ryouri') { // おでかけ・おりょうりゲームから かえってきた
         chara.hop(36);
         await sc.guard(say(L.outingHome, 'face_happy', 3000));
       }
+      await sc.guard(receiveCooking());
       await sc.guard(G.checkRewards());
       await sc.wait(300);
       await sc.guard(hint(true) || Promise.resolve());
@@ -207,7 +240,11 @@ G.Screens.home = {
       await sc.guard(G.NyuVisit.afterIntro());
       hintAt = Date.now() + 22000;
     })();
-    sc.interval(() => { if (!busy) G.checkRewards(); G.NyuVisit.tick(); }, 1500);
+    sc.interval(async () => {
+      if (busy) return;
+      G.checkRewards(); G.NyuVisit.tick();
+      busy = true; await receiveCooking(); busy = false; // べつの タブで おりょうりした ぶんも 受けとる
+    }, 1500);
   },
   leave() { this.onTick = null; }
 };

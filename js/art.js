@@ -541,6 +541,12 @@ G.Art = (function () {
       <circle cx="78" cy="88" r="7" fill="#e9bd4a" opacity=".55"/><circle cx="64" cy="122" r="10" fill="#e9bd4a" opacity=".45"/><circle cx="98" cy="136" r="6" fill="#e9bd4a" opacity=".5"/>
       <g fill="#fff3b5" stroke="#e5c35a" stroke-width="2"><path d="M160 30l5 11 11 3-11 4-5 11-5-11-11-4 11-3z"/><path d="M172 84l3 7 7 2-7 3-3 7-3-7-7-3 7-2z"/></g>`),
     icon_dress: () => bow('#f4a3b8'),
+    // おりょうりゲームへ（フライパン）
+    icon_cook: () => svg('0 0 100 100', `
+      <path d="M62 56 l30 -30" stroke="#3b3236" stroke-width="12" stroke-linecap="round"/>
+      <ellipse cx="42" cy="60" rx="34" ry="26" fill="#9a9aae" stroke="#3b3236" stroke-width="4"/>
+      <ellipse cx="42" cy="56" rx="26" ry="18" fill="#c9c9d6"/>
+      <ellipse cx="40" cy="56" rx="14" ry="10" fill="#fff" stroke="#3b3236" stroke-width="3"/><circle cx="40" cy="56" r="6" fill="#ffd24d"/>`),
     icon_bye: () => svg('0 0 200 200', `
       <path d="M50 52q-14 12-14 30M34 44q-22 18-20 46" fill="none" stroke="#f0b7c6" stroke-width="7" stroke-linecap="round"/>
       <path d="M150 52q14 12 14 30M166 44q22 18 20 46" fill="none" stroke="#f0b7c6" stroke-width="7" stroke-linecap="round"/>

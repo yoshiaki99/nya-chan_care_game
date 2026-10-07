@@ -32,6 +32,7 @@ G.State = (function () {
       play: { day: today(), sec: 0 },
       pet: { day: today(), count: 0, hearts: 0 },
       nyu: { lastDay: null, count: 0 }, // ニューちゃんが 遊びに来た日・回数（要件定義書 N-73）
+      linkSeen: [],   // おりょうりゲームから 受けとった とどけものの id（同じ ものを 2回 受けとらない）
       settings: { limit: 0, bgm: 0.6, sfx: 0.8, voice: true, decay: 'real', nyu: true }
     };
   }
@@ -61,8 +62,10 @@ G.State = (function () {
       if (id && !(slot === 'body' ? G.CLOTHES : G.ACCESSORIES).some(x => x.id === id)) d.wear[slot] = null;
     });
     if (!G.RIBBONS.some(r => r.id === d.ribbon)) d.ribbon = 'none';
+    if (!Array.isArray(d.linkSeen)) d.linkSeen = [];
     catchUp();
     applySettings();
+    if (G.Link) G.Link.setLimit(d.settings.limit);
   }
   function hasSave() { try { return !!localStorage.getItem(KEY); } catch (e) { return false; } }
 
@@ -94,6 +97,7 @@ G.State = (function () {
     });
     if (d.play.day !== today()) d.play = { day: today(), sec: 0 };
     d.play.sec += sec;
+    if (G.Link) G.Link.addPlay(sec); // おりょうりゲームと あわせて かぞえる
     d.lastTime = Date.now();
     save();
   }
@@ -211,12 +215,20 @@ G.State = (function () {
   function markNyuVisit() { d.nyu.lastDay = today(); d.nyu.count++; save(); }
 
   /* ---- プレイ時間（F-101） ---- */
-  function playSecToday() { return d.play.day === today() ? d.play.sec : 0; }
-  function overLimit() { return d.settings.limit > 0 && playSecToday() >= d.settings.limit * 60; }
+  /* 今日の プレイ時間は おりょうりゲームと あわせた もの。上限は 2つの ゲームの 設定の みじかい ほう */
+  function playSecToday() { return Math.max(d.play.day === today() ? d.play.sec : 0, G.Link ? G.Link.playSecToday() : 0); }
+  function overLimit() {
+    const lim = G.Link ? G.Link.limitMin() || d.settings.limit : d.settings.limit;
+    return lim > 0 && playSecToday() >= lim * 60;
+  }
+
+  /* ---- おりょうりゲームからの とどけもの ---- */
+  const linkSeen = (id) => d.linkSeen.indexOf(id) >= 0;
+  function markLinkSeen(id) { d.linkSeen.push(id); if (d.linkSeen.length > 50) d.linkSeen = d.linkSeen.slice(-50); saveNow(); }
 
   /* ---- 保護者の設定 ---- */
   const settings = () => d.settings;
-  function setSetting(k, v) { d.settings[k] = v; applySettings(); saveNow(); }
+  function setSetting(k, v) { d.settings[k] = v; applySettings(); saveNow(); if (k === 'limit' && G.Link) G.Link.setLimit(v); }
   function applySettings() {
     const s = d.settings;
     G.Sound.setVolume(s.bgm, s.sfx);
@@ -236,6 +248,6 @@ G.State = (function () {
     ribbon, setRibbon, ribbonSide, setRibbonSide, makeup, setMakeup, hasMakeup, clearMakeup,
     wear, setWear, hasAcc, takeSeasonGifts, clothes, setClothes, clothColor, clothColorIndex, setClothColor, photos, addPhoto, drawing, setDrawing, isNewDay, markDay, favoriteFood, pet,
     nyuCameToday, nyuVisits, markNyuVisit,
-    playSecToday, overLimit, settings, setSetting, reset
+    playSecToday, overLimit, linkSeen, markLinkSeen, settings, setSetting, reset
   };
 })();
