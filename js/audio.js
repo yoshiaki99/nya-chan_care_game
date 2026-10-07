@@ -41,6 +41,15 @@ G.Sound = (function () {
     bgmBus.gain.setTargetAtTime(vol.bgm * 0.5 * (ducked ? 0.35 : 1), ctx.currentTime, 0.15);
     sfxBus.gain.setTargetAtTime(vol.sfx, ctx.currentTime, 0.02);
   }
+  /* 止まっている音（ほかの アプリから もどった あとなど）を 鳴らせるように する。鳴らせれば true */
+  function wake() {
+    if (!ctx) return Promise.resolve(false);
+    if (ctx.state === 'running') return Promise.resolve(true);
+    return Promise.race([
+      ctx.resume().then(() => ctx.state === 'running', () => false),
+      new Promise(r => setTimeout(() => r(ctx.state === 'running'), 600))
+    ]);
+  }
   function setVolume(bgm, sfx) { vol.bgm = bgm; vol.sfx = sfx; applyVol(); }
   function duck(on) { ducked = on; applyVol(); }
 
@@ -359,7 +368,7 @@ G.Sound = (function () {
 
   return {
     init, play, shower, playBgm, stopBgm, setVolume, duck, m,
-    ready: () => !!ctx && ctx.state === 'running',
+    ready: () => !!ctx && ctx.state === 'running', wake,
     context: () => ctx, voiceOut: () => voiceBus
   };
 })();

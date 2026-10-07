@@ -113,9 +113,13 @@ G.Voice = (function () {
     if (!enabled || volume <= 0) return new Promise(r => setTimeout(r, fallbackMs));
     // ニューちゃんの声は「nyu:」をつけた文で さがす（ニャーちゃんと 同じ文でも、べつの声で 鳴らすため）
     const src = clips[norm((who === 'nyu' ? 'nyu:' : '') + text)];
-    if (src && G.Sound.ready()) {
-      // 録音が読めなかったとき（ファイルが無いなど）は、ブラウザの読み上げに切りかえる
-      return playClip(src, my).catch(() => (my === token ? synthSpeak(text, who, my, fallbackMs) : undefined));
+    if (src && G.Sound.context()) {
+      // 音が いっとき 止まっているだけ（ほかの アプリから もどった すぐ あとなど）なら、動かしてから 録音を 鳴らす。
+      // すぐに ブラウザの読み上げに 切りかえると、声も 大きさも ちがうので、声が 急に 大きく／小さく なったように 聞こえる
+      // 録音が読めなかったとき（ファイルが無いなど）や 音を 動かせないときだけ、ブラウザの読み上げに切りかえる
+      return G.Sound.wake()
+        .then(ok => { if (!ok) throw new Error('suspended'); return my === token ? playClip(src, my) : undefined; })
+        .catch(() => (my === token ? synthSpeak(text, who, my, fallbackMs) : undefined));
     }
     return synthSpeak(text, who, my, fallbackMs);
   }
