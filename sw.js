@@ -4,7 +4,7 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = 'dc7e05c393';
+const VERSION = '68943e2f21';
 const FILES = [
   ["index.html", "92b6ca1a54"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
@@ -173,8 +173,10 @@ const FILES = [
   ["assets/voice/n_chat_4.m4a", "557e078366"],
   ["assets/voice/n_gift.m4a", "a4fa138d50"],
   ["assets/voice/n_hello.m4a", "bffa5815eb"],
+  ["assets/voice/n_homeHello.m4a", "63170da25d"],
   ["assets/voice/n_leave.m4a", "635bfc53a7"],
   ["assets/voice/n_osoroi.m4a", "204377d062"],
+  ["assets/voice/n_outing.m4a", "2929c1cae5"],
   ["assets/voice/n_pet_1.m4a", "f93b39b8b9"],
   ["assets/voice/n_pet_2.m4a", "80a3228bca"],
   ["assets/voice/n_pet_3.m4a", "033df42af4"],
@@ -189,7 +191,7 @@ const FILES = [
   ["js/art.js", "142c4f87e9"],
   ["js/art_outing.js", "a906c70f17"],
   ["js/art_play.js", "7136fc5da4"],
-  ["js/asset_list.js", "232e8d2c33"],
+  ["js/asset_list.js", "897585df11"],
   ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "6d3adc7d02"],
   ["js/chara.js", "47379dcf34"],
@@ -214,7 +216,7 @@ const FILES = [
   ["js/state.js", "ddc1f7358d"],
   ["js/ui.js", "7b01161cdc"],
   ["js/voice.js", "eafb619e48"],
-  ["js/voice_clips.js", "f3811f4f0b"],
+  ["js/voice_clips.js", "a892f18924"],
   ["manifest.webmanifest", "f1f4bae15a"]
 ];
 /* @@FILES-END */

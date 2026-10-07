@@ -129,6 +129,8 @@ G.VOICE_CLIPS = {
   "nyu:おかえり ニャー！": 'assets/voice/n_welcome.m4a',
   "nyu:そろそろ かえる。 また くる ニャー！": 'assets/voice/n_leave.m4a',
   "nyu:またね ニャー！": 'assets/voice/n_bye.m4a',
+  "nyu:ニューも いっしょに いく ニャー！": 'assets/voice/n_outing.m4a',
+  "nyu:おねえちゃん、 いらっしゃい ニャー！": 'assets/voice/n_homeHello.m4a',
   "まえの リボン": 'assets/voice/g_ribbon_prev.m4a',
   "ぜんぶ あつめたよ！": 'assets/voice/g_stickers_all.m4a',
   "けしゴム": 'assets/voice/g_draw_eraser.m4a',
