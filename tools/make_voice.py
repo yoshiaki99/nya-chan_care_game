@@ -50,8 +50,13 @@ READING = {
     'ぺろり！ おいしかった ニャー！': 'ぺろり！ おいしかった、ニャー！',
     'わたしの いもうとの ニューちゃん ニャー！': 'わたしの妹の、ニューちゃん、ニャー！',
     # ---- ニューちゃんの セリフ ----
-    'えへへ、 くすぐったい ニュー': '<giggle> えへへ、くすぐったい、ニュー。',
-    'ニューだよ。 よろしく ニュー！': 'ニューだよ。よろしく、ニュー！',
+    'えへへ、 くすぐったい ニャー': '<giggle> えへへ、くすぐったい、ニャー。',
+    'ニューだよ。 よろしく ニャー！': 'ニューだよ。よろしく、ニャー！',
+    'ニューも おなか すいた ニャー': 'ニューもね、おなか空いた、ニャー。',  # 「ニューも」が「ニャーも」に なりやすい
+    'ニューちゃん、 いらっしゃい ニャー！': 'にゅーちゃん、いらっしゃい、ニャー！',  # 「ニューちゃん」が「ニャーちゃん」に なりやすい
+    'ニューちゃん、 また くる ニャー！': 'にゅーちゃん、また来る、ニャー！',
+    'ニューも いっしょに いく ニャー！': 'にゅーも、一緒に行く、ニャー！',
+    'ニューの たからもの ニャー！': 'にゅーの、宝物、ニャー！',
     # ---- ボタン・あそびの 名前 ----
     'けいとだま ころころ': '毛糸玉、ころころ。',
 }
@@ -69,12 +74,12 @@ NAME_READING = {
     'ベレーぼう': 'ベレー帽', 'まるメガネ': '丸メガネ', 'ハートの サングラス': 'ハートのサングラス',
     'おほしさま メガネ': 'お星さまメガネ', 'しんじゅの ネックレス': '真珠のネックレス', 'きんの すず': '金の鈴',
     'ハートの ペンダント': 'ハートのペンダント', 'ようせいの はね': '妖精の羽', 'しっぽの リボン': 'しっぽのリボン',
-    'ふく': '服', 'ぬぐ': '脱ぐ', 'ゆかた': '浴衣', 'バレエの ふく': 'バレエの服',
+    'ニューちゃんの いえ': 'にゅーちゃんの家', 'ふく': '服', 'ぬぐ': '脱ぐ', 'ゆかた': '浴衣', 'バレエの ふく': 'バレエの服',
     'おばけの マント': 'おばけのマント', 'サンタの ふく': 'サンタの服', 'つぎの ふく': '次の服', 'まえの ふく': '前の服',
 }
 # 月（アクセサリーの「じゅうがつに なったら …」）
 MONTH_READING = {'じゅうがつ': '十月', 'じゅうにがつ': '十二月'}
-# ふつうの 文は 「ニャー」「ニュー」の 前で ひと息 おかせる（例：おなか すいた ニュー → おなか すいた、ニュー）
+# ふつうの 文は 「ニャー」「ニュー」の 前で ひと息 おかせる（例：おなか すいた ニャー → おなか すいた、ニャー）
 # それだけでは読み上げない、文の一部のセリフ（うしろや前に名前などがついてから読む）
 FRAGMENTS = {'accSeason', 'unlockAcc', 'giftAcc', 'unlockMakeup', 'unlockClothes'}
 # 数（シールちょうの「あと ○こ」）
@@ -184,14 +189,21 @@ def collect():
         if w not in have:
             have.add(w)
             out.append(('g_say_' + hashlib.sha1(w.encode()).hexdigest()[:8], w))
-    # 同じ文は1つだけ作る。もう声のある文は、そのときの id（ファイル名）をそのまま使う
+    # 同じ文は1つだけ作る（ニューちゃんの セリフは べつの 声なので、ニャーちゃんと 同じ文でも べつに 作る）。
+    # もう声のある文は、そのときの id（ファイル名）をそのまま使う
     have_id = {t: k for k, t in manifest_items()}
     seen, uniq = set(), []
     for k, t in out:
-        if t not in seen:
-            seen.add(t)
-            uniq.append((have_id.get(t, k), t))
+        ck = clip_key(k, t)
+        if ck not in seen:
+            seen.add(ck)
+            uniq.append((have_id.get(ck, k), t))
     return uniq
+
+
+def clip_key(k, t):
+    """対応表（js/voice_clips.js）での 文。ニューちゃんの セリフは「nyu:」をつける（js/voice.js も 同じ きまりで さがす）"""
+    return 'nyu:' + t if k.startswith('n_') else t
 
 
 def manifest_items():
@@ -261,9 +273,10 @@ def to_m4a(wav_path, m4a_path):
 
 def write_manifest(done):
     lines = ['/* 読み上げに使う声のファイル（tools/make_voice.py が自動で作る。手で直さない）',
-             ' * 文がこの表とぴったり同じとき（空白のちがいは気にしない）に、この音声を使う。無い文はブラウザが読み上げる。 */',
+             ' * 文がこの表とぴったり同じとき（空白のちがいは気にしない）に、この音声を使う。無い文はブラウザが読み上げる。',
+             ' * 「nyu:」で はじまるものは ニューちゃんの 声。 */',
              'window.G = window.G || {};', '', 'G.VOICE_CLIPS = {']
-    lines += [f'  {json.dumps(t, ensure_ascii=False)}: \'assets/voice/{k}.m4a\',' for k, t in done]
+    lines += [f'  {json.dumps(clip_key(k, t), ensure_ascii=False)}: \'assets/voice/{k}.m4a\',' for k, t in done]
     lines[-1] = lines[-1].rstrip(',')
     lines += ['};', '']
     with open(MANIFEST, 'w', encoding='utf-8') as f:
@@ -360,7 +373,7 @@ def main():
     # どの文を どのモデルで作ったかの記録 { id: {"model": ..., "text": 作ったときの文} }
     made_path = os.path.join(WAV, '_made.json')
     made = json.load(open(made_path)) if os.path.exists(made_path) else {}
-    old = dict(manifest_items())  # 前の版の記録（モデル名だけ）には、対応表から作ったときの文をおぎなう
+    old = {k: t.replace('nyu:', '', 1) for k, t in manifest_items()}  # 前の版の記録（モデル名だけ）には、対応表から作ったときの文をおぎなう
     made = {k: (v if isinstance(v, dict) else {'model': v, 'text': old.get(k)}) for k, v in made.items()}
 
     # セリフの文が書きかわっていたら、前の声は消して作り直す（前の文の声が新しい文で鳴らないように）

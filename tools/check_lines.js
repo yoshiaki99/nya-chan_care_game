@@ -2,7 +2,7 @@
 /* ニャーちゃん・ニューちゃんの セリフを たしかめる（要件定義書 2.3・2.5）
  *   node tools/check_lines.js
  * ・js/character.js の lines の すべての文が「ニャー」（＋ ！？…〜）で おわっているか
- * ・js/character_nyu.js の lines の すべての文が「ニュー」で おわっているか
+ * ・js/character_nyu.js の lines の すべての文がも「ニャー」で おわっているか（ニューちゃんも おねえちゃんと 同じ 語尾）
  * ・漢字が まざっていないか（ひらがな・カタカナだけにする：N-01）
  * ・プログラムが つかっている セリフ（L.xxx・N.xxx）が lines に そろっているか
  * まちがいが あれば 一覧を出して 1 で おわる。 */
@@ -27,7 +27,7 @@ function checkAll(lines, word, who) {
       const name = who + (Array.isArray(val) ? `${key}[${i}]` : key);
       if (!END.test(text)) errors.push(`${name}：さいごに「${word}」が ない → ${text}`);
       // 文の おわりの「ニャー」「ニュー」は いちばん さいごに だけ（文ごとには つけない）。
-      // 「ニューも」のような 一人称は かぞえない
+      // 「ニューも」「ニューだよ」のような 一人称は 語尾に かぞえない
       const ends = text.match(new RegExp(word + '(?=[！？…〜。、]*(\\s|$))', 'g')) || [];
       if (ends.length > 1) errors.push(`${name}：「${word}」は さいごに 1回だけ → ${text}`);
       if (KANJI.test(text)) errors.push(`${name}：漢字が ある → ${text}`);
@@ -35,7 +35,7 @@ function checkAll(lines, word, who) {
   }
 }
 checkAll(L, 'ニャー', '');
-checkAll(NL, 'ニュー', 'ニューちゃん：');
+checkAll(NL, 'ニャー', 'ニューちゃん：');
 
 // プログラムで つかっている セリフの 名前（L.xxx と、data.js の hint: 'xxx'）
 const used = new Set();
