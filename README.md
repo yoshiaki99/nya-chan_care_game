@@ -45,7 +45,7 @@ python3 -m http.server 8775
 公開の手順の中で、次のことを自動でします。
 
 1. `node tools/check_lines.js` … ニャーちゃんのセリフが、すべて最後に「ニャー」で終わっているか・漢字が入っていないかを確かめる
-2. `python3 tools/build.py --out _site` … オフライン用のファイル一覧（`sw.js` の `FILES` と `VERSION`）を作りなおし、公開するファイルだけを `_site` にそろえる（要件定義書・`tools/` などは公開しない）
+2. `python3 tools/build.py --out _site` … オフライン用のファイル一覧（`sw.js` の `FILES` と `VERSION`）を作りなおし、公開するファイルだけを `_site` にそろえる（要件定義書・`tools/` などは公開しない）。あわせて、最後のコミットの日時を「最終更新」として `js/build_info.js` に書き出す（保護者メニューの「このゲームについて」に出る）
 
 ### 道具（`tools/`）
 
@@ -85,6 +85,7 @@ js/nyu.js             ニューちゃんの表示と、遊びに来る しくみ
 js/art.js, art_play.js  ゲームの中で描く絵（線画風の背景・アイテム・アイコン・あそびの道具）
 js/art_outing.js      おでかけの絵（4つの場所の背景・タッチする道具・ドアのアイコン）
 js/asset_list.js      実際にある絵・声のファイルの一覧（tools/build.py が作る）
+js/build_info.js      最終更新日時（公開のときに tools/build.py --out が作る。リポジトリには入れない）
 js/assets.js          絵の読み込み
 js/makeup.js          メイク
 js/clothes.js         ふく（着せ替え）の絵
