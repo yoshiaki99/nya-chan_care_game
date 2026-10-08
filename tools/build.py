@@ -7,6 +7,8 @@
 ・保存するファイル = ゲーム本体（index.html・manifest・css・js・icons）と、
   プログラムの中に名前が書いてある絵・声（assets/...）のうち、実際にあるもの。
 ・要件定義書・tools・絵を作ったときの記録などは 公開しない。
+・js/build_info.js = 最終更新日時（--out のときだけ 作る。git の さいごの コミットの 日時。
+  保護者メニューに 出す。リポジトリには 入れない）
 ・js/asset_list.js = 実際にある 絵・声の ファイルの 一覧。ゲームは ここに 無い ファイルを 読みに いかない
   （まだ 無い 絵を 読みに いって「見つからない」と なるのを ふせぐ）。絵を 足したら このコマンドを 動かす。
 GitHub Actions（.github/workflows/pages.yml）が、公開の前に --out _site で動かす。
@@ -17,10 +19,14 @@ import json
 import os
 import re
 import shutil
+import subprocess
+from datetime import datetime, timedelta, timezone
 from glob import glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORE = ['index.html', 'manifest.webmanifest', 'css/*.css', 'js/**/*.js', 'icons/*.png']
+BUILD_INFO = 'js/build_info.js'
+JST = timezone(timedelta(hours=9), 'JST')
 ASSET_RE = re.compile(r"""['"`](assets/[^'"`\s]+?\.(?:png|jpe?g|webp|gif|svg|mp3|m4a|wav|ogg))['"`]""")
 
 
@@ -32,11 +38,13 @@ def file_rev(rel):
     return h.hexdigest()[:10]
 
 
-def offline_files():
+def offline_files(with_build_info):
     files = set()
     for pat in CORE:
         for p in glob(os.path.join(ROOT, pat), recursive=True):
             files.add(os.path.relpath(p, ROOT).replace(os.sep, '/'))
+    if not with_build_info:  # ふだんの build.py では 一覧に 入れない（コミットの たびに sw.js が 変わらないように）
+        files.discard(BUILD_INFO)
     for js in [f for f in files if f.endswith('.js')]:
         with open(os.path.join(ROOT, js), encoding='utf-8') as f:
             for m in ASSET_RE.finditer(f.read()):
@@ -67,6 +75,24 @@ def update_asset_list():
     return len(found)
 
 
+def write_build_info():
+    """最終更新日時（さいごの コミットの 日時。とれなければ いま）を js/build_info.js に 書く"""
+    try:
+        iso = subprocess.run(['git', 'log', '-1', '--format=%cI'], cwd=ROOT, capture_output=True,
+                             text=True, check=True).stdout.strip()
+        t = datetime.fromisoformat(iso)
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        t = datetime.now(timezone.utc)
+    t = t.astimezone(JST)
+    label = f'{t.year}年{t.month}月{t.day}日 {t.hour}:{t.minute:02d}'
+    src = ('/* 最終更新日時（tools/build.py --out が 自動で 作る。リポジトリには 入れない） */\n'
+           'window.G = window.G || {};\n\n'
+           f'G.BUILD_INFO = {{ updated: {json.dumps(t.isoformat())}, label: {json.dumps(label, ensure_ascii=False)} }};\n')
+    with open(os.path.join(ROOT, BUILD_INFO), 'w', encoding='utf-8') as f:
+        f.write(src)
+    return label
+
+
 def update_sw(files):
     path = os.path.join(ROOT, 'sw.js')
     with open(path, encoding='utf-8') as f:
@@ -88,7 +114,9 @@ def main():
     a = ap.parse_args()
     n = update_asset_list()
     print(f'js/asset_list.js：{n} ファイル')
-    files = offline_files()
+    if a.out:
+        print(f'js/build_info.js：最終更新 {write_build_info()}')
+    files = offline_files(bool(a.out))
     version = update_sw(files)
     total = sum(os.path.getsize(os.path.join(ROOT, f)) for f in files)
     print(f'sw.js：版 {version}・{len(files)} ファイル・{total / 1e6:.1f}MB')

@@ -152,7 +152,8 @@ G.Screens = G.Screens || {};
         <section><h3>このゲームについて</h3>
           <p class="note">「${G.CHARACTER.title}」は、白いネコの${G.CHARACTER.name}をお世話する、小さなお子さま向けの無料のゲームです。ごはん・おふろ・あそび・ねんね・おしゃれのお世話をすると、ハートやシールがもらえます。失敗や罰はありません。</p>
           <p class="note"><b>プライバシー</b>：名前などの個人情報は集めません。広告・課金・アクセス解析はありません。遊んだ記録（ハート・シール・写真・お絵かきなど）は、この端末のブラウザの中だけに保存され、外には送られません。</p>
-          <p class="note">${G.CHARACTER.credit}</p></section>
+          <p class="note">${G.CHARACTER.credit}</p>
+          <p class="note">最終更新：${G.BUILD_INFO ? G.BUILD_INFO.label : '（開発用の版のため、ありません）'}</p></section>
         <button class="close" data-act="close">閉じる</button>
       </div>`;
     ov.appendChild(wrap);
