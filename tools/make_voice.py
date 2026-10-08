@@ -21,6 +21,7 @@ import array
 import hashlib
 import io
 import json
+import math
 import os
 import re
 import subprocess
@@ -244,6 +245,49 @@ def reading(text):
     return text if re.search(r'[。！？…]$', text) else text + '。'
 
 
+LEVEL = -20  # そろえる 声の 大きさ（dB）。ゲームの js/voice.js の LEVEL と おなじ
+
+
+def k_weight(x, rate):
+    """耳の 感じ方に 近い 重み（K特性）を かける。高い音を 少し 強く（ハイシェルフ）→ とても 低い音を けずる（ハイパス）"""
+    k = math.tan(math.pi * 1681.974450955533 / rate)
+    vh = 10 ** (3.999843853973347 / 20)
+    vb = vh ** 0.4996667741545416
+    q = 0.7071752369554196
+    a0 = 1 + k / q + k * k
+    s1 = ((vh + vb * k / q + k * k) / a0, 2 * (k * k - vh) / a0, (vh - vb * k / q + k * k) / a0,
+          2 * (k * k - 1) / a0, (1 - k / q + k * k) / a0)
+    k = math.tan(math.pi * 38.13547087602444 / rate)
+    q = 0.5003270373238773
+    a0 = 1 + k / q + k * k
+    s2 = (1, -2, 1, 2 * (k * k - 1) / a0, (1 - k / q + k * k) / a0)
+    for b0, b1, b2, a1, a2 in (s1, s2):
+        y, x1, x2, y1, y2 = [], 0.0, 0.0, 0.0, 0.0
+        for v in x:
+            o = b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+            x2, x1, y2, y1 = x1, v, y1, o
+            y.append(o)
+        x = y
+    return x
+
+
+def speech_level(pcm, rate):
+    """話している ところの ふつうの 大きさ（dB）。
+    K特性を かけて 0.4秒ごとの 大きさを はかり、いちばん 大きい ところから 20dB 以内の まん中を とる。
+    全体の 平均で そろえると、笑い声などが 一部だけ 大きい 文は ほかの ところが 小さく なってしまうため（js/voice.js と おなじ はかり方）"""
+    y = k_weight([v / 32768 for v in pcm], rate)
+    acc = [0.0]
+    for v in y:
+        acc.append(acc[-1] + v * v)
+    w, h = min(len(y), round(rate * 0.4)), round(rate * 0.1)
+    if not w:
+        return LEVEL
+    db = [10 * math.log10((acc[i + w] - acc[i]) / w + 1e-12) for i in range(0, len(y) - w + 1, h)]
+    act = sorted(d for d in db if d > max(db) - 20)
+    n = len(act)
+    return act[n // 2] if n % 2 else (act[n // 2 - 1] + act[n // 2]) / 2
+
+
 def polish(src, dst):
     """前後の無音を切りつめ、声の大きさをそろえる（24kHz・16bit・モノラルの WAV）"""
     with wave.open(src) as w:
@@ -254,9 +298,8 @@ def polish(src, dst):
         a = max(0, loud[0] - int(rate * 0.04))
         b = min(len(pcm), loud[-1] + 120 + int(rate * 0.15))
         pcm = pcm[a:b]
-    rms = (sum(x * x for x in pcm) / max(1, len(pcm))) ** 0.5
     peak = max(1, max(abs(x) for x in pcm))
-    gain = min(32767 * 0.1 / max(rms, 1), 32767 * 0.89 / peak)  # 平均 -20dB、いちばん大きいところ -1dB まで
+    gain = min(10 ** ((LEVEL - speech_level(pcm, rate)) / 20), 32767 * 0.89 / peak)  # 話している ところを -20dB、いちばん大きいところ -1dB まで
     pcm = array.array('h', (max(-32768, min(32767, int(x * gain))) for x in pcm))
     with wave.open(dst, 'wb') as w:
         w.setnchannels(1)
