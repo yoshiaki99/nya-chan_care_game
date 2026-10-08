@@ -27,9 +27,51 @@ G.Voice = (function () {
   const norm = (text) => String(text).replace(/\s+/g, '').replace(/〜/g, 'ー');
   const clips = {};
   Object.keys(G.VOICE_CLIPS || {}).forEach(k => { clips[norm(k)] = G.VOICE_CLIPS[k]; });
-  const decoded = new Map(); // ファイル → 音のデータ（最近使ったものだけ取っておく）
+  const decoded = new Map(); // ファイル → 音のデータと 大きさを そろえる 倍率（最近使ったものだけ取っておく）
   const KEEP = 24;
   let current = null; // いま鳴っている録音
+
+  /* 声の大きさをそろえる倍率。
+   * ファイルは「全体の平均」で そろえてあるが、笑い声などが 一部だけ 大きい 文は、そのほかの ところが 小さく なり、
+   * 文によって 聞こえる 大きさが 最大 9dB ほど ちがっていた。耳の 感じ方に 近い 重み（K特性）を かけて、
+   * 話している ところの ふつうの 大きさ（0.4秒ごとの 大きさの まん中）が おなじに なるように する */
+  const LEVEL = -20; // そろえる 大きさ（dB）。いまの 声の 平均くらい
+  function kWeight(x, sr) {
+    const y = new Float32Array(x.length);
+    // 高い音を 少し 強く（ハイシェルフ）→ とても 低い音を けずる（ハイパス）
+    let K = Math.tan(Math.PI * 1681.974450955533 / sr);
+    const Vh = Math.pow(10, 3.999843853973347 / 20), Vb = Math.pow(Vh, 0.4996667741545416), Q1 = 0.7071752369554196;
+    let a0 = 1 + K / Q1 + K * K;
+    const s1 = [(Vh + Vb * K / Q1 + K * K) / a0, 2 * (K * K - Vh) / a0, (Vh - Vb * K / Q1 + K * K) / a0, 2 * (K * K - 1) / a0, (1 - K / Q1 + K * K) / a0];
+    K = Math.tan(Math.PI * 38.13547087602444 / sr);
+    const Q2 = 0.5003270373238773;
+    a0 = 1 + K / Q2 + K * K;
+    const s2 = [1, -2, 1, 2 * (K * K - 1) / a0, (1 - K / Q2 + K * K) / a0];
+    [s1, s2].forEach(([b0, b1, b2, a1, a2], n) => {
+      const src = n ? y : x;
+      let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+      for (let i = 0; i < src.length; i++) {
+        const v = src[i], o = b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+        x2 = x1; x1 = v; y2 = y1; y1 = o; y[i] = o;
+      }
+    });
+    return y;
+  }
+  function levelGain(buf) {
+    const x = buf.getChannelData(0), sr = buf.sampleRate;
+    const y = kWeight(x, sr);
+    const sum = new Float64Array(y.length + 1); // 2乗の 累積（区間の 大きさを すぐ 出すため）
+    let peak = 0;
+    for (let i = 0; i < y.length; i++) { sum[i + 1] = sum[i] + y[i] * y[i]; peak = Math.max(peak, Math.abs(x[i])); }
+    const w = Math.min(y.length, Math.round(sr * 0.4)), h = Math.round(sr * 0.1);
+    if (!w || !peak) return 1;
+    const db = [];
+    for (let i = 0; i + w <= y.length; i += h) db.push(10 * Math.log10((sum[i + w] - sum[i]) / w + 1e-12));
+    const top = Math.max.apply(null, db);
+    const act = db.filter(d => d > top - 20).sort((a, b) => a - b); // 話している ところ（いちばん 大きい ところから 20dB 以内）
+    const mid = act.length % 2 ? act[act.length >> 1] : (act[act.length / 2 - 1] + act[act.length / 2]) / 2;
+    return Math.min(Math.pow(10, (LEVEL - mid) / 20), 1 / peak); // 上げすぎて 音が われないように
+  }
 
   function load(src) {
     let p = decoded.get(src);
@@ -37,7 +79,8 @@ G.Voice = (function () {
     const ctx = G.Sound.context();
     p = fetch(src)
       .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
-      .then(buf => new Promise((res, rej) => ctx.decodeAudioData(buf, res, rej)));
+      .then(buf => new Promise((res, rej) => ctx.decodeAudioData(buf, res, rej)))
+      .then(buf => ({ buf, gain: levelGain(buf) }));
     p.catch(() => decoded.delete(src)); // 読めなかったものは次にもう一度ためす
     decoded.set(src, p);
     while (decoded.size > KEEP) decoded.delete(decoded.keys().next().value);
@@ -45,12 +88,12 @@ G.Voice = (function () {
   }
 
   function playClip(src, my) {
-    return load(src).then(buf => new Promise((resolve) => {
+    return load(src).then(({ buf, gain }) => new Promise((resolve) => {
       if (my !== token) return resolve();
       const ctx = G.Sound.context();
       const s = ctx.createBufferSource();
       const g = ctx.createGain();
-      s.buffer = buf; g.gain.value = volume;
+      s.buffer = buf; g.gain.value = volume * gain;
       s.connect(g); g.connect(G.Sound.voiceOut());
       let done = false;
       const fin = () => {
