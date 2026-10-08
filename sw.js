@@ -4,7 +4,7 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = 'a622ba7853';
+const VERSION = 'd287eb2e5b';
 const FILES = [
   ["index.html", "62fdd8e387"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
@@ -129,8 +129,11 @@ const FILES = [
   ["assets/voice/g_ribbon_prev.m4a", "a9ae4f1a33"],
   ["assets/voice/g_ribbon_rainbow.m4a", "b451e17bc8"],
   ["assets/voice/g_say_182ee8f6.m4a", "b16209ba4d"],
+  ["assets/voice/g_say_56301c76.m4a", "e26001ca02"],
+  ["assets/voice/g_say_797df1eb.m4a", "a31560bb99"],
   ["assets/voice/g_say_a2f6c39e.m4a", "3c03fecfa9"],
   ["assets/voice/g_say_c72639f2.m4a", "019ade7997"],
+  ["assets/voice/g_say_fba47fcc.m4a", "b6d00d0383"],
   ["assets/voice/g_soap_lavender.m4a", "4bb2c74cd3"],
   ["assets/voice/g_soap_sakura.m4a", "e20d5b58b8"],
   ["assets/voice/g_stamp_flower.m4a", "fac87094b7"],
@@ -196,6 +199,7 @@ const FILES = [
   ["assets/voice/m_content_5.m4a", "aea892d98b"],
   ["assets/voice/m_cookGo.m4a", "958d1c6d10"],
   ["assets/voice/m_cookOffline.m4a", "fb3ae82710"],
+  ["assets/voice/m_cookTogether.m4a", "50100e42d0"],
   ["assets/voice/m_dailyHeart.m4a", "e3131c40d5"],
   ["assets/voice/m_dirty.m4a", "3b3509fd90"],
   ["assets/voice/m_drawCheer_1.m4a", "cae8b6d934"],
@@ -396,7 +400,7 @@ const FILES = [
   ["js/art.js", "df614ef7ad"],
   ["js/art_outing.js", "a906c70f17"],
   ["js/art_play.js", "7136fc5da4"],
-  ["js/asset_list.js", "ae4ef0545d"],
+  ["js/asset_list.js", "edfce0da1f"],
   ["js/assets.js", "44269b1a2d"],
   ["js/audio.js", "5491f38bcc"],
   ["js/chara.js", "47379dcf34"],
@@ -422,7 +426,7 @@ const FILES = [
   ["js/state.js", "f2be78b7de"],
   ["js/ui.js", "7b01161cdc"],
   ["js/voice.js", "4174fc2ceb"],
-  ["js/voice_clips.js", "b22c0fff0a"],
+  ["js/voice_clips.js", "d69fb94ea7"],
   ["manifest.webmanifest", "f1f4bae15a"]
 ];
 /* @@FILES-END */

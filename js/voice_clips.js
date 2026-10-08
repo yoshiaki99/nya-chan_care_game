@@ -139,6 +139,7 @@ G.VOICE_CLIPS = {
   "また あそびに きてね ニャー！": 'assets/voice/m_bye.m4a',
   "キッチンで おりょうり して くる ニャー！": 'assets/voice/m_cookGo.m4a',
   "インターネットに つながって いるときに いこう ニャー": 'assets/voice/m_cookOffline.m4a',
+  "ニューちゃんと いっしょに たべて、 おなか いっぱい ニャー！": 'assets/voice/m_cookTogether.m4a',
   "きょうは ここまで。 また あした ニャー": 'assets/voice/m_limit.m4a',
   "ニューちゃん、 いらっしゃい ニャー！": 'assets/voice/m_nyuWelcome.m4a',
   "わたしの いもうとの ニューちゃん ニャー！": 'assets/voice/m_nyuIntro.m4a',
@@ -365,6 +366,9 @@ G.VOICE_CLIPS = {
   "プレゼントが とどいた ニャー！ ハロウィンの おばけの マント": 'assets/voice/m_gift_acc_cape.m4a',
   "プレゼントが とどいた ニャー！ クリスマスの サンタの ふく": 'assets/voice/m_gift_acc_santasuit.m4a',
   "ふく": 'assets/voice/g_say_c72639f2.m4a',
+  "メイク": 'assets/voice/g_say_fba47fcc.m4a',
+  "アクセサリー": 'assets/voice/g_say_56301c76.m4a',
   "おでかけ": 'assets/voice/g_say_a2f6c39e.m4a',
+  "おりょうり": 'assets/voice/g_say_797df1eb.m4a',
   "おでかけの じゅんび": 'assets/voice/g_say_182ee8f6.m4a'
 };
