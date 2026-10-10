@@ -2,6 +2,7 @@
  * アクセサリー（おしゃれ）：ぼうし・メガネ・くびかざり・はね・しっぽのリボン。
  * みみの リボン（えらんでいる リボン）と ふく（js/clothes.js）も、ここで いっしょに かさねる。
  * 絵はこのファイルの SVG。ニャーちゃんの 基準画（nya_base.png）の 座標で、線画風（黒い線＋パステル）に 描いてある。
+ * 水彩の 画像（js/wear_art.js・assets/wear/）が あれば、SVG の かわりに 同じ 場所へ 画像を 置く。
  * 一度 画像にしておき、G.Chara が ニャーちゃんの絵の まえ（はねは うしろ）に かさねる。
  * 絵ごとの つける場所は G.CHARACTER.accessory。
  */
@@ -166,13 +167,62 @@ G.Accessory = (function () {
   const ribbonOf = (id) => G.RIBBONS.find(r => r.id === id && r.id !== 'none') || G.RIBBONS.find(r => r.id === 'pink');
   const isCloth = (id) => !ART[id] && G.ClothesArt.has(id);
   const known = (id) => !!ART[id] || isCloth(id);
+  const clothColor = (id, o) => {
+    const c = G.CLOTHES.find(x => x.id === id);
+    return o.color || G.State.clothColor(id) || (c && c.colors ? c.colors[0] : null);
+  };
+
+  /* ---------- 水彩の 絵（GPT-Images 2.5。js/wear_art.js の 一覧） ----------
+   * ファイルが あれば、上の SVG の かわりに 画像を 同じ 場所に 置く（<image>。SVG の まま 画像に するので、
+   * 位置あわせ・ニューちゃんの 体への 合わせ方は これまでと 同じ）。画像に するとき 外の ファイルは 読めないので、
+   * data: の 形に して 中に うめこむ。読みこめないとき（file:// で ひらいた など）は SVG の 絵の まま */
+  const WEAR = G.WEAR_ART || {};
+  const wdata = {}, wwait = {};
+  const hasWear = (n) => !!WEAR[n] && (!G.ASSET_FILES || G.ASSET_FILES.indexOf(WEAR[n].src) >= 0);
+  function wload(n) {
+    if (!hasWear(n)) return Promise.resolve(null);
+    if (wdata[n] !== undefined) return Promise.resolve(wdata[n]);
+    if (!wwait[n]) {
+      wwait[n] = fetch(WEAR[n].src).then(res => (res.ok ? res.blob() : null)).then(b => b && new Promise((ok) => {
+        const fr = new FileReader();
+        fr.onload = () => ok(fr.result); fr.onerror = () => ok(null);
+        fr.readAsDataURL(b);
+      })).catch(() => null).then(d => { wdata[n] = d || null; return wdata[n]; });
+    }
+    return wwait[n];
+  }
+  // その絵に いる 画像の 名前（いらない・ない ものは []）
+  const BOW_W = 190; // みみの リボンの はば（earbow）。画像は この 大きさで 作ってある
+  function wearNames(id, ribbonId, o) {
+    let names;
+    if (isCloth(id)) {
+      const c = G.CLOTHES.find(x => x.id === id), col = clothColor(id, o);
+      const i = c && c.colors ? c.colors.indexOf(col) : 0;
+      if (i < 0) return [];
+      names = ['cloth_' + id + (i > 0 ? '_' + i : '') + (o.noL ? '_noL' : '')];
+    } else if (id === 'earbow' || id === 'tailbow') names = ['bow_' + ribbonOf(ribbonId).id];
+    else if (id === 'beret') names = ['acc_beret', 'bow_' + ribbonOf(ribbonId).id];
+    else names = ['acc_' + id];
+    return names.every(hasWear) ? names : [];
+  }
+  const pic = (n) => { const [x, y, w, h] = WEAR[n].r; return `<image href="${wdata[n]}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="none"/>`; };
+  // 画像の 絵の SVG（画像が まだ そろって いなければ null）
+  function wearMarkup(id, ribbonId, o) {
+    const names = wearNames(id, ribbonId, o);
+    if (!names.length || names.some(n => !wdata[n])) return null;
+    const bowAt = (tf, w) => `<g transform="${tf} scale(${w / BOW_W})">${pic(names[names.length - 1])}</g>`;
+    if (id === 'earbow') return pic(names[0]);
+    if (id === 'tailbow') return bowAt('translate(930 1045) rotate(-24)', 170);
+    if (id === 'beret') return pic(names[0]) + bowAt('translate(630 178) rotate(-8) translate(160 76) rotate(10)', 90);
+    return pic(names[0]);
+  }
+
   /* 絵の SVG。opts = { noL: 左の そでを 描かない, color: ふくの 色（なければ えらんでいる色） } */
   function markup(id, ribbonId, opts) {
-    if (isCloth(id)) {
-      const o = opts || {};
-      const c = G.CLOTHES.find(x => x.id === id);
-      return G.ClothesArt.markup(id, o.color || G.State.clothColor(id) || (c && c.colors ? c.colors[0] : null), o);
-    }
+    const o = opts || {};
+    const w = wearMarkup(id, ribbonId, o);
+    if (w) return w;
+    if (isCloth(id)) return G.ClothesArt.markup(id, clothColor(id, o), o);
     return ART[id](ribbonOf(ribbonId));
   }
   function svgDoc(inner, box, scale) {
@@ -212,14 +262,15 @@ G.Accessory = (function () {
     let r = imgs.get(key);
     if (r) return r;
     r = { img: new Image(), ok: false };
-    r.p = new Promise((res) => {
+    // 水彩の 画像が あれば、とどいてから 画像に する
+    r.p = Promise.all(wearNames(id, ribbonId, o).map(wload)).then(() => new Promise((res) => {
       r.img.onload = () => {
         const done = () => { r.ok = true; res(true); };
         if (r.img.decode) r.img.decode().then(done, done); else done();
       };
       r.img.onerror = () => res(false);
-    });
-    r.img.src = dataUrl(svgDoc(markup(id, ribbonId, o), box(id), RS));
+      r.img.src = dataUrl(svgDoc(markup(id, ribbonId, o), box(id), RS));
+    }));
     imgs.set(key, r);
     return r;
   }
@@ -282,13 +333,22 @@ G.Accessory = (function () {
     el.className = 'art acc-art ' + cls;
     el.draggable = false;
     el.alt = '';
-    el.src = dataUrl(svgDoc(markup(id, ribbonId || G.State.ribbon(), opts), box(id)));
+    const rb = ribbonId || G.State.ribbon(), o = opts || {};
+    const paint = () => { el.src = dataUrl(svgDoc(markup(id, rb, o), box(id))); };
+    paint();
+    // 水彩の 画像が まだなら、とどいたら かきなおす
+    const names = wearNames(id, rb, o);
+    if (names.some(n => !wdata[n])) Promise.all(names.map(wload)).then(() => { if (wearMarkup(id, rb, o)) paint(); });
     return el;
   }
 
   /* つけている絵を 先に画像にしておく */
   function warm(wear, ribbonId) {
     Object.values(wear).forEach(id => { if (id && known(id)) raster(id, ribbonId); });
+  }
+  /* 水彩の 絵を ぜんぶ 先に 読んでおく（ニューちゃんの ふく・ボタンの 見本は すぐ 描くので） */
+  function preload() {
+    return Promise.all(Object.keys(WEAR).map(wload));
   }
 
   /* ふくだけの 絵（基準画と 同じ 1254px の わく）。tf = SVG の transform（ニューちゃんの 体に 合わせる など） */
@@ -300,5 +360,5 @@ G.Accessory = (function () {
   /* たしかめ用（tools/check_svg.js）：その アクセサリーの SVG */
   const swatchSvg = (id, ribbonId) => markup(id, ribbonId);
 
-  return { layout, bounds, draw, swatch, warm, clothesDataUrl, swatchSvg };
+  return { layout, bounds, draw, swatch, warm, preload, clothesDataUrl, swatchSvg };
 })();
