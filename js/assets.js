@@ -53,6 +53,17 @@ G.Assets = (function () {
     el.className = 'art art-svg ' + cls;
     const f = G.Art.all[key];
     el.innerHTML = f ? f() : '';
+    // まだ 読みこみ中の 絵は、とどいたら 中みを 画像に かえる（はじめに 開いた 画面でも 絵に なるように。
+    // 要素そのものは そのまま のこすので、うごかしている 画面の しくみは こわれない）
+    if (reg[key] && (reg[key].status === 'idle' || reg[key].status === 'loading')) {
+      load(key).then((ok) => {
+        if (!ok || !el.isConnected) return;
+        const img = document.createElement('img');
+        img.src = reg[key].src; img.className = 'art'; img.draggable = false; img.alt = '';
+        el.classList.remove('art-svg');
+        el.replaceChildren(img);
+      });
+    }
     return el;
   }
 
