@@ -616,15 +616,84 @@ G.OutingArt = (function () {
       <ellipse cx="38" cy="34" rx="10" ry="6" fill="#fff" opacity=".7" transform="rotate(-30 38 34)"/>`);
   }
 
+  /* ---- うごく しかけの ある 道具の 絵（水彩の 画像を パーツごとに かさねる） ----
+   * ふた・きんぎょ・かぼちゃの ひかり などを 別の 画像に して、上の SVG と 同じ 場所・同じ class で かさねる。
+   * そのため css/style.css の「おでかけ」の 動きは そのまま はたらく。画像が 無いときは 上の SVG を 使う。 */
+  const LAYER = {
+    kingyo_pool: 'assets/outing/anim_kingyo_pool.webp',
+    kingyo_fish_red: 'assets/outing/anim_kingyo_fish_red.webp',
+    kingyo_fish_orange: 'assets/outing/anim_kingyo_fish_orange.webp',
+    kingyo_poi: 'assets/outing/anim_kingyo_poi.webp',
+    pumpkin: 'assets/outing/anim_pumpkin.webp',
+    pumpkin_lit: 'assets/outing/anim_pumpkin_lit.webp',
+    ghost_body: 'assets/outing/anim_ghost_body.webp',
+    ghost_mouth: 'assets/outing/anim_ghost_mouth.webp',
+    xtree: 'assets/outing/anim_xtree.webp',
+    xt_bulb0: 'assets/outing/anim_xt_bulb0.webp',
+    xt_bulb1: 'assets/outing/anim_xt_bulb1.webp',
+    xt_bulb2: 'assets/outing/anim_xt_bulb2.webp',
+    xt_bulb3: 'assets/outing/anim_xt_bulb3.webp',
+    xt_bulb4: 'assets/outing/anim_xt_bulb4.webp',
+    xt_bulb5: 'assets/outing/anim_xt_bulb5.webp',
+    present_box: 'assets/outing/anim_present_box.webp',
+    present_lid: 'assets/outing/anim_present_lid.webp',
+    toybox_body: 'assets/outing/anim_toybox_body.webp',
+    toybox_lid: 'assets/outing/anim_toybox_lid.webp'
+  };
+  const hasLayers = (...names) => !!G.ASSET_FILES && names.every(n => G.ASSET_FILES.indexOf(LAYER[n]) >= 0);
+  const pic = (n, x, y, w, h, cls = '') =>
+    `<image${cls ? ` class="${cls}"` : ''} href="${LAYER[n]}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="none"/>`;
+  // 画像が そろっていれば 画像の 絵、なければ もとの SVG
+  const layered = (names, draw, fallback) => () => (hasLayers(...names) ? draw() : fallback());
+
+  const propKingyoArt = layered(['kingyo_pool', 'kingyo_fish_red', 'kingyo_fish_orange', 'kingyo_poi'], () => {
+    const fish = [[110, 96, 'kingyo_fish_red', 1], [220, 126, 'kingyo_fish_orange', 2], [270, 86, 'kingyo_fish_red', 3]]
+      .map(([x, y, n, k]) => `<g class="kf kf${k}"><g transform="translate(${x} ${y})">${pic(n, -40, -18, 64, 34)}</g></g>`).join('');
+    return svg('0 0 380 200', `${pic('kingyo_pool', 0, 0, 380, 200)}${fish}
+      <g class="kp-poi"><g transform="translate(330 56) rotate(34)">${pic('kingyo_poi', -36, -36, 72, 132)}</g></g>`);
+  }, propKingyo);
+
+  const propPumpkinsArt = layered(['pumpkin', 'pumpkin_lit'], () => {
+    const g = id('pg');
+    const glow = (x, y, r) => `<circle class="pk-glow" cx="${x}" cy="${y}" r="${r}" fill="url(#${g})"/>`;
+    const pk = (x, y, s, cls) => `<g class="${cls}" transform="translate(${x} ${y}) scale(${s})">
+      ${pic('pumpkin', -96, -110, 192, 190)}${pic('pumpkin_lit', -96, -110, 192, 190, 'pk-lit')}</g>`;
+    return svg('0 0 380 220', `
+      <defs><radialGradient id="${g}"><stop offset="0" stop-color="#ffe27a" stop-opacity=".8"/><stop offset="1" stop-color="#ffe27a" stop-opacity="0"/></radialGradient></defs>
+      ${glow(66, 156, 80)}${glow(190, 116, 120)}${glow(316, 160, 80)}
+      ${pk(66, 162, 0.62, 'pk pk1')}${pk(316, 166, 0.58, 'pk pk3')}${pk(190, 126, 0.98, 'pk pk2')}`);
+  }, propPumpkins);
+
+  const propGhostArt = layered(['ghost_body', 'ghost_mouth'], () => svg('0 0 220 240',
+    `<g class="gh-body">${pic('ghost_body', 0, 0, 220, 240)}<g class="gh-mouth">${pic('ghost_mouth', 97, 117, 26, 22)}</g></g>`), propGhost);
+
+  const propXtreeArt = layered(['xtree', 'xt_bulb0', 'xt_bulb1', 'xt_bulb2', 'xt_bulb3', 'xt_bulb4', 'xt_bulb5'], () => {
+    const g = id('tg');
+    // オーナメントの 色 → 画像（xt_bulb0〜5）
+    const bulbs = [[130, 180, 0], [206, 200, 1], [100, 290, 2], [176, 300, 3], [246, 286, 4], [80, 420, 1], [150, 440, 2], [222, 430, 0],
+      [282, 410, 5], [60, 560, 3], [130, 590, 4], [204, 590, 1], [276, 566, 2]];
+    return svg('0 0 340 720', `
+      <defs><radialGradient id="${g}"><stop offset="0" stop-color="#fff6c9" stop-opacity=".95"/><stop offset="1" stop-color="#fff6c9" stop-opacity="0"/></radialGradient></defs>
+      ${pic('xtree', 0, 0, 340, 720)}
+      ${bulbs.map(([x, y, c], i) => `<circle class="xt-glow xg${i % 3}" cx="${x}" cy="${y}" r="34" fill="url(#${g})"/>${pic('xt_bulb' + c, x - 15, y - 15, 30, 30, `xt-bulb xb${i % 3}`)}`).join('')}
+      <circle class="xt-sglow" cx="170" cy="44" r="80" fill="url(#${g})"/>`);
+  }, propXtree);
+
+  const propPresentArt = layered(['present_box', 'present_lid'], () => svg('0 0 200 170',
+    `${pic('present_box', 0, 0, 200, 170)}<g class="pr-lid">${pic('present_lid', 6, 30, 134, 52)}</g>`), propPresent);
+
+  const propToyboxArt = layered(['toybox_body', 'toybox_lid'], () => svg('0 0 250 220',
+    `${pic('toybox_body', 0, 0, 250, 220)}<g class="tb-lid">${pic('toybox_lid', 6, 78, 238, 32)}</g>`), propToybox);
+
   Object.assign(G.Art.all, {
     icon_door: door, icon_check: check,
     icon_out_festival: iconFestival, icon_out_halloween: iconHalloween, icon_out_christmas: iconChristmas, icon_out_nyuhome: iconNyuHome,
     bg_festival: bgFestival, bg_halloween: bgHalloween, bg_christmas: bgChristmas, bg_nyuhome: bgNyuHome,
     prop_watame: propWatame, prop_ringo: propRingo, prop_potato: propPotato, prop_takoyaki: propTakoyaki,
-    item_ringo: itemRingo, item_potato: itemPotato, item_takoyaki: itemTakoyaki, prop_kingyo: propKingyo, prop_taiko: propTaiko, item_watame: itemWatame, item_kingyo_bag: itemKingyoBag,
-    prop_pumpkins: propPumpkins, prop_ghost: propGhost, prop_candy: propCandy, prop_broom: propBroom, item_candy: () => candy(),
-    prop_xtree: propXtree, prop_present: propPresent, prop_cake: propCake, prop_snowwin: propSnowWin, item_cakeslice: itemCakeSlice,
-    prop_snack: propSnack, prop_toybox: propToybox, prop_ball: propBall, item_cookie: itemCookie, toy_block: toyBlock, toy_star: toyStar,
+    item_ringo: itemRingo, item_potato: itemPotato, item_takoyaki: itemTakoyaki, prop_kingyo: propKingyoArt, prop_taiko: propTaiko, item_watame: itemWatame, item_kingyo_bag: itemKingyoBag,
+    prop_pumpkins: propPumpkinsArt, prop_ghost: propGhostArt, prop_candy: propCandy, prop_broom: propBroom, item_candy: () => candy(),
+    prop_xtree: propXtreeArt, prop_present: propPresentArt, prop_cake: propCake, prop_snowwin: propSnowWin, item_cakeslice: itemCakeSlice,
+    prop_snack: propSnack, prop_toybox: propToyboxArt, prop_ball: propBall, item_cookie: itemCookie, toy_block: toyBlock, toy_star: toyStar,
     snowflake
   });
 

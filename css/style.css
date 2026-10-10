@@ -639,6 +639,11 @@ body.portrait #stage { visibility: hidden; }
 .op-pumpkins.lit .pk-face { fill: #ffd25a; }
 .op-pumpkins .pk2 .pk-face { transition-delay: .2s; }
 .op-pumpkins .pk3 .pk-face { transition-delay: .4s; }
+/* 水彩の 絵の ときは、ひかった かぼちゃの 画像を かさねて 出す */
+.op-pumpkins .pk-lit { opacity: 0; transition: opacity .35s; }
+.op-pumpkins.lit .pk-lit { opacity: 1; }
+.op-pumpkins .pk2 .pk-lit { transition-delay: .2s; }
+.op-pumpkins .pk3 .pk-lit { transition-delay: .4s; }
 @keyframes flicker { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
 .op-ghost .op-art { animation: ghostFloat 3.2s ease-in-out infinite; }
 .op-ghost.boo .op-art { animation: ghostBoo .45s cubic-bezier(.3, 1.6, .5, 1) both; }
