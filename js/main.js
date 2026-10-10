@@ -282,7 +282,7 @@ G.Screens = G.Screens || {};
       setTimeout(() => $('#boot').remove(), 600);
       if (G.Link.fromCooking && !G.State.overLimit()) G.go('home', { from: 'ryouri' }); // おりょうりゲームから かえってきたら タイトルを とばす
       else G.go('title');
-      G.Assets.loadAll(G.Assets.keys()).then(() => G.CharaArt.warm(G.State.ribbon()));
+      G.Assets.loadAll(G.Assets.keys()).then(() => { G.CharaArt.warm(G.State.ribbon()); G.Accessory.preload(); });
     });
 
     setupOffline();
