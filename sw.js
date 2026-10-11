@@ -4,16 +4,16 @@
  * ・新しい版が公開されると、次に開いたときに、変わったファイルだけを受け取って入れかわる。
  * 下の VERSION と FILES は tools/build.py が自動で書きかえるので、手で直さなくてよい。 */
 /* @@FILES-BEGIN */
-const VERSION = '7c1f39c60d';
+const VERSION = '1246aed5b5';
 const FILES = [
   ["index.html", "0a4105bcc8"],
-  ["assets/backgrounds/bg_bath.webp", "f11f455a0e"],
-  ["assets/backgrounds/bg_christmas.webp", "90d05114cc"],
-  ["assets/backgrounds/bg_festival.webp", "8426de0008"],
-  ["assets/backgrounds/bg_halloween.webp", "1430480079"],
-  ["assets/backgrounds/bg_nyuhome.webp", "b16416425d"],
-  ["assets/backgrounds/bg_room_day.webp", "862d190e55"],
-  ["assets/backgrounds/bg_room_night.webp", "b683e940b5"],
+  ["assets/backgrounds/bg_bath.webp", "a8f16562af"],
+  ["assets/backgrounds/bg_christmas.webp", "eefca7c9e3"],
+  ["assets/backgrounds/bg_festival.webp", "2b6b21f166"],
+  ["assets/backgrounds/bg_halloween.webp", "c316a63603"],
+  ["assets/backgrounds/bg_nyuhome.webp", "0a5a28fc62"],
+  ["assets/backgrounds/bg_room_day.webp", "cb82a65d64"],
+  ["assets/backgrounds/bg_room_night.webp", "01f916555a"],
   ["assets/characters/nya_act_bath_fluffy.png", "81401cdcec"],
   ["assets/characters/nya_act_bath_foam.png", "fdbed4afb1"],
   ["assets/characters/nya_act_eat.png", "f029eafb01"],
