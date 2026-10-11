@@ -86,8 +86,11 @@ G.Screens.photo = {
       const img = bgImg && bgImg.complete && bgImg.naturalWidth ? bgImg : null;
       if (img) {
         const vw = window.innerWidth, vh = window.innerHeight, sc0 = UI.getScale();
-        const s = Math.max(vw / img.naturalWidth, vh / img.naturalHeight);
-        const ox = (vw - img.naturalWidth * s) / 2, oy = (vh - img.naturalHeight * s) / 2;
+        // 画面に 出ている 背景の 置き場所（js/ui.js の fit）。なければ 画面いっぱいの cover
+        const shown = document.querySelector('#bg img.bg-img');
+        const br = shown ? shown.getBoundingClientRect() : null;
+        const s = br && br.width ? br.width / img.naturalWidth : Math.max(vw / img.naturalWidth, vh / img.naturalHeight);
+        const ox = br && br.width ? br.left : (vw - img.naturalWidth * s) / 2, oy = br && br.width ? br.top : (vh - img.naturalHeight * s) / 2;
         const st = document.querySelector('#stage').getBoundingClientRect();
         const sx = (st.left + VF.x * sc0 - ox) / s, sy = (st.top + VF.y * sc0 - oy) / s;
         g.drawImage(img, sx, sy, VF.w * sc0 / s, VF.h * sc0 / s, 0, 0, OW, OH);
