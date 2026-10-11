@@ -92,7 +92,7 @@ G.Screens.home = {
     const drawn = S.drawing();
     if (drawn) {
       const art = UI.el('div', 'wall-art', `<img src="${drawn}" alt="">`);
-      UI.pos(art, 322, 182, 196, 134);
+      UI.pos(art, 345, 198, 196, 115); // 背景の 額縁の 白い 台紙の ところ（bg_room_day.webp）
       scr.appendChild(art);
       UI.tap(art, () => { if (!busy && !G.isRewarding()) say(L.drawWall, 'face_happy'); }, { sound: 'sparkle' });
     }

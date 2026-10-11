@@ -28,7 +28,7 @@ html, body {
 .bg-layer { position: absolute; inset: 0; opacity: 0; transition: opacity .8s ease; }
 .bg-layer.show { opacity: 1; }
 .bg-img { width: 100%; height: 100%; display: block; }
-#bg img.bg-img { object-fit: cover; } /* 画面いっぱいに広げる（はしに帯を出さない） */
+#bg img.bg-img { position: absolute; left: var(--bg-l, 0); top: var(--bg-t, 0); width: var(--bg-w, 100%); height: var(--bg-h, 100%); object-fit: cover; } /* ステージと 同じ 大きさ・まんなか（js/ui.js の fit） */
 
 #stage { position: absolute; left: 0; top: 0; width: 1366px; height: 1024px; transform-origin: 0 0; z-index: 1; }
 #screens, #hud, #fx, #overlay { position: absolute; inset: 0; pointer-events: none; }
@@ -549,10 +549,10 @@ img.acc-art { object-fit: contain; }
 .album-zoom { position: absolute; inset: 0; background: rgba(60, 30, 40, .55); display: flex; align-items: center; justify-content: center; }
 .polaroid.big { position: relative; width: 820px; height: 680px; padding: 22px 22px 76px; transform: rotate(-2deg); }
 
-/* ---- おへやの かべの え ---- */
+/* ---- おへやの かべの え（背景の 額縁の 台紙に はる） ---- */
 .wall-art {
-  z-index: 1; background: #fffdf8; padding: 8px; border-radius: 6px;
-  box-shadow: 0 0 0 7px #e9cf8c, 0 0 0 11px #c99a3d, 0 10px 16px 8px rgba(120, 70, 50, .2);
+  z-index: 1; background: #fbf6ec; padding: 6px; border-radius: 2px;
+  box-shadow: inset 0 0 6px rgba(150, 110, 60, .25);
 }
 .wall-art img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .wall-art.pressed { transform: scale(.95); }

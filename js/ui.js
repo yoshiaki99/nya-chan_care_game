@@ -3,6 +3,7 @@ window.G = window.G || {};
 
 G.UI = (function () {
   const W = 1366, H = 1024;
+  const BG_W = W * 1.5; // 背景の 絵の よこはば（横 2:1。まんなかの 4:3 が ステージ）
   let scale = 1;
   const $ = (s) => document.querySelector(s);
 
@@ -26,6 +27,13 @@ G.UI = (function () {
     scale = Math.min(vw / W, vh / H);
     const st = $('#stage');
     st.style.transform = `translate(${(vw - W * scale) / 2}px, ${(vh - H * scale) / 2}px) scale(${scale})`;
+    // 背景の 絵（横 2:1。まんなかの 4:3 が 画面の 1366×1024 に ぴったり 重なる）を 画面と 同じ 大きさ・同じ まんなかに 置く。
+    // 2:1 より 横長・4:3 より たて長の ときだけ、すきまが できないように 大きくする（そのときは 少し ずれる）
+    const k = Math.max(scale, vh / H, vw / BG_W), bg = $('#bg');
+    bg.style.setProperty('--bg-w', BG_W * k + 'px');
+    bg.style.setProperty('--bg-h', H * k + 'px');
+    bg.style.setProperty('--bg-l', (vw - BG_W * k) / 2 + 'px');
+    bg.style.setProperty('--bg-t', (vh - H * k) / 2 + 'px');
     document.body.classList.toggle('portrait', vh > vw * 1.05);
   }
   function toStage(cx, cy) {
